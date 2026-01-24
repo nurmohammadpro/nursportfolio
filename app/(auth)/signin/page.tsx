@@ -1,8 +1,10 @@
 "use client";
 
 import Button from "@/app/components/Button";
+import Input from "@/app/components/Input";
 import { auth } from "@/app/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -27,7 +29,7 @@ export default function SigninPage() {
 
   return (
     // Uses bg-primary (Light Cyan: #ecfeff)
-    <div className="flex min-h-screen items-center justify-center bg-primary px-4 font-sans">
+    <div className="flex flex-col min-h-screen items-center justify-center bg-primary px-4 font-sans">
       <form
         onSubmit={handleLogin}
         // Uses bg-surface (#cffafe) and border-subtle (#bae6fd)
@@ -51,35 +53,34 @@ export default function SigninPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-fg-muted uppercase mb-1 ml-1">
-              Email Address
-            </label>
-            <input
-              className="w-full bg-primary border border-subtle rounded-lg p-3 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all text-fg-main placeholder:text-fg-muted/50"
-              placeholder="name@company.com"
-              type="email"
+            <Input
+              label="Email"
               value={email}
+              variant="filled"
               onChange={(e) => setEmail(e.target.value)}
-              required
+              fullWidth
             />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-fg-muted uppercase mb-1 ml-1">
-              Password
-            </label>
-            <input
-              className="w-full bg-primary border border-subtle rounded-lg p-3 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all text-fg-main placeholder:text-fg-muted/50"
-              placeholder="••••••••"
-              type="password"
+            <Input
+              label="Password"
               value={password}
+              variant="filled"
               onChange={(e) => setPassword(e.target.value)}
-              required
+              fullWidth
             />
           </div>
         </div>
-
-        <Button type="submit">Sign In</Button>
+        <Button type="submit" variant="contained">
+          Sign In
+        </Button>
+        <p className="text-sm text-on-surface-variant">
+          Don't have an account?{" "}
+          <Link
+            href="/signup"
+            className="text-primary hover:underline transition-all ease-in-out duration-200"
+          >
+            Sign Up Now
+          </Link>
+        </p>
       </form>
     </div>
   );

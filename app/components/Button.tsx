@@ -1,6 +1,5 @@
 "use client";
 
-// Added forwardRef to the import
 import React, { forwardRef } from "react";
 
 type ButtonVariant = "contained" | "outlined" | "text";
