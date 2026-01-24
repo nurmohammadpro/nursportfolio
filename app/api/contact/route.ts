@@ -10,7 +10,7 @@ export async function POST(request:Request) {
         // Save data to firerstore
         const docRef = await addDoc(collection(db, "messages"), {
             name, email, phone, message,
-            createdAt: serverTimestamp();
+            createdAt: serverTimestamp(),
         })
 
         return NextResponse.json({success: true, id: docRef.id}, {status: 200})
