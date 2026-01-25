@@ -2,58 +2,64 @@
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input";
 import { auth } from "@/app/lib/firebase";
-import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSignup = async (e: React.FormEvent) => {
-    () => {
-      e.preventDefault();
-      setError("");
+    e.preventDefault();
+    setError("");
 
-      if (typeof error === "object" && error !== null && "code" in error) {
-        // After the check, we can safely assert the type.
-        const firebaseError = error as { code: string; message: string };
+    // 1. Client-side Validation
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
-        // Handle specific Firebase errors
-        if (firebaseError.code === "auth/email-already-in-use") {
-          setError("This email is already registered. Please sign in instead.");
-        } else if (firebaseError.code === "auth/weak-password") {
-          setError("Password is too weak. Please use a stronger password.");
-        } else if (firebaseError.code === "auth/invalid-email") {
-          setError("Invalid email address. Please check and try again.");
-        } else {
-          setError(
-            firebaseError.message ||
-              "Failed to create account. Please try again.",
-          );
-        }
+    setLoading(true);
+
+    try {
+      // 2. Firebase Auth Call
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      // Optional: You could update the user profile with the 'name' here
+      // await updateProfile(auth.currentUser, { displayName: name });
+
+      router.push("/dashboard");
+    } catch (err: any) {
+      // 3. Proper Firebase Error Handling
+      if (err.code === "auth/email-already-in-use") {
+        setError("This email is already registered. Please sign in instead.");
+      } else if (err.code === "auth/weak-password") {
+        setError("Password is too weak. Please use at least 6 characters.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("Invalid email address. Please check and try again.");
       } else {
-        // Fallback for non-Firebase errors
-        setError("An unexpected error occurred. Please try again later.");
+        setError(err.message || "Failed to create account. Please try again.");
       }
-    };
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-primary px-4 font-sans">
       <form
         onSubmit={handleSignup}
-        // Uses bg-surface (#cffafe) and border-subtle (#bae6fd)
         className="w-full max-w-sm space-y-6 bg-surface p-10 border border-subtle rounded-xl shadow-lg"
       >
         <div className="space-y-2 text-center">
-          {/* Uses Playfair Display for the header */}
           <h3 className="text-3xl font-display font-bold text-fg-main">
             Sign Up
           </h3>
@@ -63,25 +69,41 @@ export default function SignupPage() {
         </div>
 
         {error && (
-          <div className="p-3 bg-red-100 border border-red-200 text-red-700 text-sm rounded">
+          <div className="p-3 bg-red-100 border border-red-200 text-red-700 text-sm rounded animate-shake">
             {error}
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           <Input
             label="Full Name"
+            type="text"
             value={name}
             variant="filled"
             onChange={(e) => setName(e.target.value)}
             fullWidth
+            required
           />
           <Input
             label="Email"
+            type="email"
             value={email}
             variant="filled"
             onChange={(e) => setEmail(e.target.value)}
             fullWidth
+            required
+          />
+          <Input
+            label="Phone"
+            type="text"
+            value={phone}
+            variant="filled"
+            onChange={(e) => {
+              const val = e.target.value.replace(/[^0-9+]/g, "");
+              setPhone(val);
+            }}
+            fullWidth
+            required
           />
           <Input
             label="Password"
@@ -90,6 +112,7 @@ export default function SignupPage() {
             variant="filled"
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
+            required
           />
           <Input
             label="Confirm Password"
@@ -98,6 +121,7 @@ export default function SignupPage() {
             variant="filled"
             onChange={(e) => setConfirmPassword(e.target.value)}
             fullWidth
+            required
             error={password !== confirmPassword && confirmPassword !== ""}
             helperText={
               password !== confirmPassword && confirmPassword !== ""
@@ -107,15 +131,23 @@ export default function SignupPage() {
           />
         </div>
 
-        <Button type="submit" variant="contained">
-          Sign Up
+        <Button
+          type="submit"
+          variant="contained"
+          className="w-full"
+          disabled={loading}
+        >
+          {loading ? "Creating Account..." : "Sign Up"}
         </Button>
 
         <div className="text-center text-sm text-fg-muted">
           Already have an account?{" "}
-          <a href="/signin" className="text-brand hover:underline">
+          <Link
+            href="/signin"
+            className="text-brand font-medium hover:underline"
+          >
             Sign In
-          </a>
+          </Link>
         </div>
       </form>
     </div>

@@ -1,9 +1,13 @@
+// components/Input.tsx
 "use client";
 
 import React, { useState, useId, forwardRef, ForwardedRef } from "react";
-
+import { usePasswordVisibility } from "@/app/hooks/usePasswordVisibility";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 export type InputVariant = "filled" | "outlined";
 
+// The interface is simpler and more robust now
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   variant?: InputVariant;
@@ -24,16 +28,21 @@ const Input = forwardRef(
       startAdornment,
       endAdornment,
       fullWidth = false,
+      type = "text", // This is now guaranteed to be in scope
       className = "",
       value,
       onFocus,
       onBlur,
-      ...props
+      ...rest
     }: InputProps,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const inputId = useId();
+
+    // Use our custom hook if the input type is password
+    const { isVisible, toggleVisibility } = usePasswordVisibility();
+    const isPasswordField = type === "password"; // This line will now work correctly
 
     const isLabelFloated = isFocused || (value !== undefined && value !== "");
 
@@ -46,6 +55,30 @@ const Input = forwardRef(
       setIsFocused(false);
       onBlur?.(e);
     };
+
+    // Determine the actual input type based on visibility state
+    const togglePassword = type === "password" && (
+      <button
+        type="button"
+        onClick={toggleVisibility}
+        className="p-1 rounded-full hover:bg-on-surface-variant/10 transition-colors focus:outline-none"
+        tabIndex={-1}
+      >
+        {isVisible ? (
+          <VisibilityOffOutlinedIcon fontSize="small" />
+        ) : (
+          <VisibilityOutlinedIcon fontSize="small" />
+        )}
+      </button>
+    );
+
+    // Combine the provided endAdornment with the password toggle
+    const finalEndAdornment = (
+      <>
+        {endAdornment}
+        {togglePassword}
+      </>
+    );
 
     const baseClasses = `
       relative transition-all duration-200 ease-in-out
@@ -80,22 +113,23 @@ const Input = forwardRef(
             <input
               id={inputId}
               ref={ref}
+              type={type}
               className={`
                 peer w-full bg-transparent outline-none text-on-surface
                 placeholder-transparent autofill:pb-1
               `}
-              placeholder={label} // Needed for the floating label effect
+              placeholder={label}
               onFocus={handleFocus}
               onBlur={handleBlur}
               value={value}
-              {...props}
+              {...rest}
             />
 
             <label
               htmlFor={inputId}
               className={`
                 absolute left-3 transition-all duration-200 pointer-events-none
-                text-on-surface-variant/50
+                text-on-surface-variant
                 ${
                   isLabelFloated
                     ? "text-xs top-1.5"
@@ -110,16 +144,16 @@ const Input = forwardRef(
               {label}
             </label>
 
-            {endAdornment && (
-              <span className="ml-2 text-on-surface-variant">
-                {endAdornment}
+            {finalEndAdornment && (
+              <span className="ml-2 text-on-surface-variant flex items-center">
+                {finalEndAdornment}
               </span>
             )}
           </div>
 
           {helperText && (
             <p
-              className={`mt-1 px-3 text-xs ${error ? "text-error" : "text-on-surface-variant/30"}`}
+              className={`mt-1 px-3 text-xs ${error ? "text-error" : "text-on-surface-variant"}`}
             >
               {helperText}
             </p>
@@ -154,15 +188,16 @@ const Input = forwardRef(
           <input
             id={inputId}
             ref={ref}
+            type={type}
             className={`
               peer w-full bg-transparent outline-none text-on-surface
               placeholder-transparent autofill:pt-1
             `}
-            placeholder={label} // Needed for the floating label effect
+            placeholder={label}
             onFocus={handleFocus}
             onBlur={handleBlur}
             value={value}
-            {...props}
+            {...rest}
           />
 
           <label
@@ -185,8 +220,10 @@ const Input = forwardRef(
             {label}
           </label>
 
-          {endAdornment && (
-            <span className="ml-2 text-on-surface-variant">{endAdornment}</span>
+          {finalEndAdornment && (
+            <span className="ml-2 text-on-surface-variant flex items-center">
+              {finalEndAdornment}
+            </span>
           )}
         </div>
 
