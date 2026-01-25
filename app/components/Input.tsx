@@ -95,7 +95,7 @@ const Input = forwardRef(
               htmlFor={inputId}
               className={`
                 absolute left-3 transition-all duration-200 pointer-events-none
-                text-on-surface-variant
+                text-on-surface-variant/50
                 ${
                   isLabelFloated
                     ? "text-xs top-1.5"
@@ -119,7 +119,7 @@ const Input = forwardRef(
 
           {helperText && (
             <p
-              className={`mt-1 px-3 text-xs ${error ? "text-error" : "text-on-surface-variant"}`}
+              className={`mt-1 px-3 text-xs ${error ? "text-error" : "text-on-surface-variant/30"}`}
             >
               {helperText}
             </p>
