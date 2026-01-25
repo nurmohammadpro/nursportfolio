@@ -42,7 +42,13 @@ const Input = forwardRef(
 
     // Use our custom hook if the input type is password
     const { isVisible, toggleVisibility } = usePasswordVisibility();
-    const isPasswordField = type === "password"; // This line will now work correctly
+    const isPasswordField = type === "password";
+
+    const actualInputType = isPasswordField
+      ? isVisible
+        ? "text"
+        : "password"
+      : type;
 
     const isLabelFloated = isFocused || (value !== undefined && value !== "");
 
@@ -113,7 +119,7 @@ const Input = forwardRef(
             <input
               id={inputId}
               ref={ref}
-              type={type}
+              type={actualInputType}
               className={`
                 peer w-full bg-transparent outline-none text-on-surface
                 placeholder-transparent autofill:pb-1
@@ -188,7 +194,7 @@ const Input = forwardRef(
           <input
             id={inputId}
             ref={ref}
-            type={type}
+            type={actualInputType}
             className={`
               peer w-full bg-transparent outline-none text-on-surface
               placeholder-transparent autofill:pt-1
