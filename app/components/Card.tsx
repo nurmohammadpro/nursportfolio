@@ -110,7 +110,7 @@ const Card = ({
             {description}
           </p>
         )}
-
+        {children && <div className="mt-2">{children}</div>}
         {/* Bottom Section: Sub-heading and Action Button */}
         <div className="flex items-center justify-between mt-auto">
           {bottomSubHeading && (

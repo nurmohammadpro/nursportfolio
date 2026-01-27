@@ -73,11 +73,11 @@ export default function SigninPage() {
           Sign In
         </Button>
 
-        <p className="text-sm text-fg-muted text-center">
+        <p className="text-sm text-on-surface-variant text-center">
           Don't have an account?{" "}
           <Link
             href="/signup"
-            className="text-brand font-medium hover:underline transition-all ease-in-out duration-200"
+            className="text-on-surface-variant font-medium hover:underline transition-all ease-in-out duration-200"
           >
             Sign Up Now
           </Link>

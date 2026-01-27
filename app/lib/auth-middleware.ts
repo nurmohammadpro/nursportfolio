@@ -7,7 +7,7 @@ export type AuthenticatedContext<T = Record<string, never>> = {
   params: T;
 };
 
-export function withAuth<T = {}>(
+export function withAuth<T = Record<string, unknown>>(
   handler: (
     req: NextRequest,
     context: AuthenticatedContext<T>,

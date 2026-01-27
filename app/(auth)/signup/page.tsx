@@ -1,4 +1,5 @@
 "use client";
+
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input";
 import { auth } from "@/app/lib/firebase";
@@ -21,7 +22,6 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
-    // 1. Client-side Validation
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -30,15 +30,10 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // 2. Firebase Auth Call
       await createUserWithEmailAndPassword(auth, email, password);
-
-      // Optional: You could update the user profile with the 'name' here
-      // await updateProfile(auth.currentUser, { displayName: name });
-
       router.push("/dashboard");
     } catch (err: any) {
-      // 3. Proper Firebase Error Handling
+      // Firebase auth errors typically have a 'code' property
       if (err.code === "auth/email-already-in-use") {
         setError("This email is already registered. Please sign in instead.");
       } else if (err.code === "auth/weak-password") {
@@ -69,7 +64,7 @@ export default function SignupPage() {
         </div>
 
         {error && (
-          <div className="p-3 bg-red-100 border border-red-200 text-red-700 text-sm rounded animate-shake">
+          <div className="p-3 bg-red-100 border border-red-200 text-red-700 text-sm rounded">
             {error}
           </div>
         )}
@@ -123,11 +118,6 @@ export default function SignupPage() {
             fullWidth
             required
             error={password !== confirmPassword && confirmPassword !== ""}
-            helperText={
-              password !== confirmPassword && confirmPassword !== ""
-                ? "Passwords do not match"
-                : ""
-            }
           />
         </div>
 
