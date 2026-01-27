@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-const { withNextOnPages } = require("@cloudflare/next-on-pages");
 
 const nextConfig: NextConfig = {
   images: {
@@ -20,6 +19,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
+  // OpenNext works best when you don't force a runtime here.
+  // It will automatically adapt your Node.js code for the Worker.
 };
 
-export default withNextOnPages(nextConfig);
+export default nextConfig;
