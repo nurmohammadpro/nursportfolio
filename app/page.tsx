@@ -1,5 +1,5 @@
-import Image from "next/image";
-import SigninPage from "./(auth)/signin/page";
+"use client";
+
 import Card from "./components/Card";
 
 export default function Home() {

@@ -34,10 +34,10 @@ export default function SigninPage() {
         className="w-full max-w-sm space-y-6 bg-surface p-10 border border-subtle rounded-xl shadow-lg"
       >
         <div className="space-y-2 text-center">
-          <h3 className="text-3xl font-display font-bold text-fg-main">
+          <h3 className="text-3xl font-display font-bold text-on-surface">
             Sign In
           </h3>
-          <p className="text-sm text-fg-muted">
+          <p className="text-sm text-on-surface-variant">
             Enter your details to access your dashboard
           </p>
         </div>

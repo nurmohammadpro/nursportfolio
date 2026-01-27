@@ -2,7 +2,7 @@ import { adminAuth } from "@/app/lib/firebase-admin";
 import { NextRequest } from "next/server";
 import { DecodedIdToken } from "firebase-admin/auth";
 
-export type AuthenticatedContext<T = {}> = {
+export type AuthenticatedContext<T = Record<string, never>> = {
   user: DecodedIdToken;
   params: T;
 };

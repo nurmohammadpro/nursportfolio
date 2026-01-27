@@ -1,3 +1,4 @@
+// app/(auth)/admin/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -5,27 +6,30 @@ import { Post } from "@/app/lib/blog-types";
 import { authenticatedFetch } from "@/app/lib/api";
 import Button from "@/app/components/Button";
 import Card from "@/app/components/Card";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function AdminPage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // FIX: Start with 'true' for initial load
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await authenticatedFetch("api/admin/posts");
+        // FIX: Correct API endpoint
+        const res = await authenticatedFetch("/api/admin/blog");
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.error || "Failed to fetch posts");
         }
         const data = await res.json();
-        setPosts(data.posts);
+        // FIX: The API returns an array directly, not an object.
+        setPosts(data);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -55,7 +59,8 @@ export default function AdminPage() {
   const handlePublish = async (post: Post) => {
     try {
       const res = await authenticatedFetch(`/api/admin/blog/${post.id}`, {
-        method: "PUt",
+        // FIX: Correct HTTP method
+        method: "PUT",
         body: JSON.stringify({ isPublished: !post.isPublished }),
       });
 
@@ -72,8 +77,29 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="relative flex justify-center items-center min-h-screen">
-        <span className="animate-spin w-2 h-2 "> Loading posts...</span>
+      <div className="flex justify-center items-center min-h-screen">
+        {/* A better loading spinner */}
+        <svg
+          className="animate-spin h-8 w-8 text-primary"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        <span className="ml-2">Loading posts...</span>
       </div>
     );
   }
@@ -93,9 +119,10 @@ export default function AdminPage() {
           <h1 className="text-4xl font-display font-bold text-on-surface">
             Manage Posts
           </h1>
-          <Button variant="contained">
-            <Link href="/admin/new">Create New Post</Link>
-          </Button>
+          {/* FIX: Wrap Button in Link for proper navigation */}
+          <Link href="/admin/new">
+            <Button variant="contained">Create New Post</Button>
+          </Link>
         </div>
 
         {posts.length === 0 ? (
@@ -112,11 +139,8 @@ export default function AdminPage() {
                 description={post.content.substring(0, 150) + "..."}
                 bottomSubHeading={`Status: ${post.isPublished ? "Published" : "Draft"}`}
                 actionLabel="Edit"
-                onActionClick={() =>
-                  (window.location.href = `/admin/edit/${post.id}`)
-                }
+                onActionClick={() => router.push(`/admin/edit/${post.id}`)} // Use router.push
               >
-                {/* Extra Actions for the Card */}
                 <div className="flex gap-2 mt-4">
                   <Button
                     variant="text"
