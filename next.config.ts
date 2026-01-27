@@ -1,10 +1,25 @@
 import type { NextConfig } from "next";
+const { withVercelTurbo } = require("@vercel/next");
 
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ["images.pexels.com", "images.unsplash.com"],
+    // The 'domains' property is deprecated. Use 'remotePatterns' instead.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 
-export default nextConfig;
+export default withVercelTurbo(nextConfig);

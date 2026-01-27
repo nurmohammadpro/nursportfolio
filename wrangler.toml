@@ -1,0 +1,12 @@
+# wrangler.toml
+name = "Nur Mohammad | Web App Development & Automation Service Provider"
+compatibility_date = "2024-04-17"
+compatibility_flags = ["nodejs_compat"]
+
+# This tells Pages to treat your app as a full-stack Next.js application
+pages_build_output_dir = ".vercel/output/static"
+
+# [vars] is for environment variables you want to be available to your app
+# We will add our Firebase credentials here later.
+[vars]
+# Example: FIREBASE_PROJECT_ID = "nursportfolio-3dd27"

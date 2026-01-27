@@ -29,3 +29,4 @@ if (getApps().length === 0) {
 export const adminDb = admin.firestore();
 export const adminAuth = admin.auth();
 export const adminStorage = admin.storage();
+export { admin };

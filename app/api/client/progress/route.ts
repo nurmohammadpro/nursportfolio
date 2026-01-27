@@ -1,27 +1,27 @@
+import { withAuth } from "@/app/lib/auth-middleware";
 import { adminDb } from "@/app/lib/firebase-admin";
-import { NextResponse } from "next/server";
+import { ServiceRequest } from "@/app/lib/service-types";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "User ID required" }, { status: 400 });
-  }
+export const GET = withAuth(async (req: NextRequest, { user }) => {
   try {
-    // Fetching all services belogs to this client
+    //Fetching progress data for admin
     const snapshot = await adminDb
       .collection("service_requests")
-      .where("clientId", "==", "userId")
+      .where("clientId", "==", user.uid)
+      .orderBy("createdAt", "desc")
       .get();
 
-    const services = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data }));
+    const services: ServiceRequest[] = snapshot.docs.map(
+      (doc) => doc.data() as ServiceRequest,
+    );
 
-    return NextResponse.json(services, { status: 200 });
+    return NextResponse.json({ services }, { status: 200 });
   } catch (error) {
+    console.error("Error fetching progress data:", error);
     return NextResponse.json(
-      { error: "Failed to fetch services" },
+      { error: "Internal Server Error" },
       { status: 500 },
     );
   }
-}
+});

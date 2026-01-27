@@ -1,35 +1,47 @@
+import { withAuth } from "@/app/lib/auth-middleware";
 import { adminDb } from "@/app/lib/firebase-admin";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export const POST = withAuth(async (req: Request, { user }) => {
   try {
     const body = await req.json();
 
-    const { userId, userEmail, serviceName, packageType, price } = body;
+    const { serviceName, packageType, price } = body;
 
-    // Validation
-    if (!userId || !userEmail || !serviceName || !packageType || !price) {
+    //Validation
+    if (!serviceName || !packageType || !price) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Missing required fields: serviceName, packageType, price" },
         { status: 400 },
       );
     }
 
-    // Creating service request
-    const newService = {
-      clientId: userId,
-      clientEmail: userEmail,
+    const newServiceRef = adminDb.collection("service_requests").doc();
+    // Define ServiceRequest type if not already imported
+    type ServiceRequest = {
+      id: string;
+      clientId: string;
+      clientEmail: string;
+      serviceName: string;
+      packageType: string;
+      price: number;
+      status: string;
+      progress: number;
+      milestones: { label: string; completed: boolean }[];
+      createdAt: string;
+      updatedAt: string;
+    };
+
+    const newServiceData: Omit<ServiceRequest, "id" | "updatedAt"> = {
+      clientId: user.uid,
+      clientEmail: user.email || "",
       serviceName,
-      packageType: [
-        { label: "Basic", value: "basic" },
-        { label: "Standard", value: "standard" },
-        { label: "Premium", value: "premium" },
-      ],
+      packageType,
       price,
       status: "pending_payment",
       progress: 0,
       milestones: [
-        { label: "Onboarding", comleted: false },
+        { label: "Onboarding", completed: false }, // FIX: Typo corrected
         { label: "Design", completed: false },
         { label: "Development", completed: false },
         { label: "Delivery", completed: false },
@@ -37,11 +49,10 @@ export async function POST(req: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    // Saving to firestore
-    const docRef = await adminDb.collection("service_requests").add(newService);
+    await newServiceRef.set({ id: newServiceRef.id, ...newServiceData });
 
     return NextResponse.json(
-      { success: true, requestId: docRef.id },
+      { success: true, id: newServiceRef.id },
       { status: 201 },
     );
   } catch (error) {
@@ -50,4 +61,4 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
-}
+});

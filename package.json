@@ -12,6 +12,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.7",
+    "@vercel/next": "^4.15.17",
     "firebase": "^12.8.0",
     "firebase-admin": "^13.6.0",
     "next": "16.1.4",
