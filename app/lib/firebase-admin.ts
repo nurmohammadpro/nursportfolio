@@ -1,29 +1,52 @@
 // @/app/lib/firebase-admin.ts
 
 import admin from "firebase-admin";
-import { getApps } from "firebase-admin/app";
+import { getApps, cert } from "firebase-admin/app";
 
-// This check ensures we don't initialize the app more than once
-if (getApps().length === 0) {
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
-
-  if (!projectId || !clientEmail || !privateKey) {
-    throw new Error("Missing Firebase Admin SDK environment variables.");
+/**
+ * Initializes Firebase Admin SDK.
+ * Returns the app instance or null if environment variables are missing.
+ */
+function getAdminApp() {
+  if (getApps().length > 0) {
+    return admin.app();
   }
 
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId,
-      clientEmail,
-      privateKey: privateKey.replace(/\\n/g, "\n"),
-    }),
-  });
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+  if (!projectId || !clientEmail || !privateKey) {
+    // During build, environment variables might be missing.
+    // We log a warning instead of throwing to allow the build to complete.
+    console.warn("Firebase Admin SDK: Missing environment variables. Initialization skipped.");
+    return null;
+  }
+
+  try {
+    // Robust handling of private key newlines
+    const formattedPrivateKey = privateKey.replace(/\\n/g, "\n");
+
+    return admin.initializeApp({
+      credential: cert({
+        projectId,
+        clientEmail,
+        privateKey: formattedPrivateKey,
+      }),
+    });
+  } catch (error) {
+    console.error("Firebase Admin SDK initialization failed:", error);
+    return null;
+  }
 }
 
-// Export the initialized services directly. No need for intermediate variables.
-export const adminDb = admin.firestore();
-export const adminAuth = admin.auth();
-export const adminStorage = admin.storage();
+const app = getAdminApp();
+
+// Export the initialized services. 
+// If app is null, these will be null. This is safe during build scanning 
+// but will (correctly) error at runtime if used without proper env vars.
+export const adminDb = app ? admin.firestore() : null as unknown as admin.firestore.Firestore;
+export const adminAuth = app ? admin.auth() : null as unknown as admin.auth.Auth;
+export const adminStorage = app ? admin.storage() : null as unknown as admin.storage.Storage;
 export { admin };
+
