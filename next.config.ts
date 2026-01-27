@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
-const { withVercelTurbo } = require("@vercel/next");
+const { withNextOnPages } = require("@cloudflare/next-on-pages");
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
-    // The 'domains' property is deprecated. Use 'remotePatterns' instead.
     remotePatterns: [
       {
         protocol: "https",
@@ -18,8 +16,10 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      { protocol: "https", hostname: "firebasestorage.googleapis.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
 };
 
-export default withVercelTurbo(nextConfig);
+export default withNextOnPages(nextConfig);
