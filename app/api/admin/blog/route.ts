@@ -4,6 +4,22 @@ import { NextResponse } from "next/server";
 
 const PLACEHOLDER_AUTHOR_ID = "placeholder-author-id";
 
+//Fetching all the blog posts
+export async function GET(){
+  try {
+    const postQuery = adminDb.collection("posts").orderBy("createdAt", "desc").limit(50);
+
+    const querySnapshot =  await postQuery.get();
+    const posts: Post[]=[];
+    
+    querySnapshot.forEach((doc) => {
+      posts.push(doc.data() as Post)
+    })
+
+    return NextResponse.json(posts, {status:200})
+  }
+}
+
 //Creating a blog post
 export async function POST(req: Request) {
   try {
