@@ -33,6 +33,7 @@ interface CardProps {
 
   // Styling
   className?: string;
+  children?: React.ReactNode;
 }
 
 const Card = ({
@@ -48,6 +49,7 @@ const Card = ({
   variant = "default",
   priority = false, // Default priority to false
   className = "",
+  children,
 }: CardProps) => {
   const isClickable = !!onClick;
 
