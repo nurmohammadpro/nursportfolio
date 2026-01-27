@@ -32,16 +32,17 @@ export default function SignupPage() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push("/dashboard");
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Firebase auth errors typically have a 'code' property
-      if (err.code === "auth/email-already-in-use") {
+      const firebaseError = err as { code?: string; message?: string };
+      if (firebaseError.code === "auth/email-already-in-use") {
         setError("This email is already registered. Please sign in instead.");
-      } else if (err.code === "auth/weak-password") {
+      } else if (firebaseError.code === "auth/weak-password") {
         setError("Password is too weak. Please use at least 6 characters.");
-      } else if (err.code === "auth/invalid-email") {
+      } else if (firebaseError.code === "auth/invalid-email") {
         setError("Invalid email address. Please check and try again.");
       } else {
-        setError(err.message || "Failed to create account. Please try again.");
+        setError(firebaseError.message || "Failed to create account. Please try again.");
       }
     } finally {
       setLoading(false);
