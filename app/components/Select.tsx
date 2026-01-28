@@ -1,63 +1,49 @@
 "use client";
 
 import React, { useState, useId, forwardRef, ForwardedRef } from "react";
-import { usePasswordVisibility } from "@/app/hooks/usePasswordVisibility";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-export type InputVariant = "filled" | "outlined";
+export type SelectVariant = "filled" | "outlined";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  variant?: InputVariant;
+  variant?: SelectVariant;
   error?: boolean;
   helperText?: string;
-  startAdornment?: React.ReactNode;
-  endAdornment?: React.ReactNode;
   fullWidth?: boolean;
+  options: { value: string; label: string }[];
 }
 
-const Input = forwardRef(
+const Select = forwardRef(
   (
     {
       label,
-      variant = "filled",
+      variant = "outlined",
       error = false,
       helperText,
-      startAdornment,
-      endAdornment,
       fullWidth = false,
-      type = "text",
+      options,
       className = "",
       value,
       onFocus,
       onBlur,
       disabled,
       ...rest
-    }: InputProps,
-    ref: ForwardedRef<HTMLInputElement>,
+    }: SelectProps,
+    ref: ForwardedRef<HTMLSelectElement>,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const inputId = useId();
 
-    const { isVisible, toggleVisibility } = usePasswordVisibility();
-    const isPasswordField = type === "password";
+    const isLabelFloated = isFocused || !!value || value === "";
 
-    const actualInputType = isPasswordField
-      ? isVisible
-        ? "text"
-        : "password"
-      : type;
-
-    const isLabelFloated = isFocused || !!value || rest.placeholder;
-
-    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    const handleFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
       setIsFocused(true);
       onFocus?.(e);
     };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const handleBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
       setIsFocused(false);
       onBlur?.(e);
     };
@@ -65,43 +51,41 @@ const Input = forwardRef(
     const handleMouseEnter = () => !disabled && setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
 
-    const togglePassword = isPasswordField ? (
-      <button
-        type="button"
-        onClick={toggleVisibility}
-        className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        tabIndex={-1}
-        aria-label={isVisible ? "Hide password" : "Show password"}
-      >
-        {isVisible ? (
-          <VisibilityOffOutlinedIcon
-            fontSize="small"
-            className="text-gray-500 dark:text-gray-400"
-          />
-        ) : (
-          <VisibilityOutlinedIcon
-            fontSize="small"
-            className="text-gray-500 dark:text-gray-400"
-          />
-        )}
-      </button>
-    ) : null;
-
-    const finalEndAdornment = (
-      <>
-        {endAdornment}
-        {togglePassword}
-      </>
-    );
-
     const baseClasses = `relative transition-all duration-200 ease-out ${fullWidth ? "w-full" : ""} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`;
+
+    // Enhanced select styles with better spacing
+    const selectStyles = `
+      peer w-full bg-transparent outline-none 
+      text-gray-900 dark:text-gray-100 appearance-none
+      cursor-pointer
+      py-4 pr-10
+      ${disabled ? "cursor-not-allowed" : ""}
+    `;
+
+    // Option styles that work better across browsers
+    const optionStyles = {
+      paddingTop: "12px",
+      paddingBottom: "12px",
+      paddingLeft: "16px",
+      paddingRight: "16px",
+      backgroundColor: "white",
+      color: "#1f2937",
+      fontSize: "16px",
+      lineHeight: "24px",
+    };
+
+    const darkOptionStyles = {
+      ...optionStyles,
+      backgroundColor: "#111827",
+      color: "#f3f4f6",
+    };
 
     if (variant === "filled") {
       return (
         <div className={baseClasses}>
           <div
             className={`
-              relative flex items-center h-14 px-4 pt-2 rounded-t-md
+              relative flex items-center min-h-14 px-4 pt-2 rounded-t-md
               bg-gray-50 dark:bg-gray-800 border-b-2 transition-all duration-200
               ${
                 error
@@ -111,35 +95,40 @@ const Input = forwardRef(
                     : "border-gray-300 dark:border-gray-600"
               }
               ${isHovered && !isFocused && !error ? "border-gray-400 dark:border-gray-500" : ""}
-              ${disabled ? "bg-gray-100/50 dark:bg-gray-800/50" : ""}
+              ${disabled ? "bg-gray-50/50 dark:bg-gray-800/50" : ""}
             `}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            {startAdornment && (
-              <span className="mr-3 text-gray-500 dark:text-gray-400 shrink-0">
-                {startAdornment}
-              </span>
-            )}
-
-            <input
+            <select
               id={inputId}
               ref={ref}
-              type={actualInputType}
-              className={`
-                peer w-full bg-transparent outline-none 
-                text-gray-900 dark:text-gray-100 placeholder-transparent
-                pt-5 pb-2 ${disabled ? "cursor-not-allowed" : ""}
-              `}
-              placeholder={label}
+              value={value}
+              className={selectStyles}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              value={value}
               disabled={disabled}
               aria-invalid={error}
               aria-describedby={helperText ? `${inputId}-helper` : undefined}
+              style={{
+                // Ensure proper height for the select element
+                height: "100%",
+              }}
               {...rest}
-            />
+            >
+              <option value="" disabled hidden style={optionStyles}>
+                {/* Empty option for label floating */}
+              </option>
+              {options.map((option) => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                  style={optionStyles}
+                >
+                  {option.label}
+                </option>
+              ))}
+            </select>
 
             <label
               htmlFor={inputId}
@@ -160,17 +149,16 @@ const Input = forwardRef(
                     ? "top-2 left-4"
                     : "top-1/2 -translate-y-1/2 left-4"
                 }
-                ${startAdornment && !isLabelFloated ? "left-12" : ""}
               `}
             >
               {label}
             </label>
 
-            {finalEndAdornment && (
-              <span className="ml-3 text-gray-500 dark:text-gray-400 flex items-center shrink-0">
-                {finalEndAdornment}
-              </span>
-            )}
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 dark:text-gray-400">
+              <KeyboardArrowDownIcon
+                className={`transition-transform ${isFocused ? "rotate-180" : ""}`}
+              />
+            </div>
           </div>
 
           {helperText && (
@@ -194,7 +182,7 @@ const Input = forwardRef(
       <div className={baseClasses}>
         <div
           className={`
-            relative flex items-center h-14 px-4 rounded-md border
+            relative flex items-center min-h-14 px-4 rounded-md border
             transition-all duration-200 bg-white dark:bg-gray-900
             ${
               error
@@ -204,35 +192,40 @@ const Input = forwardRef(
                   : "border-gray-300 dark:border-gray-600"
             }
             ${isHovered && !isFocused && !error ? "border-gray-400 dark:border-gray-500" : ""}
-            ${disabled ? "bg-gray-50/50 dark:bg-gray-900/50" : ""}
+            ${disabled ? "bg-white/50 dark:bg-gray-900/50" : ""}
           `}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {startAdornment && (
-            <span className="mr-3 text-gray-500 dark:text-gray-400 shrink-0">
-              {startAdornment}
-            </span>
-          )}
-
-          <input
+          <select
             id={inputId}
             ref={ref}
-            type={actualInputType}
-            className={`
-              peer w-full bg-transparent outline-none 
-              text-gray-900 dark:text-gray-100 placeholder-transparent
-              pt-5 pb-2 ${disabled ? "cursor-not-allowed" : ""}
-            `}
-            placeholder={label}
+            value={value}
+            className={selectStyles}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            value={value}
             disabled={disabled}
             aria-invalid={error}
             aria-describedby={helperText ? `${inputId}-helper` : undefined}
+            style={{
+              // Ensure proper height for the select element
+              height: "100%",
+            }}
             {...rest}
-          />
+          >
+            <option value="" disabled hidden style={optionStyles}>
+              {/* Empty option for label floating */}
+            </option>
+            {options.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+                style={optionStyles}
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
 
           <label
             htmlFor={inputId}
@@ -253,17 +246,16 @@ const Input = forwardRef(
                   ? "top-0 -translate-y-1/2 left-3 px-1 bg-white dark:bg-gray-900"
                   : "top-1/2 -translate-y-1/2 left-4"
               }
-              ${startAdornment && !isLabelFloated ? "left-12" : ""}
             `}
           >
             {label}
           </label>
 
-          {finalEndAdornment && (
-            <span className="ml-3 text-gray-500 dark:text-gray-400 flex items-center shrink-0">
-              {finalEndAdornment}
-            </span>
-          )}
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 dark:text-gray-400">
+            <KeyboardArrowDownIcon
+              className={`transition-transform ease-in-out duration-200 ${isFocused ? "rotate-180" : ""}`}
+            />
+          </div>
         </div>
 
         {helperText && (
@@ -283,6 +275,6 @@ const Input = forwardRef(
   },
 );
 
-Input.displayName = "Input";
+Select.displayName = "Select";
 
-export default Input;
+export default Select;

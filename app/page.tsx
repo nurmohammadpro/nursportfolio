@@ -1,17 +1,28 @@
-"use client";
-
-import Card from "./components/Card";
+// app/page.tsx - Main Portfolio Page
+import Navbar from "@/app/components/Navbar";
+import Hero from "@/app/components/Hero";
+import Services from "@/app/components/Services";
+import Skills from "@/app/components/Skills";
+import Projects from "@/app/components/Projects";
+// import Experience from "@/app/components/Experience";
+// import Testimonials from "@/app/components/Testimonials";
+import Contact from "@/app/components/Contact";
+import Footer from "@/app/components/Footer";
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center">
-      <Card
-        heading="Welcome to My Portfolio"
-        topSubHeading="Hello there!"
-        bottomSubHeading="Let's checkout the content"
-        description="Lorem ipsum dolor, sit amet consectetur adipisicing elit."
-        imageUrl="https://images.pexels.com/photos/27219791/pexels-photo-27219791.jpeg?cs=srgb&dl=pexels-imvitordiniz-27219791.jpg&fm=jpg&w=640&h=960"
-      />
-    </div>
+    <>
+      <Navbar />
+      <main>
+        <Hero />
+        <Services />
+        <Skills />
+        <Projects />
+        {/* <Experience />
+        <Testimonials /> */}
+        <Contact />
+      </main>
+      <Footer />
+    </>
   );
 }
