@@ -1,3 +1,4 @@
+//app/api/admin/blog/[id]/route.ts
 import { adminDb } from "@/app/lib/firebase-admin";
 import { NextResponse, NextRequest } from "next/server";
 import { Post, generateSlug } from "@/app/lib/blog-types";

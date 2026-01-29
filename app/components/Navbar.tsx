@@ -1,132 +1,151 @@
 "use client";
 
-import { useState } from "react";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
+import Image from "next/image";
+import Link from "next/link";
+import { TextAlignJustify, X, Sun, Moon } from "lucide-react";
+import Button from "./Button";
+import { useState, useEffect } from "react";
 import { useTheme } from "./ThemeProvider";
 
+const navItems = ["About", "Skills", "Projects", "Contact"];
+
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const { theme, toggleTheme } = useTheme();
 
-  const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "Services", href: "#services" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    { name: "Experience", href: "#experience" },
-    { name: "Contact", href: "#contact" },
-  ];
+  const toggleMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const closeMenu = () => setMobileMenuOpen(false);
+
+  // Intersection Observer logic for scroll spying
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100;
+
+      for (const item of navItems) {
+        const section = item.toLowerCase();
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (
+            scrollPosition >= offsetTop &&
+            scrollPosition < offsetTop + offsetHeight
+          ) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Use the new CSS-variable based logo logic or standard paths
+  const logoSrc =
+    theme === "dark" ? "/Nur-logo-light.svg" : "/Nur-logo-dark.svg";
 
   return (
-    <header className="sticky top-0 z-50 glass border-b border-[var(--md-sys-color-outline)] transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <div className="shrink-0">
-            <a href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 bg-[var(--md-sys-color-primary)] rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
-                <span className="text-white font-bold text-base">NM</span>
-              </div>
-              <span className="text-xl font-extrabold text-[var(--md-sys-color-on-surface)] tracking-tight">
-                Nur Mohammad
-              </span>
-            </a>
+    <nav className="sticky top-0 z-50 w-full bg-(--surface)/90 backdrop-blur-md border-b border-(--border-color) transition-all duration-300">
+      <div className="layout-container flex items-center justify-between h-16 md:h-20">
+        {/* Logo Section */}
+        <div className="shrink-0">
+          <Link href="/" onClick={closeMenu} className="block">
+            <Image
+              src={logoSrc}
+              alt="Nur Mohammad"
+              width={160}
+              height={30}
+              className="hover:opacity-80 transition-opacity duration-300"
+              priority
+            />
+          </Link>
+        </div>
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center gap-8">
+          <div className="flex items-center gap-2">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.toLowerCase();
+              return (
+                <Link
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className={`px-4 py-2 text-xs uppercase  font-semibold transition-all duration-300 ${
+                    isActive
+                      ? "text-(--main)"
+                      : "text-(--text-muted) hover:text-(--text-main)"
+                  }`}
+                >
+                  {item}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-2">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="px-4 py-2 text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] font-semibold rounded-lg hover:bg-[var(--md-sys-color-primary-container)]/50 transition-all duration-200 text-sm"
-              >
-                {item.name}
-              </a>
-            ))}
-
-            <div className="mx-4 h-6 w-px bg-[var(--md-sys-color-outline)]" />
-
+          <div className="flex items-center gap-4 pl-4 border-l border-(--border-color)">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl hover:bg-[var(--md-sys-color-surface-variant)] text-[var(--md-sys-color-on-surface-variant)] transition-all duration-200"
-              aria-label="Toggle theme"
+              className="p-2 rounded-full text-(--text-muted) hover:text-(--text-main) hover:bg-(--subtle) transition-all duration-300 cursor-pointer"
+              aria-label="Toggle Theme"
             >
-              {theme === "dark" ? (
-                <Brightness7Icon className="w-5 h-5 text-yellow-500" />
-              ) : (
-                <Brightness4Icon className="w-5 h-5" />
-              )}
+              {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
             </button>
 
-            {/* CTA Button */}
-            <a
-              href="#contact"
-              className="ml-2 px-6 py-2.5 bg-[var(--md-sys-color-primary)] text-white font-bold rounded-lg shadow-lg shadow-blue-500/20 hover:shadow-xl hover:bg-[#2b6be6] hover:-translate-y-0.5 transition-all duration-200 text-sm"
-            >
-              Hire Me
-            </a>
-          </nav>
-
-          {/* Mobile menu button */}
-          <div className="flex items-center gap-2 md:hidden">
-            <button
-              onClick={toggleTheme}
-              className="p-2.5 rounded-xl hover:bg-[var(--md-sys-color-surface-variant)] transition-all duration-200"
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? (
-                <Brightness7Icon className="w-5 h-5 text-yellow-500" />
-              ) : (
-                <Brightness4Icon className="w-5 h-5 text-[var(--md-sys-color-on-surface-variant)]" />
-              )}
-            </button>
-
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2.5 rounded-xl text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-variant)] transition-all duration-200"
-            >
-              {isMenuOpen ? (
-                <CloseIcon className="h-6 w-6" />
-              ) : (
-                <MenuIcon className="h-6 w-6" />
-              )}
-            </button>
+            {/* Reusable Button Component */}
+            <Button variant="outlined" size="sm" className="px-5">
+              Sign In
+            </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-[var(--md-sys-color-outline)] bg-[var(--md-sys-color-surface)]">
-            <div className="px-2 pt-4 pb-6 space-y-1">
-              {navItems.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="block px-4 py-3.5 rounded-xl font-bold text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-primary)] hover:bg-[var(--md-sys-color-primary-container)]/50 transition-all duration-200"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </a>
-              ))}
-              <div className="pt-4 px-4">
-                <a
-                  href="#contact"
-                  className="block w-full py-3.5 bg-[var(--md-sys-color-primary)] text-white font-extrabold rounded-xl text-center shadow-lg shadow-blue-500/20 active:scale-95 transition-all duration-200"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Hire Me
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Mobile Controls */}
+        <div className="flex items-center gap-3 lg:hidden">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full text-(--text-muted) bg-(--subtle) transition-all"
+          >
+            {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+          <button
+            className="p-2 text-(--text-main) hover:bg-(--subtle) rounded-lg transition-all"
+            onClick={toggleMenu}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <TextAlignJustify size={24} />}
+          </button>
+        </div>
       </div>
-    </header>
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`
+          fixed inset-x-0 top-16 z-40 bg-(--surface) border-t border-(--border-color) shadow-2xl transition-all duration-300 ease-in-out lg:hidden
+          ${mobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"}
+        `}
+      >
+        <div className="flex flex-col p-8 gap-6">
+          {navItems.map((item) => (
+            <Link
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              onClick={closeMenu}
+              className={`text-sm uppercase font-bold tracking-widest pb-4 border-b border-(--border-color) ${
+                activeSection === item.toLowerCase()
+                  ? "text-(--brand)"
+                  : "text-(--text-main)"
+              }`}
+            >
+              {item}
+            </Link>
+          ))}
+          <Button variant="primary" size="lg" fullWidth onClick={closeMenu}>
+            Sign In
+          </Button>
+        </div>
+      </div>
+    </nav>
   );
 };
 

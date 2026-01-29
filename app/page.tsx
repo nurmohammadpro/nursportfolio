@@ -1,28 +1,33 @@
-// app/page.tsx - Main Portfolio Page
-import Navbar from "@/app/components/Navbar";
-import Hero from "@/app/components/Hero";
-import Services from "@/app/components/Services";
-import Skills from "@/app/components/Skills";
-import Projects from "@/app/components/Projects";
-// import Experience from "@/app/components/Experience";
-// import Testimonials from "@/app/components/Testimonials";
-import Contact from "@/app/components/Contact";
-import Footer from "@/app/components/Footer";
+import Hero from "@/app/components/sections/Hero";
+import About from "@/app/components/sections/About";
+import Skills from "./components/sections/ Skills";
+import Projects from "@/app/components/sections/Projects";
+import Contact from "@/app/components/sections/Contact";
+import ScrollToTop from "@/app/components/ScrollToTop"; // Import the new component
 
 export default function Home() {
   return (
-    <>
-      <Navbar />
-      <main>
-        <Hero />
-        <Services />
+    <main className="flex flex-col w-full relative">
+      <Hero />
+
+      <div id="about">
+        <About />
+      </div>
+
+      <div id="skills">
         <Skills />
+      </div>
+
+      <div id="projects">
         <Projects />
-        {/* <Experience />
-        <Testimonials /> */}
+      </div>
+
+      <div id="contact">
         <Contact />
-      </main>
-      <Footer />
-    </>
+      </div>
+
+      {/* Floating Action Button */}
+      <ScrollToTop />
+    </main>
   );
 }

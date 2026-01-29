@@ -1,39 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap");
 
 @theme {
   /* Animation keyframes */
-  @keyframes ripple {
-    from {
-      transform: scale(0);
-      opacity: 0.5;
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
     }
-    to {
-      transform: scale(4);
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes fade-in {
+    from {
       opacity: 0;
     }
-  }
-
-  @keyframes shake {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    10%,
-    30%,
-    50%,
-    70%,
-    90% {
-      transform: translateX(-2px);
-    }
-    20%,
-    40%,
-    60%,
-    80% {
-      transform: translateX(2px);
+    to {
+      opacity: 1;
     }
   }
-
   @keyframes slide-up {
     from {
       transform: translateY(20px);
@@ -48,144 +34,94 @@
 
 @layer base {
   :root {
-    /* 'theFront' Inspired Palette */
-    --md-sys-color-primary: #377dff; /* Vibrant Blue */
-    --md-sys-color-on-primary: #ffffff;
-    --md-sys-color-primary-container: #e6f0ff;
-    --md-sys-color-on-primary-container: #0047cc;
-    --md-sys-color-secondary: #677788; /* Secondary Text Gray */
-    --md-sys-color-on-secondary: #ffffff;
-    --md-sys-color-surface: #ffffff;
-    --md-sys-color-on-surface: #1e2022; /* Primary Text Slate */
-    --md-sys-color-surface-variant: #f7faff;
-    --md-sys-color-on-surface-variant: #677788;
-    --md-sys-color-outline: #e7eaf3;
-    --md-sys-color-error: #ed4c78;
-    
-    /* Surface Elevation Levels */
-    --surface-1: #ffffff;
-    --surface-2: #f7faff;
-    --surface-3: #f1f4ff;
-    --surface-4: #e8edff;
-    --surface-5: #e2e8ff;
+    --primary: #f8fafc;
+    --surface: #ffffff;
+    --subtle: #f1f5f9;
 
-    --radius-button: 8px;
-    --radius-card: 20px;
-    --soft-shadow: 0 12px 15px 0 rgba(140, 152, 164, 0.1);
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-subtle: #94a3b8;
+
+    --brand: #093fb4;
+    --brand-hover: #073496;
+
+    --radius-md: 12px;
+    --border-color: #f1f5f9;
+
+    --font-heading: "DM Serif Display", serif;
+    --font-body: "Raleway", sans-serif;
   }
 
   .dark {
-    /* Premium Dark Mode */
-    --md-sys-color-primary: #377dff;
-    --md-sys-color-on-primary: #ffffff;
-    --md-sys-color-primary-container: #004494;
-    --md-sys-color-on-primary-container: #d8e2ff;
-    --md-sys-color-secondary: #97a4af;
-    --md-sys-color-on-secondary: #293041;
-    --md-sys-color-surface: #111318;
-    --md-sys-color-on-surface: #e7eaf3;
-    --md-sys-color-surface-variant: #1e2022;
-    --md-sys-color-on-surface-variant: #97a4af;
-    --md-sys-color-outline: #2d3237;
-    --md-sys-color-error: #ffb4ab;
+    --primary: #0f172a;
+    --surface: #1e293b;
+    --subtle: #1e293b;
 
-    /* Dark Surface Elevation Levels */
-    --surface-1: #1a1c1e;
-    --surface-2: #212429;
-    --surface-3: #282b31;
-    --surface-4: #2b2e35;
-    --surface-5: #32353c;
+    --text-main: #f8fafc;
+    --text-muted: #cbd5e1;
+    --text-subtle: #94a3b8;
 
-    --soft-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+    --brand: #3b82f6;
+    --border-color: #334155;
   }
 
   body {
-    @apply bg-[var(--md-sys-color-surface)] text-[var(--md-sys-color-on-surface)] transition-colors duration-500 font-sans antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    line-height: 1.6;
+    @apply bg-(--primary) text-(--text-main) transition-colors duration-300 antialiased;
+    font-family: var(--font-body);
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', 'Inter', sans-serif;
-    @apply font-bold tracking-tight text-[var(--md-sys-color-on-surface)];
-  }
-
-  *:focus-visible {
-    @apply outline-none ring-2 ring-[var(--md-sys-color-primary)] ring-offset-2 dark:ring-offset-black;
-  }
-}
-
-@utility animate-ripple {
-  animation: ripple 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@utility animate-shake {
-  animation: shake 0.5s ease-in-out;
-}
-
-@utility animate-slide-up {
-  animation: slide-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-@utility hover-lift {
-  @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl;
-}
-
-@utility glass {
-  @apply backdrop-blur-xl bg-white/80 dark:bg-black/40 border border-white/20 dark:border-white/10;
-}
-
-@utility glass-card {
-  @apply glass shadow-2xl shadow-black/5 dark:shadow-black/20 rounded-[24px];
-}
-
-/* Custom Scrollbar Utilities */
-@utility scrollbar-custom {
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 dark:bg-gray-800 rounded-full hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    @apply font-normal text-(--text-main);
   }
 }
 
-/* Component classes */
 @layer components {
-  .section-padding {
-    @apply py-16 md:py-24 lg:py-32;
+  /* Center-aligned container logic */
+  .layout-container {
+    @apply w-full max-w-[1280px] mx-auto px-4 md:px-8;
   }
 
-  .material-input {
-    @apply w-full px-4 pt-6 pb-2 bg-[var(--md-sys-color-surface-variant)] border-b-2 border-[var(--md-sys-color-outline)] rounded-t-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:border-[var(--md-sys-color-primary)];
+  .btn-brand {
+    @apply bg-(--text-main) text-(--surface) px-6 py-2.5 rounded-(--radius-md) 
+           font-medium transition-all active:scale-95;
   }
 
-  .material-card {
-    @apply p-8 bg-[var(--surface-1)] border border-[var(--md-sys-color-outline)] rounded-[var(--radius-card)] shadow-[var(--soft-shadow)] transition-all duration-300 hover:shadow-lg;
+  /* Marquee Animation Utility */
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
   }
 
-  .btn-primary {
-    @apply px-7 py-3 bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] font-semibold rounded-[var(--radius-button)] shadow-[var(--soft-shadow)] hover:shadow-xl hover:bg-[#2b6be6] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2;
+  .fade-in {
+    animation: fade-in 0.8s ease-out forwards;
   }
-
-  .btn-outline {
-    @apply px-7 py-3 border-2 border-[var(--md-sys-color-outline)] text-[var(--md-sys-color-on-surface)] font-semibold rounded-[var(--radius-button)] hover:border-[var(--md-sys-color-primary)] hover:text-[var(--md-sys-color-primary)] transition-all duration-300;
-  }
-
-  /* Selection color */
-  ::selection {
-    background-color: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
+  .slide-up {
+    animation: slide-up 0.8s ease-out forwards;
   }
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
-  @apply antialiased scrollbar-custom;
+  /* Adjust this value based on your Navbar height (h-16 or h-20) */
+  scroll-padding-top: 5rem;
+}
+
+/* Optional: Custom scrollbar to match the minimalist theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
 }

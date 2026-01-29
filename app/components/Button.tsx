@@ -1,8 +1,9 @@
 "use client";
 
 import React, { forwardRef, useState } from "react";
+import { cn } from "../lib/utils";
 
-type ButtonVariant = "contained" | "outlined" | "text";
+type ButtonVariant = "primary" | "outlined";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -13,13 +14,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   fullWidth?: boolean;
+  iconClassName?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
-      variant = "contained",
+      variant = "primary",
       size = "md",
       className = "",
       type = "button",
@@ -29,6 +31,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       iconPosition = "left",
       onClick,
       fullWidth = false,
+      iconClassName = "",
       ...rest
     },
     ref,
@@ -52,44 +55,48 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       }
     };
 
+    // Icon size based on button size
+    const iconSize = {
+      sm: "w-4 h-4",
+      md: "w-5 h-5",
+      lg: "w-6 h-6",
+    };
+
+    // Icon spacing based on button size
+    const iconSpacing = {
+      sm: "gap-2",
+      md: "gap-3",
+      lg: "gap-3",
+    };
+
     const baseClasses = `
       relative inline-flex items-center justify-center
-      font-medium rounded-md overflow-hidden
+      font-medium uppercase rounded-md overflow-hidden
       transition-all duration-200 ease-out
       focus-visible:outline-none focus-visible:ring-2 
-      focus-visible:ring-blue-500/50 focus-visible:ring-offset-2
+      focus-visible:ring-(--text-main)/50 focus-visible:ring-offset-2
       active:scale-[0.98]
       ${disabled || loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
       ${fullWidth ? "w-full" : ""}
     `;
 
     const variantClasses: Record<ButtonVariant, string> = {
-      contained: `
-        bg-blue-600 hover:bg-blue-700 active:bg-blue-800 
-        text-white dark:bg-blue-500 dark:hover:bg-blue-600 dark:active:bg-blue-700
+      primary: `
+        bg-(--text-main) text-(--surface) hover:opacity-90
         shadow-md hover:shadow-lg active:shadow-sm
         disabled:shadow-none
       `,
       outlined: `
-        bg-transparent text-blue-600 dark:text-blue-400
-        border border-gray-300 dark:border-gray-600
-        hover:bg-blue-50 dark:hover:bg-blue-500/10
-        active:bg-blue-100 dark:active:bg-blue-500/20
-        disabled:border-gray-200 dark:disabled:border-gray-700
-        disabled:text-gray-400 dark:disabled:text-gray-500
-      `,
-      text: `
-        bg-transparent text-blue-600 dark:text-blue-400
-        hover:bg-blue-50 dark:hover:bg-blue-500/10
-        active:bg-blue-100 dark:active:bg-blue-500/20
-        disabled:text-gray-400 dark:disabled:text-gray-500
+        bg-transparent text-(--text-main) border border-(--text-main)
+        hover:bg-(--text-main) hover:text-(--surface)
+        disabled:border-(--text-subtle) disabled:text-(--text-subtle)
       `,
     };
 
     const sizeClasses: Record<ButtonSize, string> = {
-      sm: "px-4 py-2 text-sm gap-2 min-h-[36px]",
-      md: "px-6 py-3 text-base gap-3 min-h-[44px]",
-      lg: "px-8 py-4 text-lg gap-3 min-h-[52px]",
+      sm: "px-4 py-2 text-sm min-h-9",
+      md: "px-6 py-3 text-base min-h-11",
+      lg: "px-8 py-4 text-lg min-h-13",
     };
 
     return (
@@ -98,12 +105,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type={type}
         onClick={handleClick}
         disabled={disabled || loading}
-        className={`
-          ${baseClasses}
-          ${variantClasses[variant]}
-          ${sizeClasses[size]}
-          ${className}
-        `}
+        className={cn(
+          baseClasses,
+          variantClasses[variant],
+          sizeClasses[size],
+          iconSpacing[size],
+          className,
+        )}
         {...rest}
       >
         {/* Ripple effect */}
@@ -121,7 +129,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {/* Loading spinner */}
         {loading && (
           <svg
-            className="animate-spin h-5 w-5 mr-2"
+            className={cn("animate-spin shrink-0", iconSize[size])}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -144,7 +152,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         {/* Icon on the left */}
         {icon && iconPosition === "left" && !loading && (
-          <span className="shrink-0 transition-transform duration-200">
+          <span
+            className={cn(
+              "inline-flex items-center justify-center shrink-0 transition-transform duration-200",
+              iconSize[size],
+              iconClassName,
+            )}
+          >
             {icon}
           </span>
         )}
@@ -154,7 +168,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         {/* Icon on the right */}
         {icon && iconPosition === "right" && !loading && (
-          <span className="shrink-0 transition-transform duration-200">
+          <span
+            className={cn(
+              "inline-flex items-center justify-center shrink-0 transition-transform duration-200",
+              iconSize[size],
+              iconClassName,
+            )}
+          >
             {icon}
           </span>
         )}

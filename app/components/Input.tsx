@@ -1,280 +1,63 @@
 "use client";
 
-import React, { useState, useId, forwardRef, ForwardedRef } from "react";
-import { usePasswordVisibility } from "@/app/hooks/usePasswordVisibility";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-
-export type InputVariant = "filled" | "outlined";
-
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  variant?: InputVariant;
-  error?: boolean;
-  helperText?: string;
-  startAdornment?: React.ReactNode;
-  endAdornment?: React.ReactNode;
-  fullWidth?: boolean;
-}
+import React, { useState, useId, forwardRef } from "react";
 
 const Input = forwardRef(
   (
     {
       label,
-      variant = "filled",
       error = false,
       helperText,
-      startAdornment,
-      endAdornment,
       fullWidth = false,
-      type = "text",
       className = "",
       value,
       onFocus,
       onBlur,
-      disabled,
       ...rest
-    }: InputProps,
-    ref: ForwardedRef<HTMLInputElement>,
+    }: any,
+    ref: any,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
     const inputId = useId();
+    const isLabelFloated = isFocused || !!value;
 
-    const { isVisible, toggleVisibility } = usePasswordVisibility();
-    const isPasswordField = type === "password";
-
-    const actualInputType = isPasswordField
-      ? isVisible
-        ? "text"
-        : "password"
-      : type;
-
-    const isLabelFloated = isFocused || !!value || rest.placeholder;
-
-    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(true);
-      onFocus?.(e);
-    };
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(false);
-      onBlur?.(e);
-    };
-
-    const handleMouseEnter = () => !disabled && setIsHovered(true);
-    const handleMouseLeave = () => setIsHovered(false);
-
-    const togglePassword = isPasswordField ? (
-      <button
-        type="button"
-        onClick={toggleVisibility}
-        className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        tabIndex={-1}
-        aria-label={isVisible ? "Hide password" : "Show password"}
-      >
-        {isVisible ? (
-          <VisibilityOffOutlinedIcon
-            fontSize="small"
-            className="text-gray-500 dark:text-gray-400"
-          />
-        ) : (
-          <VisibilityOutlinedIcon
-            fontSize="small"
-            className="text-gray-500 dark:text-gray-400"
-          />
-        )}
-      </button>
-    ) : null;
-
-    const finalEndAdornment = (
-      <>
-        {endAdornment}
-        {togglePassword}
-      </>
-    );
-
-    const baseClasses = `relative transition-all duration-200 ease-out ${fullWidth ? "w-full" : ""} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`;
-
-    if (variant === "filled") {
-      return (
-        <div className={baseClasses}>
-          <div
-            className={`
-              relative flex items-center h-14 px-4 pt-2 rounded-t-md
-              bg-gray-50 dark:bg-gray-800 border-b-2 transition-all duration-200
-              ${
-                error
-                  ? "border-red-500 dark:border-red-400"
-                  : isFocused
-                    ? "border-blue-600 dark:border-blue-400"
-                    : "border-gray-300 dark:border-gray-600"
-              }
-              ${isHovered && !isFocused && !error ? "border-gray-400 dark:border-gray-500" : ""}
-              ${disabled ? "bg-gray-100/50 dark:bg-gray-800/50" : ""}
-            `}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            {startAdornment && (
-              <span className="mr-3 text-gray-500 dark:text-gray-400 shrink-0">
-                {startAdornment}
-              </span>
-            )}
-
-            <input
-              id={inputId}
-              ref={ref}
-              type={actualInputType}
-              className={`
-                peer w-full bg-transparent outline-none 
-                text-gray-900 dark:text-gray-100 placeholder-transparent
-                pt-5 pb-2 ${disabled ? "cursor-not-allowed" : ""}
-              `}
-              placeholder={label}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              value={value}
-              disabled={disabled}
-              aria-invalid={error}
-              aria-describedby={helperText ? `${inputId}-helper` : undefined}
-              {...rest}
-            />
-
-            <label
-              htmlFor={inputId}
-              className={`
-                absolute transition-all duration-200 pointer-events-none
-                ${isLabelFloated ? "text-xs" : "text-base"}
-                ${
-                  error
-                    ? "text-red-500 dark:text-red-400"
-                    : isFocused
-                      ? "text-blue-600 dark:text-blue-400"
-                      : "text-gray-500 dark:text-gray-400"
-                }
-                ${disabled ? "opacity-50" : ""}
-                ${error && !isFocused ? "animate-shake" : ""}
-                ${
-                  isLabelFloated
-                    ? "top-2 left-4"
-                    : "top-1/2 -translate-y-1/2 left-4"
-                }
-                ${startAdornment && !isLabelFloated ? "left-12" : ""}
-              `}
-            >
-              {label}
-            </label>
-
-            {finalEndAdornment && (
-              <span className="ml-3 text-gray-500 dark:text-gray-400 flex items-center shrink-0">
-                {finalEndAdornment}
-              </span>
-            )}
-          </div>
-
-          {helperText && (
-            <p
-              id={`${inputId}-helper`}
-              className={`mt-2 px-4 text-sm ${
-                error
-                  ? "text-red-500 dark:text-red-400"
-                  : "text-gray-500 dark:text-gray-400"
-              }`}
-            >
-              {helperText}
-            </p>
-          )}
-        </div>
-      );
-    }
-
-    // Outlined variant
     return (
-      <div className={baseClasses}>
+      <div
+        className={`relative transition-all duration-300 ${fullWidth ? "w-full" : ""} ${className}`}
+      >
         <div
           className={`
-            relative flex items-center h-14 px-4 rounded-md border
-            transition-all duration-200 bg-white dark:bg-gray-900
-            ${
-              error
-                ? "border-red-500 dark:border-red-400"
-                : isFocused
-                  ? "border-blue-600 dark:border-blue-400 border-2"
-                  : "border-gray-300 dark:border-gray-600"
-            }
-            ${isHovered && !isFocused && !error ? "border-gray-400 dark:border-gray-500" : ""}
-            ${disabled ? "bg-gray-50/50 dark:bg-gray-900/50" : ""}
-          `}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+        relative flex items-center h-16 px-0 bg-transparent border-b transition-all duration-500
+        ${error ? "border-red-500" : isFocused ? "border-(--text-main)" : "border-(--border-color)"}
+      `}
         >
-          {startAdornment && (
-            <span className="mr-3 text-gray-500 dark:text-gray-400 shrink-0">
-              {startAdornment}
-            </span>
-          )}
-
           <input
             id={inputId}
             ref={ref}
-            type={actualInputType}
-            className={`
-              peer w-full bg-transparent outline-none 
-              text-gray-900 dark:text-gray-100 placeholder-transparent
-              pt-5 pb-2 ${disabled ? "cursor-not-allowed" : ""}
-            `}
-            placeholder={label}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            className="w-full bg-transparent outline-none text-(--text-main) pt-6 pb-2 text-lg font-light placeholder-transparent"
+            onFocus={(e) => {
+              setIsFocused(true);
+              onFocus?.(e);
+            }}
+            onBlur={(e) => {
+              setIsFocused(false);
+              onBlur?.(e);
+            }}
             value={value}
-            disabled={disabled}
-            aria-invalid={error}
-            aria-describedby={helperText ? `${inputId}-helper` : undefined}
             {...rest}
           />
-
           <label
             htmlFor={inputId}
             className={`
-              absolute transition-all duration-200 pointer-events-none
-              ${isLabelFloated ? "text-xs" : "text-base"}
-              ${
-                error
-                  ? "text-red-500 dark:text-red-400"
-                  : isFocused
-                    ? "text-blue-600 dark:text-blue-400"
-                    : "text-gray-500 dark:text-gray-400"
-              }
-              ${disabled ? "opacity-50" : ""}
-              ${error && !isFocused ? "animate-shake" : ""}
-              ${
-                isLabelFloated
-                  ? "top-0 -translate-y-1/2 left-3 px-1 bg-white dark:bg-gray-900"
-                  : "top-1/2 -translate-y-1/2 left-4"
-              }
-              ${startAdornment && !isLabelFloated ? "left-12" : ""}
-            `}
+            absolute transition-all duration-300 pointer-events-none uppercase tracking-[0.2em] font-bold
+            ${isLabelFloated ? "text-[10px] -top-2 text-(--text-subtle)" : "text-xs top-6 text-(--text-muted)"}
+          `}
           >
             {label}
           </label>
-
-          {finalEndAdornment && (
-            <span className="ml-3 text-gray-500 dark:text-gray-400 flex items-center shrink-0">
-              {finalEndAdornment}
-            </span>
-          )}
         </div>
-
         {helperText && (
-          <p
-            id={`${inputId}-helper`}
-            className={`mt-2 px-4 text-sm ${
-              error
-                ? "text-red-500 dark:text-red-400"
-                : "text-gray-500 dark:text-gray-400"
-            }`}
-          >
+          <p className="mt-2 text-[10px] uppercase font-bold text-red-500">
             {helperText}
           </p>
         )}
@@ -284,5 +67,4 @@ const Input = forwardRef(
 );
 
 Input.displayName = "Input";
-
 export default Input;
