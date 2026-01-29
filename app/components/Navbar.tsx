@@ -6,6 +6,7 @@ import { TextAlignJustify, X, Sun, Moon } from "lucide-react";
 import Button from "./Button";
 import { useState, useEffect } from "react";
 import { useTheme } from "./ThemeProvider";
+import Logo from "./Logo";
 
 const navItems = ["About", "Skills", "Projects", "Contact"];
 
@@ -42,9 +43,9 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Use the new CSS-variable based logo logic or standard paths
-  const logoSrc =
-    theme === "dark" ? "/Nur-logo-light.svg" : "/Nur-logo-dark.svg";
+  // // Use the new CSS-variable based logo logic or standard paths
+  // const logoSrc =
+  //   theme === "dark" ? "/Nur-logo-light.svg" : "/Nur-logo-dark.svg";
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-(--surface)/90 backdrop-blur-md border-b border-(--border-color) transition-all duration-300">
@@ -52,14 +53,7 @@ const Navbar = () => {
         {/* Logo Section */}
         <div className="shrink-0">
           <Link href="/" onClick={closeMenu} className="block">
-            <Image
-              src={logoSrc}
-              alt="Nur Mohammad"
-              width={160}
-              height={30}
-              className="hover:opacity-80 transition-opacity duration-300"
-              priority
-            />
+            <Logo />
           </Link>
         </div>
 
@@ -96,7 +90,7 @@ const Navbar = () => {
 
             {/* Reusable Button Component */}
             <Button variant="outlined" size="sm" className="px-5">
-              Sign In
+              <Link href="/signin">Sign In</Link>
             </Button>
           </div>
         </div>

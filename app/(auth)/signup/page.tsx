@@ -1,146 +1,156 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/app/lib/firebase";
+import { usePasswordVisibility } from "@/app/hooks/usePasswordVisibility";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input";
-import { auth } from "@/app/lib/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Individual visibility hooks
+  const passView = usePasswordVisibility();
+  const confirmPassView = usePasswordVisibility();
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+    if (formData.password !== formData.confirmPassword) {
+      return setError("Passwords do not match.");
     }
-
     setLoading(true);
-
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password,
+      );
       router.push("/dashboard");
-    } catch (err: unknown) {
-      // Firebase auth errors typically have a 'code' property
-      const firebaseError = err as { code?: string; message?: string };
-      if (firebaseError.code === "auth/email-already-in-use") {
-        setError("This email is already registered. Please sign in instead.");
-      } else if (firebaseError.code === "auth/weak-password") {
-        setError("Password is too weak. Please use at least 6 characters.");
-      } else if (firebaseError.code === "auth/invalid-email") {
-        setError("Invalid email address. Please check and try again.");
-      } else {
-        setError(firebaseError.message || "Failed to create account. Please try again.");
-      }
+    } catch (err: any) {
+      setError(err.message || "Signup failed.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-primary px-4 font-sans">
-      <form
-        onSubmit={handleSignup}
-        className="w-full max-w-sm space-y-6 bg-surface p-10 border border-subtle rounded-xl shadow-lg"
-      >
-        <div className="space-y-2 text-center">
-          <h3 className="text-3xl font-display font-bold text-on-surface">
-            Sign Up
+    <div className="flex min-h-screen items-center justify-center bg-(--surface) px-4">
+      <div className="w-full max-w-sm space-y-12 py-12">
+        <div className="text-center space-y-4">
+          <h3 className="text-5xl font-heading">
+            Join the <span className="italic text-(--text-muted)">Engine</span>
           </h3>
-          <p className="text-sm text-on-surface-variant">
-            Create an account to get started
+          <p className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
+            Register Security Credentials
           </p>
         </div>
 
-        {error && (
-          <div className="p-3 bg-red-100 border border-red-200 text-red-700 text-sm rounded">
-            {error}
-          </div>
-        )}
-
-        <div className="flex flex-col gap-4">
+        <form onSubmit={handleSignup} className="space-y-8">
           <Input
             label="Full Name"
-            type="text"
-            value={name}
-            variant="filled"
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={(e: any) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
             fullWidth
             required
           />
           <Input
             label="Email"
             type="email"
-            value={email}
-            variant="filled"
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={(e: any) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
             fullWidth
             required
           />
-          <Input
-            label="Phone"
-            type="text"
-            value={phone}
-            variant="filled"
-            onChange={(e) => {
-              const val = e.target.value.replace(/[^0-9+]/g, "");
-              setPhone(val);
-            }}
-            fullWidth
-            required
-          />
+
           <Input
             label="Password"
-            type="password"
-            value={password}
-            variant="filled"
-            onChange={(e) => setPassword(e.target.value)}
+            type={passView.isVisible ? "text" : "password"}
+            value={formData.password}
+            onChange={(e: any) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
             fullWidth
             required
+            endAdornment={
+              <button
+                type="button"
+                onClick={passView.toggleVisibility}
+                className="text-(--text-subtle) hover:text-(--text-main)"
+              >
+                {passView.isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            }
           />
+
           <Input
             label="Confirm Password"
-            type="password"
-            value={confirmPassword}
-            variant="filled"
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            type={confirmPassView.isVisible ? "text" : "password"}
+            value={formData.confirmPassword}
+            onChange={(e: any) =>
+              setFormData({ ...formData, confirmPassword: e.target.value })
+            }
             fullWidth
             required
-            error={password !== confirmPassword && confirmPassword !== ""}
+            error={
+              formData.password !== formData.confirmPassword &&
+              formData.confirmPassword !== ""
+            }
+            endAdornment={
+              <button
+                type="button"
+                onClick={confirmPassView.toggleVisibility}
+                className="text-(--text-subtle) hover:text-(--text-main)"
+              >
+                {confirmPassView.isVisible ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
+              </button>
+            }
           />
-        </div>
 
-        <Button
-          type="submit"
-          variant="contained"
-          className="w-full"
-          disabled={loading}
-        >
-          {loading ? "Creating Account..." : "Sign Up"}
-        </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            fullWidth
+            disabled={loading}
+            loading={loading}
+            icon={<ArrowRight />}
+            iconPosition="right"
+          >
+            Sign Up
+          </Button>
+        </form>
 
-        <div className="text-center text-sm text-fg-muted">
-          Already have an account?{" "}
+        <p className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle) text-center">
+          Already a member?{" "}
           <Link
             href="/signin"
-            className="text-brand font-medium hover:underline"
+            className="text-(--text-main) hover:underline underline-offset-4"
           >
             Sign In
           </Link>
-        </div>
-      </form>
+        </p>
+      </div>
     </div>
   );
 }

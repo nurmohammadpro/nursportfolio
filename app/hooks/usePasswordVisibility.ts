@@ -1,3 +1,4 @@
+//app/hooks/usePasswordVisibility.ts
 import { useState } from "react";
 
 export function usePasswordVisibility() {

@@ -13,7 +13,8 @@ const Input = forwardRef(
       value,
       onFocus,
       onBlur,
-      ...rest
+      endAdornment, // 1. Explicitly pull this out of the props
+      ...rest // 2. rest now only contains valid HTML attributes
     }: any,
     ref: any,
   ) => {
@@ -44,8 +45,16 @@ const Input = forwardRef(
               onBlur?.(e);
             }}
             value={value}
-            {...rest}
+            {...rest} // 3. Now rest is "clean" and won't throw errors
           />
+
+          {/* 4. Render the endAdornment (Password Toggle) here */}
+          {endAdornment && (
+            <div className="flex items-center ml-2 transition-colors">
+              {endAdornment}
+            </div>
+          )}
+
           <label
             htmlFor={inputId}
             className={`

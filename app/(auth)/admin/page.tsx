@@ -4,12 +4,9 @@ import { useState, useEffect } from "react";
 import { Post } from "@/app/lib/blog-types";
 import { authenticatedFetch } from "@/app/lib/api";
 import Button from "@/app/components/Button";
-import Card from "@/app/components/Card";
-import DeleteIcon from "@mui/icons-material/Delete";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Trash2, Eye, EyeOff, Edit3, Plus } from "lucide-react";
 
 export default function AdminPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -73,98 +70,82 @@ export default function AdminPage() {
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <svg
-          className="animate-spin h-8 w-8 text-primary"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        <span className="ml-2 text-on-surface">Loading posts...</span>
+      <div className="flex justify-center items-center min-h-screen bg-(--surface)">
+        <div className="w-8 h-8 border-2 border-(--border-color) border-t-(--text-main) rounded-full animate-spin"></div>
       </div>
     );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen text-error">
-        Error: {error}
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-display font-bold text-on-surface">
-            Manage Posts
-          </h1>
+    <div className="min-h-screen bg-(--surface) py-24">
+      <div className="layout-container">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+          <div className="space-y-4">
+            <h1 className="text-6xl font-heading tracking-tighter">
+              Manage{" "}
+              <span className="italic text-(--text-muted)">Insights</span>
+            </h1>
+            <p className="text-xs uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
+              Central Control Panel
+            </p>
+          </div>
           <Link href="/admin/new">
-            <Button variant="contained">Create New Post</Button>
+            <Button variant="primary" icon={<Plus />}>
+              New Post
+            </Button>
           </Link>
         </div>
 
-        {posts.length === 0 ? (
-          <p className="text-center text-on-surface-variant">
-            You haven&apos;t created any posts yet.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post) => (
-              <Card
-                key={post.id}
-                variant="default"
-                heading={post.title}
-                description={post.content.substring(0, 150) + "..."}
-                bottomSubHeading={`Status: ${post.isPublished ? "Published" : "Draft"}`}
-                actionLabel="Edit"
-                onActionClick={() => router.push(`/admin/edit/${post.id}`)}
-              >
-                <div className="flex gap-2 mt-4">
-                  <Button
-                    variant="text"
-                    size="sm"
-                    onClick={() => handlePublish(post)}
-                    icon={
-                      post.isPublished ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )
-                    }
-                  >
-                    {post.isPublished ? "Unpublish" : "Publish"}
-                  </Button>
-                  <Button
-                    variant="text"
-                    size="sm"
-                    onClick={() => handleDelete(post.id)}
-                    icon={<DeleteIcon />}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 gap-1">
+          {posts.map((post) => (
+            <div
+              key={post.id}
+              className="group flex flex-col md:flex-row justify-between items-start md:items-center py-8 border-b border-(--border-color) hover:bg-(--subtle) transition-colors px-4"
+            >
+              <div className="space-y-2 max-w-2xl">
+                <span className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
+                  {post.isPublished ? "Published" : "Draft"}
+                </span>
+                <h3 className="text-2xl font-heading group-hover:italic transition-all">
+                  {post.title}
+                </h3>
+                <p className="text-sm text-(--text-muted) font-light line-clamp-1">
+                  {post.content.substring(0, 100)}...
+                </p>
+              </div>
+
+              <div className="flex gap-4 mt-6 md:mt-0">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  icon={<Edit3 size={16} />}
+                  onClick={() => router.push(`/admin/edit/${post.id}`)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  icon={
+                    post.isPublished ? <EyeOff size={16} /> : <Eye size={16} />
+                  }
+                  onClick={() => handlePublish(post)}
+                >
+                  {post.isPublished ? "Hide" : "Live"}
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  className="text-red-500 border-red-100 hover:bg-red-50"
+                  onClick={() => handleDelete(post.id)}
+                >
+                  <Trash2 size={16} />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
