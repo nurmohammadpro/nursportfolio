@@ -84,11 +84,11 @@
 @layer components {
   /* Center-aligned container logic */
   .layout-container {
-    @apply w-full max-w-[1280px] mx-auto px-4 md:px-8;
+    @apply w-full max-w-7xl mx-auto px-4 md:px-8;
   }
 
   .btn-brand {
-    @apply bg-(--text-main) text-(--surface) px-6 py-2.5 rounded-(--radius-md) 
+    @apply bg-(--text-main) text-(--surface) px-6 py-2.5 rounded-md 
            font-medium transition-all active:scale-95;
   }
 
@@ -124,4 +124,16 @@ html {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-subtle);
+}
+
+@layer utilities {
+  .p-heading-xl {
+    @apply text-3xl font-light tracking-tighter leading-none;
+  }
+  .p-heading-sm {
+    @apply text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle);
+  }
+  .p-body {
+    @apply text-sm font-medium tracking-tight text-(--text-muted);
+  }
 }

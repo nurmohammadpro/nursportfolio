@@ -1,8 +1,23 @@
+import { DM_Serif_Display, Raleway } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import ThemeProvider from "@/app/components/ThemeProvider";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
+// Configure the Serif for headings
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-heading", // This maps to your CSS variable
+});
+
+// Configure Raleway for body text
+const raleway = Raleway({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-body", // This maps to your CSS variable
+});
 
 export const metadata: Metadata = {
   title: {
@@ -54,12 +69,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body
+        className={`${dmSerif.variable} ${raleway.variable} font-body antialiased`}
+      >
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>

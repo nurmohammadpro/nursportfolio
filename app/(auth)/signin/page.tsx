@@ -1,81 +1,105 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/app/lib/firebase";
-import { usePasswordVisibility } from "@/app/hooks/usePasswordVisibility";
-import Button from "@/app/components/Button";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { LogIn, Loader2, Lock, Mail } from "lucide-react";
 import Input from "@/app/components/Input";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import Button from "@/app/components/Button";
+import Link from "next/link";
 
-export default function SigninPage() {
+export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // Custom Hook Integration
-  const { isVisible, toggleVisibility } = usePasswordVisibility();
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");
-    } catch (error) {
-      setError("Invalid credentials. Please check your email and password.");
+      // 1. Authenticate with Firebase Client SDK
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
+
+      // 2. Retrieve the ID Token (force refresh to get current claims)
+      const idToken = await user.getIdToken(true);
+
+      // 3. Sync the session with the Server (API Route) to set the 'session' cookie
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!response.ok) throw new Error("Failed to establish server session.");
+
+      const { role } = await response.json();
+
+      // 4. Role-Based Redirection
+      // Based on your admin status, you will be routed to /admin
+      if (role === "admin") {
+        router.push("/admin/monitor");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err: any) {
+      console.error("Sign-in error:", err);
+      setError("Invalid credentials or access denied.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-(--surface) px-4">
-      <div className="w-full max-w-sm space-y-12">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-(--surface) fade-in">
+      <div className="max-w-md w-full space-y-12">
+        {/* Header Section */}
         <div className="space-y-4 text-center">
-          <h3 className="text-5xl font-heading leading-tight">
-            Welcome <br />{" "}
-            <span className="italic text-(--text-muted)">Back</span>
-          </h3>
-          <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-(--text-subtle)">
-            Secure Identity Portal
+          <h1 className="text-6xl font-heading tracking-tighter italic">
+            Sign <span className="not-italic text-(--text-muted)">In.</span>
+          </h1>
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
+            Access your agency command center
           </p>
         </div>
 
-        {error && (
-          <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-[10px] uppercase font-bold tracking-widest rounded-sm animate-shake">
-            {error}
-          </div>
-        )}
+        {/* Form Section */}
+        <form onSubmit={handleSignIn} className="space-y-8">
+          {error && (
+            <div className="p-4 bg-red-50 text-red-600 text-xs font-bold uppercase tracking-widest border border-red-100 rounded-xl">
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleLogin} className="space-y-10">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <Input
               label="Email Address"
               type="email"
+              required
+              placeholder="nurprodev@gmail.com"
+              icon={<Mail size={16} />}
               value={email}
               onChange={(e: any) => setEmail(e.target.value)}
               fullWidth
-              required
             />
             <Input
-              label="Password"
-              type={isVisible ? "text" : "password"}
+              label="Security Key"
+              type="password"
+              required
+              placeholder="••••••••"
+              icon={<Lock size={16} />}
               value={password}
               onChange={(e: any) => setPassword(e.target.value)}
               fullWidth
-              required
-              // Passing toggle logic to the input
-              endAdornment={
-                <button
-                  type="button"
-                  onClick={toggleVisibility}
-                  className="text-(--text-subtle) hover:text-(--text-main) transition-colors"
-                >
-                  {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              }
             />
           </div>
 
@@ -84,20 +108,27 @@ export default function SigninPage() {
             variant="primary"
             size="lg"
             fullWidth
-            icon={<ArrowRight />}
-            iconPosition="right"
+            disabled={loading}
+            icon={
+              loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <LogIn size={18} />
+              )
+            }
           >
-            Sign In
+            {loading ? "Authenticating..." : "Enter Dashboard"}
           </Button>
         </form>
 
-        <p className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle) text-center">
-          New here?{" "}
+        {/* Footer Link */}
+        <p className="text-center text-[10px] uppercase font-bold text-(--text-subtle) tracking-widest">
+          New client?{" "}
           <Link
             href="/signup"
-            className="text-(--text-main) hover:underline underline-offset-4"
+            className="text-(--text-main) underline underline-offset-4"
           >
-            Sign Up
+            Create Account
           </Link>
         </p>
       </div>

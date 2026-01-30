@@ -43,9 +43,9 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // // Use the new CSS-variable based logo logic or standard paths
-  // const logoSrc =
-  //   theme === "dark" ? "/Nur-logo-light.svg" : "/Nur-logo-dark.svg";
+  // Use the new CSS-variable based logo logic or standard paths
+  const logoSrc =
+    theme === "dark" ? "/Nur-logo-light.svg" : "/Nur-logo-dark.svg";
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-(--surface)/90 backdrop-blur-md border-b border-(--border-color) transition-all duration-300">
@@ -53,7 +53,7 @@ const Navbar = () => {
         {/* Logo Section */}
         <div className="shrink-0">
           <Link href="/" onClick={closeMenu} className="block">
-            <Logo />
+            <Image src={logoSrc} alt="Nur Logo" width={220} height={32} />
           </Link>
         </div>
 

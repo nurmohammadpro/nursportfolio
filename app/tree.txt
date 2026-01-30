@@ -1,0 +1,68 @@
+./(auth)
+├── signin
+│   └── page.tsx
+└── signup
+    └── page.tsx
+./components
+├── Button.tsx
+├── Card.tsx
+├── CommandPalette.tsx
+├── Footer.tsx
+├── Input.tsx
+├── Logo.tsx
+├── LogoutButton.tsx
+├── Navbar.tsx
+├── QouteForm.tsx
+├── ScrollToTop.tsx
+├── sections
+│   ├── About.tsx
+│   ├── Contact.tsx
+│   ├── Hero.tsx
+│   ├── Projects.tsx
+│   └──  Skills.tsx
+├── Select.tsx
+├── Sidebar.tsx
+├── Textarea.tsx
+└── ThemeProvider.tsx
+./(dashboard)
+├── admin
+│   ├── monitor
+│   │   └── page.tsx
+│   ├── page.tsx
+│   ├── payments
+│   │   └── page.tsx
+│   ├── qoutes
+│   │   └── page.tsx
+│   └── services
+│       └── page.tsx
+├── client
+│   ├── dashboard
+│   │   └── page.tsx
+│   ├── profile
+│   │   └── page.tsx
+│   ├── projects
+│   │   └── [id]
+│   │       └── page.tsx
+│   └── services
+│       ├── new
+│       │   └── page.tsx
+│       └── page.tsx
+└── layout.tsx
+./favicon.ico  [error opening dir]
+./globals.css  [error opening dir]
+./hooks
+└── usePasswordVisibility.ts
+./layout.tsx  [error opening dir]
+./lib
+├── agency-types.ts
+├── api.ts
+├── auth-middleware.ts
+├── blog-types.ts
+├── firebase-admin.ts
+├── firebase.ts
+├── service-types.ts
+└── utils.ts
+./page.tsx  [error opening dir]
+./tree.txt  [error opening dir]
+
+20 directories, 46 files

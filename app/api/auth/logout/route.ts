@@ -1,0 +1,18 @@
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+export async function POST() {
+  try {
+    const cookieStore = await cookies();
+
+    // Clear the session cookie
+    cookieStore.set("session", "", {
+      maxAge: 0, // Immediately expires the cookie
+      path: "/",
+    });
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
