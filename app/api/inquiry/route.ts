@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       progress: 0,
       milestones: getDefaultMilestones(serviceType),
       paymentModel: "advance", // Matches your type: "milestone" | "advance"
-      tottalPrice: body.budget
+      totalPrice: body.budget
         ? parseFloat(body.budget.replace(/[^0-9.]/g, ""))
         : 0,
       createdAt: now,
