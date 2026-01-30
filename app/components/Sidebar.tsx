@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   LayoutDashboard,
+  Mailbox,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -41,6 +42,7 @@ export default function Sidebar({ role }: SidebarProps) {
 
   const adminItems = [
     { label: "Email Client", icon: Mail, href: "/admin/email" },
+    { label: "Mailboxes", icon: Mailbox, href: "/admin/mailboxes" },
     { label: "Services", icon: Briefcase, href: "/admin/services" },
     { label: "Quotes", icon: FileText, href: "/admin/quotes" },
     { label: "Payments", icon: CreditCard, href: "/admin/payments" },
@@ -60,9 +62,17 @@ export default function Sidebar({ role }: SidebarProps) {
     <aside className="h-screen bg-(--surface) border-r border-(--border-color) flex flex-col transition-all duration-300 w-16 md:w-64">
       {/* Brand Identity - Minimalist P-tag */}
       <div className="p-6 mb-4 flex justify-center md:justify-start">
-        <p className="text-sm font-black tracking-tighter uppercase">
-          {role} <span className="text-main/80">Dashboard</span>
-        </p>
+        <Link
+          href="/admin/monitor"
+          className="text-xl font-bold tracking-tighter"
+        >
+          <p className="text-sm font-black tracking-tighter uppercase">
+            {role}{" "}
+            <span className="hidden md:inline text-(--text-muted)">
+              Dashboard
+            </span>
+          </p>
+        </Link>
       </div>
 
       {/* Role-Based Navigation */}
@@ -96,7 +106,7 @@ export default function Sidebar({ role }: SidebarProps) {
       <div className="p-4 border-t border-(--border-color)">
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-4 w-full p-3 text-(--text-muted) hover:text-red-600 transition-colors group"
+          className="flex items-center gap-4 w-full p-3 text-(--text-muted) hover:text-red-600 transition-colors group cursor-pointer"
         >
           <LogOut
             size={20}

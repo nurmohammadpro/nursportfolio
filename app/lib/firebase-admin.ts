@@ -1,52 +1,34 @@
 // @/app/lib/firebase-admin.ts
-
 import admin from "firebase-admin";
-import { getApps, cert } from "firebase-admin/app";
+import { getApps, cert, getApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
-/**
- * Initializes Firebase Admin SDK.
- * Returns the app instance or null if environment variables are missing.
- */
-function getAdminApp() {
+const projectId = process.env.FIREBASE_PROJECT_ID;
+const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+function initializeAdmin() {
   if (getApps().length > 0) {
-    return admin.app();
+    return getApp();
   }
-
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
   if (!projectId || !clientEmail || !privateKey) {
-    // During build, environment variables might be missing.
-    // We log a warning instead of throwing to allow the build to complete.
-    console.warn("Firebase Admin SDK: Missing environment variables. Initialization skipped.");
+    console.warn("Firebase Admin SDK: Missing environment variables.");
     return null;
   }
 
-  try {
-    // Robust handling of private key newlines
-    const formattedPrivateKey = privateKey.replace(/\\n/g, "\n");
-
-    return admin.initializeApp({
-      credential: cert({
-        projectId,
-        clientEmail,
-        privateKey: formattedPrivateKey,
-      }),
-    });
-  } catch (error) {
-    console.error("Firebase Admin SDK initialization failed:", error);
-    return null;
-  }
+  return admin.initializeApp({
+    credential: cert({
+      projectId,
+      clientEmail,
+      privateKey: privateKey.replace(/\\n/g, "\n"),
+    }),
+  });
 }
 
-const app = getAdminApp();
+// Initialize the app
+const app = initializeAdmin();
 
-// Export the initialized services. 
-// If app is null, these will be null. This is safe during build scanning 
-// but will (correctly) error at runtime if used without proper env vars.
-export const adminDb = app ? admin.firestore() : null as unknown as admin.firestore.Firestore;
-export const adminAuth = app ? admin.auth() : null as unknown as admin.auth.Auth;
-export const adminStorage = app ? admin.storage() : null as unknown as admin.storage.Storage;
-export { admin };
-
+// Export a function or a getter to ensure we always have the active DB
+export const adminDb = getFirestore();
+export const adminAuth = admin.auth();

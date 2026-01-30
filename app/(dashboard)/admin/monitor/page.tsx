@@ -1,175 +1,115 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Project, ProjectStatus } from "@/app/lib/agency-types";
-import {
-  Search,
-  Filter,
-  ExternalLink,
-  MoreVertical,
-  LayoutGrid,
-  List,
-} from "lucide-react";
-import Button from "@/app/components/Button";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import { db } from "@/app/lib/firebase";
+import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import { completeMilestoneAndRequestPayment } from "@/app/lib/milestone-logic";
+import { Activity, CheckCircle2, DollarSign, Clock } from "lucide-react";
 
 export default function AdminMonitor() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [filter, setFilter] = useState<ProjectStatus | "all">("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Logic for status badge styling
-  const getStatusStyle = (status: ProjectStatus) => {
-    switch (status) {
-      case "new_inquiry":
-        return "bg-blue-50 text-blue-600 border-blue-100";
-      case "in_progress":
-        return "bg-green-50 text-green-600 border-green-100";
-      case "on_hold":
-        return "bg-amber-50 text-amber-600 border-amber-100";
-      case "completed":
-        return "bg-slate-50 text-slate-600 border-slate-100";
-      default:
-        return "bg-gray-50 text-gray-500 border-gray-100";
-    }
-  };
+  useEffect(() => {
+    const q = query(collection(db, "projects"), orderBy("updatedAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setProjects(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <div className="fade-in space-y-12">
-      {/* 1. Header & Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <div className="space-y-4">
-          <h1 className="text-6xl font-heading tracking-tighter">
-            System <span className="italic text-(--text-muted)">Monitor</span>
-          </h1>
-          <p className="text-xs uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
-            Operational Overview
+    <div className="space-y-12 fade-in dashboard-engine">
+      {/* Engine Header */}
+      <div className="flex justify-between items-end">
+        <div className="space-y-1">
+          <p className="p-engine-sm">System Oversight</p>
+          <p className="p-engine-xl">
+            Operations{" "}
+            <span className="font-bold italic text-(--text-main)">
+              Monitor.
+            </span>
           </p>
         </div>
-
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className="relative flex-1 md:w-64">
-            <Search
-              size={16}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-(--text-subtle)"
-            />
-            <input
-              type="text"
-              placeholder="Search clients..."
-              className="w-full pl-10 pr-4 py-3 bg-(--subtle) border border-(--border-color) rounded-xl text-sm outline-none focus:border-(--text-main) transition-all"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <Button variant="outlined">
-            <Filter size={16} />
-          </Button>
+        <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <p className="text-[10px] font-black uppercase tracking-widest text-green-700 font-dashboard">
+            Live Engine Sync
+          </p>
         </div>
       </div>
 
-      {/* 2. Project List Container */}
-      <div className="border border-(--border-color) rounded-3xl overflow-hidden bg-(--surface)">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-(--subtle)/50 border-b border-(--border-color)">
-                <th className="px-8 py-5 text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
-                  Project / Client
-                </th>
-                <th className="px-8 py-5 text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
-                  Service Type
-                </th>
-                <th className="px-8 py-5 text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
-                  Progress
-                </th>
-                <th className="px-8 py-5 text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
-                  Status
-                </th>
-                <th className="px-8 py-5 text-[10px] uppercase tracking-widest font-bold text-(--text-subtle) text-right">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-(--border-color)">
-              {/* This would be a .map() over your projects */}
-              <tr className="group hover:bg-(--subtle)/30 transition-colors">
-                <td className="px-8 py-6">
-                  <div className="space-y-1">
-                    <p className="font-heading text-xl group-hover:italic transition-all">
-                      AREI Group Sync
-                    </p>
-                    <p className="text-xs text-(--text-subtle)">
-                      client@areigrp.com
-                    </p>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <span className="text-xs font-medium text-(--text-muted)">
-                    Web Automation
-                  </span>
-                </td>
-                <td className="px-8 py-6">
-                  <div className="w-32 space-y-2">
-                    <div className="flex justify-between text-[10px] font-bold">
-                      <span>75%</span>
-                    </div>
-                    <div className="w-full bg-(--subtle) h-1 rounded-full overflow-hidden">
-                      <div
-                        className="bg-(--text-main) h-full"
-                        style={{ width: "75%" }}
-                      />
-                    </div>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <span
-                    className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${getStatusStyle("in_progress")}`}
-                  >
-                    In Progress
-                  </span>
-                </td>
-                <td className="px-8 py-6 text-right">
-                  <Link href="/admin/projects/example-id">
-                    <button className="p-2 hover:bg-(--subtle) rounded-lg transition-colors text-(--text-subtle) hover:text-(--text-main)">
-                      <ExternalLink size={18} />
-                    </button>
-                  </Link>
-                </td>
-              </tr>
-
-              {/* Empty State placeholder */}
-              {projects.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center">
-                    <div className="flex flex-col items-center gap-4 opacity-30">
-                      <LayoutGrid size={48} />
-                      <p className="text-sm font-light">
-                        Waiting for new inquiries to populate...
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* 3. Footer Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {[
-          { label: "Active Sprints", value: "12" },
-          { label: "Pending Inquiries", value: "05" },
-          { label: "Completed this Month", value: "08" },
-        ].map((stat, i) => (
+      {/* Project Grid */}
+      <div className="grid grid-cols-1 gap-6">
+        {projects.map((project) => (
           <div
-            key={i}
-            className="p-8 border border-(--border-color) rounded-3xl"
+            key={project.id}
+            className="border border-(--border-color) rounded-2xl bg-(--surface) overflow-hidden shadow-sm"
           >
-            <p className="text-[10px] uppercase font-bold text-(--text-subtle) mb-2">
-              {stat.label}
-            </p>
-            <p className="text-4xl font-heading">{stat.value}</p>
+            {/* Project Banner */}
+            <div className="p-6 border-b border-(--border-color) flex justify-between items-center bg-(--subtle)/10">
+              <div className="space-y-1">
+                <p className="text-lg font-bold tracking-tight">
+                  {project.title}
+                </p>
+                <p className="p-engine-sm text-[9px]">
+                  {project.serviceType} • Total Allocation: $
+                  {project.totalPrice}
+                </p>
+              </div>
+              <p className="text-[10px] font-black uppercase px-3 py-1 bg-(--surface) border border-(--border-color) rounded">
+                {project.status.replace("_", " ")}
+              </p>
+            </div>
+
+            {/* Production-Grade Milestone Linkage */}
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {project.milestones?.map((m: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="p-4 border border-(--border-color) rounded-xl space-y-3 group transition-all hover:border-(--text-main)"
+                >
+                  <div className="flex items-center justify-between">
+                    <div
+                      className={
+                        m.completed ? "text-green-600" : "text-(--text-subtle)"
+                      }
+                    >
+                      <CheckCircle2 size={16} />
+                    </div>
+                    {m.completed && (
+                      <p className="text-[8px] font-bold text-green-600 uppercase">
+                        Logged
+                      </p>
+                    )}
+                  </div>
+                  <p
+                    className={`text-xs ${m.completed ? "font-black" : "font-medium text-(--text-muted)"}`}
+                  >
+                    {m.label}
+                  </p>
+
+                  {!m.completed && (
+                    <button
+                      onClick={() =>
+                        completeMilestoneAndRequestPayment(
+                          project.id,
+                          idx,
+                          m.label,
+                        )
+                      }
+                      className="w-full flex items-center justify-center gap-2 bg-(--text-main) text-(--surface) py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <DollarSign size={12} />
+                      <p className="text-[9px] font-black uppercase tracking-widest">
+                        Complete & Bill
+                      </p>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

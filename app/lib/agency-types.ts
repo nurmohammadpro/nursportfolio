@@ -75,3 +75,14 @@ export interface InquiryData {
   projectDescription: string;
   budget?: string;
 }
+
+export interface QuoteData {
+  id: string;
+  subject: string;
+  amount: string | number;
+  status: "pending" | "sent" | "paid";
+  projectId: string;
+  clientId: string;
+  createdAt: string;
+  sentAt?: string;
+}

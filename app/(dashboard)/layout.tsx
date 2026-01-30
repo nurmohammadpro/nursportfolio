@@ -36,7 +36,7 @@ export default function EngineLayout({
     return (
       <div className="h-screen flex flex-col items-center justify-center bg-(--surface) space-y-4">
         <Loader2 className="w-6 h-6 animate-spin text-(--text-subtle)" />
-        <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-(--text-subtle)">
+        <p className="text-[10px] uppercase dashboard-engine font-bold tracking-[0.3em] text-(--text-subtle)">
           Initializing Engine
         </p>
       </div>
@@ -44,7 +44,7 @@ export default function EngineLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-(--surface) text-(--text-main)">
+    <div className="flex h-screen overflow-hidden dashboard-engine bg-(--surface) text-(--text-main)">
       {/* Shared Sidebar with role awareness */}
       <Sidebar role={role} />
 

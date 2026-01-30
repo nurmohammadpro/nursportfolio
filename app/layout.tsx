@@ -1,9 +1,8 @@
-import { DM_Serif_Display, Raleway } from "next/font/google";
+import { DM_Serif_Display, Raleway, Inter } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import ThemeProvider from "@/app/components/ThemeProvider";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import LayoutWrapper from "./components/LayoutWrapper";
 
 // Configure the Serif for headings
 const dmSerif = DM_Serif_Display({
@@ -17,6 +16,13 @@ const raleway = Raleway({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
   variable: "--font-body", // This maps to your CSS variable
+});
+
+// Backend font: Inter is perfect for the "Engine" workstation
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-dashboard",
 });
 
 export const metadata: Metadata = {
@@ -75,12 +81,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSerif.variable} ${raleway.variable} font-body antialiased`}
+        className={`${dmSerif.variable} ${raleway.variable} ${inter.variable} font-body antialiased`}
       >
         <ThemeProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <LayoutWrapper>{children}</LayoutWrapper>
         </ThemeProvider>
       </body>
     </html>
