@@ -19,9 +19,9 @@ export interface Client {
   id: string;
   name: string;
   email: string;
-  company?: string;
-  phone?: string;
-  source: "contact-form" | "referral" | "manual-entry";
+  phone: string | null;
+  company: string | null;
+  source: "contact-form" | "referral" | "manual-entry" | "portfolio_inquiry";
   createdAt: string;
   updatedAt: string;
 }
@@ -32,7 +32,7 @@ export type ProjectStatus =
   | "new_inquiry"
   | "contacted"
   | "proposal_sent"
-  | "deposit_paid" // This can now mean "advance paid"
+  | "deposit_paid"
   | "in_progress"
   | "in_review"
   | "completed"
@@ -53,7 +53,7 @@ export interface Project {
   title: string;
   description: string;
 
-  tottalPrice?: number;
+  totalPrice?: number;
   paymentModel: PaymentModel;
   advancePercentage?: number;
 

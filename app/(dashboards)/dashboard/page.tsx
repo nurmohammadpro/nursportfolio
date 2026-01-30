@@ -1,23 +1,51 @@
 export default function ClientDashboard() {
+  const progressValue = 75;
+
   return (
-    <div>
-      <h2 className="text-xl font-medium text-gray-600 mb-6">Welcome Back</h2>
-      <div className="bg-white p-5 rounded-sm border border-gray-200 shadow-sm">
-        <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-          Active Service
-        </h4>
-        <p className="text-lg text-gray-700 mt-1">Web App Development</p>
+    <div className="fade-in">
+      <div className="mb-16">
+        <h2 className="text-5xl font-heading mb-4">
+          Project <span className="italic text-(--text-muted)">Status</span>
+        </h2>
+        <p className="text-sm uppercase tracking-widest font-bold text-(--text-subtle)">
+          Real-time delivery tracking
+        </p>
       </div>
-      {/* Custom Progress Bar */}
-      <div className="mt-6">
-        <div className="flex justify-between text-sm mb-2">
-          <span className="text-gray-600">Progress</span>
-          <span className="font-semibold text-gray-800">75%</span>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="p-8 border border-(--border-color) rounded-3xl bg-(--surface)">
+          <h4 className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle) mb-4">
+            Current Phase
+          </h4>
+          <p className="text-2xl font-heading">
+            Backend Architecture & <br /> Security Handshake
+          </p>
         </div>
-        <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+
+        <div className="p-8 border border-(--border-color) rounded-3xl bg-(--surface)">
+          <h4 className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle) mb-4">
+            Project Type
+          </h4>
+          <p className="text-2xl font-heading">
+            SaaS Real-time <br /> Cloud Ecosystem
+          </p>
+        </div>
+      </div>
+
+      {/* Custom Minimalist Progress */}
+      <div className="space-y-6">
+        <div className="flex justify-between items-end">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-(--text-main)">
+            Progress to Launch
+          </span>
+          <span className="text-6xl font-heading leading-none">
+            {progressValue}%
+          </span>
+        </div>
+        <div className="w-full bg-(--subtle) h-1.5 rounded-full overflow-hidden">
           <div
-            className="bg-blue-500 h-full transition-all duration-500"
-            style={{ width: "75%" }}
+            className="bg-(--text-main) h-full transition-all duration-1000 ease-out"
+            style={{ width: `${progressValue}%` }}
           ></div>
         </div>
       </div>

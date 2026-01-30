@@ -1,3 +1,4 @@
+//app/api/admin/update/route.ts
 import { withAuth } from "@/app/lib/auth-middleware";
 import { adminDb } from "@/app/lib/firebase-admin";
 import { NextRequest, NextResponse } from "next/server";

@@ -1,5 +1,4 @@
-// @/app/api/client/services/route.ts
-
+//app/api/client/services/route.ts
 import { adminDb } from "@/app/lib/firebase-admin";
 import { NextResponse, NextRequest } from "next/server";
 import { withAuth, AuthenticatedContext } from "@/app/lib/auth-middleware";
