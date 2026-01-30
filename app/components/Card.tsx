@@ -120,7 +120,7 @@ const Card = ({
           )}
           {actionLabel && onActionClick && (
             <Button
-              variant="text"
+              variant="primary"
               size="sm"
               onClick={(e) => {
                 e.stopPropagation(); // Prevents the card's onClick from firing
