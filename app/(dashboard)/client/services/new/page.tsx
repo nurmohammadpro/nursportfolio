@@ -58,30 +58,57 @@ export default function RequestQuotePage() {
     );
   }
 
- return (
+  return (
     <div className="max-w-2xl mx-auto space-y-12">
       <div className="space-y-6">
-        <Link href="/dashboard/services" className="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] font-black text-(--text-subtle) hover:text-(--text-main) transition-colors">
+        <Link
+          href="/dashboard/services"
+          className="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] font-black text-(--text-subtle) hover:text-(--text-main) transition-colors"
+        >
           <ArrowLeft size={12} /> Return to Catalog
         </Link>
         <div className="space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle)">Onboarding Brief</p>
-          <p className="text-4xl font-light tracking-tighter capitalize">{serviceType.replace("-", " ")}</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle)">
+            Onboarding Brief
+          </p>
+          <p className="text-4xl font-light tracking-tighter capitalize">
+            {serviceType.replace("-", " ")}
+          </p>
         </div>
       </div>
 
       <form className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input label="Identity / Name" fullWidth required />
-          <Input label="Communication / Email" type="email" fullWidth required />
+          <Input
+            label="Communication / Email"
+            type="email"
+            fullWidth
+            required
+          />
         </div>
         <div className="space-y-2">
-          <p className="text-[9px] uppercase tracking-widest font-black text-(--text-subtle) ml-1">Project Objectives</p>
-          <textarea required className="w-full bg-(--subtle)/30 border border-(--border-color) rounded-xl p-6 outline-none focus:border-(--text-main) h-40 font-body text-sm font-medium leading-relaxed transition-all" placeholder="Define the problem space..." />
+          <p className="text-[9px] uppercase tracking-widest font-black text-(--text-subtle) ml-1">
+            Project Objectives
+          </p>
+          <textarea
+            required
+            className="w-full bg-(--subtle)/30 border border-(--border-color) rounded-xl p-6 outline-none focus:border-(--text-main) h-40 font-body text-sm font-medium leading-relaxed transition-all"
+            placeholder="Define the problem space..."
+          />
         </div>
-        <Button type="submit" variant="primary" fullWidth disabled={loading} icon={loading ? <Loader2 className="animate-spin" /> : <Send size={16} />}>
+        <Button
+          type="submit"
+          variant="primary"
+          fullWidth
+          disabled={loading}
+          icon={
+            loading ? <Loader2 className="animate-spin" /> : <Send size={16} />
+          }
+        >
           {loading ? "Transmitting..." : "Initiate Brief"}
         </Button>
       </form>
     </div>
   );
+}
