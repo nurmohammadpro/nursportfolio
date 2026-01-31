@@ -17,9 +17,20 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     const querySnapshot = await postsQuery.get();
     const posts: Post[] = [];
 
-    querySnapshot.forEach((doc) => {
-      posts.push(doc.data() as Post);
-    });
+    interface FirestoreDocument {
+      id: string;
+      data: () => Post;
+    }
+
+    interface FirestoreQuerySnapshot {
+      forEach: (callback: (doc: FirestoreDocument) => void) => void;
+    }
+
+    (querySnapshot as FirestoreQuerySnapshot).forEach(
+      (doc: FirestoreDocument) => {
+        posts.push(doc.data() as Post);
+      },
+    );
 
     return NextResponse.json(posts, { status: 200 });
   } catch (error) {
