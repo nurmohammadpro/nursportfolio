@@ -3,9 +3,9 @@ import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
 // Initialize Resend outside the handler for better performance in Next.js
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     // 1. Extract data from the request body first
     const { projectId, text, clientEmail, subject, fromEmail } =
