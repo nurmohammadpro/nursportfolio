@@ -1,4 +1,5 @@
-import { admin } from "@/app/lib/firebase-admin";
+// app/api/auth/signin/route.ts
+import { adminAuth } from "@/app/lib/firebase-admin";
 import { cookies } from "next/headers";
 import { NextResponse, NextRequest } from "next/server";
 
@@ -6,23 +7,28 @@ export async function POST(req: NextRequest) {
   try {
     const { idToken } = await req.json();
 
-    // 1. Verify the token to ensure it's valid
+    // Guard clause for Type Safety and Runtime Reliability
+    if (!adminAuth) {
+      return NextResponse.json(
+        { error: "Auth Service Unavailable" },
+        { status: 500 },
+      );
+    }
+
     const decodedToken = await adminAuth.verifyIdToken(idToken);
 
     if (!decodedToken) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 2. Create a session cookie (expires in 5 days)
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
     const sessionCookie = await adminAuth.createSessionCookie(idToken, {
       expiresIn,
     });
 
-    // 3. Set the cookie in the browser
     const cookieStore = await cookies();
     cookieStore.set("session", sessionCookie, {
-      maxAge: expiresIn,
+      maxAge: expiresIn / 1000, // maxAge expects seconds
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
