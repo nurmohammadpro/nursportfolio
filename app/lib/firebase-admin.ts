@@ -32,3 +32,4 @@ const app = initializeAdmin();
 // Export a function or a getter to ensure we always have the active DB
 export const adminDb = getFirestore();
 export const adminAuth = admin.auth();
+export { admin };
