@@ -13,7 +13,7 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
       .get();
 
     const data: ServiceRequest[] = snapshot.docs.map(
-      (doc) => doc.data() as ServiceRequest,
+      (doc: any) => doc.data() as ServiceRequest,
     );
 
     return NextResponse.json(data, { status: 200 });
