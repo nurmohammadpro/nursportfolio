@@ -8,9 +8,8 @@ import { QuoteData } from "@/app/lib/agency-types";
 
 // 1. Types are now imported from @/app/lib/agency-types
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     const { projectId, quoteId } = await req.json();
 
