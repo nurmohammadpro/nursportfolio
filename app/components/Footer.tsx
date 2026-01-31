@@ -16,9 +16,17 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Github, href: "https://github.com", label: "Github" },
-    { icon: Linkedin, href: "https://linkedin.com", label: "Linkedin" },
-    { icon: Twitter, href: "#", label: "Twitter" },
+    {
+      icon: Github,
+      href: "https://github.com/nurmohammadpro",
+      label: "Github",
+    },
+    {
+      icon: Linkedin,
+      href: "https://www.linkedin.com/in/nur-mohammad-149515b4/",
+      label: "Linkedin",
+    },
+    { icon: Twitter, href: "https://x.com/nurmohammad_pro", label: "Twitter" },
   ];
 
   return (

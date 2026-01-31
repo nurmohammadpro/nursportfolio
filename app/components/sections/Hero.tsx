@@ -37,7 +37,7 @@ const Hero = () => {
         </div>
 
         {/* Hero Heading */}
-        <h1 className="text-6xl md:text-8xl lg:text-9xl leading-[1] mb-8 max-w-5xl">
+        <h1 className="text-6xl md:text-8xl lg:text-9xl leading-none mb-8 max-w-5xl">
           Building <span className="text-(--text-muted) italic">Smarter</span>{" "}
           Digital Products
         </h1>
@@ -69,13 +69,22 @@ const Hero = () => {
 
         {/* Socials */}
         <div className="flex items-center gap-8 text-(--text-subtle)">
-          <a href="#" className="hover:text-(--text-main) transition-all">
+          <a
+            href="https://github.com/nurmohammadpro"
+            className="hover:text-(--text-main) transition-all"
+          >
             <Github size={22} />
           </a>
-          <a href="#" className="hover:text-(--text-main) transition-all">
+          <a
+            href="https://www.linkedin.com/in/nur-mohammad-149515b4/"
+            className="hover:text-(--text-main) transition-all"
+          >
             <Linkedin size={22} />
           </a>
-          <a href="#" className="hover:text-(--text-main) transition-all">
+          <a
+            href="info@nurmohammad.pro"
+            className="hover:text-(--text-main) transition-all"
+          >
             <Mail size={22} />
           </a>
         </div>
