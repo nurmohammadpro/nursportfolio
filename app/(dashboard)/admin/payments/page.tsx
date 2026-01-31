@@ -34,11 +34,8 @@ export default function PaymentsPage() {
     <div className="space-y-10 fade-in">
       {/* Header */}
       <div className="space-y-1">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle)">
-          Financial Suite
-        </p>
         <p className="text-3xl font-light tracking-tighter text-(--text-main)">
-          Transaction <span className="font-bold italic">History</span>
+          Transaction <span className="font-semibold">History</span>
         </p>
       </div>
 
@@ -54,10 +51,10 @@ export default function PaymentsPage() {
             key={i}
             className="p-4 border border-(--border-color) rounded-xl"
           >
-            <p className="text-[9px] font-black uppercase tracking-widest text-(--text-subtle) mb-1">
+            <p className="text-[9px] font-semibold tracking-widest text-(--text-subtle) mb-1">
               {stat.label}
             </p>
-            <p className="text-xl font-bold tracking-tight">{stat.val}</p>
+            <p className="text-xl font-semibold tracking-tight">{stat.val}</p>
           </div>
         ))}
       </div>
@@ -91,9 +88,7 @@ export default function PaymentsPage() {
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-bold tracking-tight">
-                    {tx.client}
-                  </p>
+                  <p className="text-sm font-medium ">{tx.client}</p>
                   <p className="text-[10px] font-medium font-mono text-(--text-subtle)">
                     {tx.id} • {tx.method}
                   </p>
@@ -101,9 +96,7 @@ export default function PaymentsPage() {
               </div>
 
               <div className="flex justify-between md:flex-col md:items-end gap-1">
-                <p className="text-sm font-black tracking-tighter">
-                  ${tx.amount}
-                </p>
+                <p className="text-sm font-semibold">${tx.amount}</p>
                 <p className="text-[10px] font-bold text-(--text-subtle) uppercase tracking-widest">
                   {tx.date}
                 </p>

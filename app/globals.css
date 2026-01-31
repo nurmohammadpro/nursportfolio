@@ -142,11 +142,11 @@ html {
   }
 
   .p-engine-xl {
-    @apply text-3xl font-light tracking-tighter leading-none;
+    @apply text-3xl font-light tracking-normal leading-none;
   }
 
   .p-engine-sm {
-    @apply text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle);
+    @apply text-[10px] font-semibold text-(--text-subtle);
   }
 
   .p-engine-body {

@@ -16,14 +16,14 @@ const activeServices = [
     id: "S1",
     client: "Duncun Immigration",
     service: "Web Automation",
-    status: "running",
+    status: "Running",
     progress: 75,
   },
   {
     id: "S2",
     client: "Global Tech",
     service: "Next.js Web App",
-    status: "purchased",
+    status: "Purchased",
     progress: 0,
   },
 ];
@@ -51,11 +51,8 @@ export default function ServicesMonitor() {
     <div className="space-y-12 fade-in">
       {/* 1. Header - No headings, just weight-based P tags */}
       <div className="space-y-1">
-        <p className="text-xs font-black uppercase tracking-[0.3em] text-(--text-subtle)">
-          Service Engine
-        </p>
         <p className="text-3xl font-light tracking-tighter text-(--text-main)">
-          Active <span className="font-bold italic">Operations</span>
+          Active <span className="font-semibold">Services</span>
         </p>
       </div>
 
@@ -84,15 +81,13 @@ export default function ServicesMonitor() {
                 ) : (
                   <Clock size={12} />
                 )}
-                <p className="text-[10px] font-black uppercase tracking-tighter">
-                  {service.status}
-                </p>
+                <p className="text-[10px] font-semibold">{service.status}</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-end">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-(--text-subtle)">
+                <p className="text-xs font-medium  text-(--text-subtle)">
                   Deployment Progress
                 </p>
                 <p className="text-sm font-bold">{service.progress}%</p>
@@ -112,9 +107,7 @@ export default function ServicesMonitor() {
       <div className="space-y-6">
         <div className="flex items-center gap-3 border-b border-(--border-color) pb-4">
           <History size={16} className="text-(--text-subtle)" />
-          <p className="text-xs font-black uppercase tracking-[0.2em]">
-            System Logs
-          </p>
+          <p className="text-xs font-semibold">System Logs</p>
         </div>
 
         <div className="space-y-4">
@@ -123,7 +116,7 @@ export default function ServicesMonitor() {
               <p className="text-[11px] font-bold font-mono text-(--text-subtle) whitespace-nowrap pt-1">
                 [{log.time}]
               </p>
-              <p className="text-sm font-medium leading-relaxed text-(--text-muted) border-l border-(--border-color) pl-6 group-hover:text-(--text-main) transition-colors">
+              <p className="text-sm font-normal text-(--text-muted) border-l border-(--border-color) pl-6 group-hover:text-(--text-main) transition-colors">
                 {log.event}
               </p>
             </div>

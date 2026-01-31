@@ -23,6 +23,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NODE_ENV === "production"
+      ? "https://nurmohammad.pro"
+      : "http://localhost:3000",
+  ),
   title: {
     default: "Nur Mohammad | Web Application Developer",
     template: "%s | Nur Mohammad",

@@ -40,7 +40,10 @@ export default function SignInPage() {
         body: JSON.stringify({ idToken }),
       });
 
-      if (!response.ok) throw new Error("Failed to establish server session.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to establish server session.");
+      }
 
       const { role } = await response.json();
 
@@ -52,8 +55,8 @@ export default function SignInPage() {
         router.push("/dashboard");
       }
     } catch (err: any) {
-      console.error("Sign-in error:", err);
-      setError("Invalid credentials or access denied.");
+      console.error("Sign-in Client Error:", err);
+      setError(err.message || "Invalid credentials or access denied.");
     } finally {
       setLoading(false);
     }

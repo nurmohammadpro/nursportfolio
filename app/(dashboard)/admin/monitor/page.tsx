@@ -26,16 +26,8 @@ export default function AdminMonitor() {
         <div className="space-y-1">
           <p className="p-engine-sm">System Oversight</p>
           <p className="p-engine-xl">
-            Operations{" "}
-            <span className="font-bold italic text-(--text-main)">
-              Monitor.
-            </span>
-          </p>
-        </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <p className="text-[10px] font-black uppercase tracking-widest text-green-700 font-dashboard">
-            Live Engine Sync
+            Admin{" "}
+            <span className="font-semibold text-(--text-main)">Dashboard</span>
           </p>
         </div>
       </div>

@@ -1,63 +1,68 @@
-import { adminDb } from "@/app/lib/firebase-admin";
-import { Resend } from "resend";
+import { adminDb, adminAuth } from "@/app/lib/firebase-admin";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
-// Initialize Resend outside the handler for better performance in Next.js
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    // 1. Extract data from the request body first
     const { projectId, text, clientEmail, subject, fromEmail } =
       await req.json();
 
-    if (!projectId || !fromEmail || !clientEmail) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
-    }
+    // 1. Session Verification
+    const cookieStore = await cookies();
+    const session = cookieStore.get("session")?.value;
+    if (!session || !adminAuth)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    // 2. Fetch the professional signature linked to this alias
-    const signatureSnap = await adminDb
-      .collection("signatures")
-      .where("alias", "==", fromEmail)
+    // 2. Fetch the Mailbox and its Signature
+    const mailboxQuery = await adminDb
+      .collection("mailboxes")
+      .where("email", "==", fromEmail)
       .limit(1)
       .get();
 
-    const signature = signatureSnap.empty
-      ? ""
-      : signatureSnap.docs[0].data().content;
+    let finalHtml = `<div style="font-family: sans-serif; font-size: 14px; line-height: 1.6;">${text.replace(/\n/g, "<br/>")}</div>`;
 
-    // 3. Combine message text and signature using your high-density format
-    const fullBody = `${text}\n\n--\n${signature}`;
+    if (!mailboxQuery.empty) {
+      const mailboxId = mailboxQuery.docs[0].id;
+      const sigDoc = await adminDb
+        .collection("mailboxes")
+        .doc(mailboxId)
+        .collection("signatures")
+        .doc("default")
+        .get();
 
-    // 4. Save to Firestore immediately for real-time dashboard sync
-    const messageData = {
-      text: fullBody,
-      sender: "admin",
-      createdAt: new Date().toISOString(),
-      type: "outbound",
-    };
+      if (sigDoc.exists) {
+        // Append the HTML signature with a spacer
+        finalHtml += `<br/><br/><hr style="border:none; border-top:1px solid #eee; margin: 20px 0;" />${sigDoc.data()?.html}`;
+      }
+    }
 
+    // 3. Send via Resend
+    const { data, error } = await resend.emails.send({
+      from: `Nur Mohammad <${fromEmail}>`,
+      to: [clientEmail],
+      subject: subject,
+      html: finalHtml, // Use 'html' instead of 'text' for signature support
+    });
+
+    if (error) throw new Error(error.message);
+
+    // 4. Update Firestore Thread
     await adminDb
       .collection("projects")
       .doc(projectId)
       .collection("messages")
-      .add(messageData);
-
-    // 5. Transmit via Resend using your new .pro domain
-    await resend.emails.send({
-      from: `Nur Mohammad <${fromEmail}>`, // Dynamically uses nur@nurmohammad.pro etc.
-      to: clientEmail,
-      subject: subject.startsWith("Re:") ? subject : `Re: ${subject}`,
-      replyTo: `reply+${projectId}@nurmohammad.pro`, // Encoded for your Resend webhook
-      text: fullBody,
-    });
+      .add({
+        text,
+        sender: "admin",
+        createdAt: new Date().toISOString(),
+      });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error("Transmission Error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

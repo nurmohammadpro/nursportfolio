@@ -53,7 +53,13 @@ const Navbar = () => {
         {/* Logo Section */}
         <div className="shrink-0">
           <Link href="/" onClick={closeMenu} className="block">
-            <Image src={logoSrc} alt="Nur Logo" width={220} height={32} />
+            <Image
+              src={logoSrc}
+              alt="Nur Logo"
+              width={220}
+              height={32}
+              style={{ width: "auto", height: "auto" }}
+            />
           </Link>
         </div>
 
@@ -135,7 +141,7 @@ const Navbar = () => {
             </Link>
           ))}
           <Button variant="primary" size="lg" fullWidth onClick={closeMenu}>
-            Sign In
+            <Link href="/signin">Sign In</Link>
           </Button>
         </div>
       </div>

@@ -103,7 +103,7 @@ export default function Sidebar({ role }: SidebarProps) {
       </nav>
 
       {/* Sign Out Action */}
-      <div className="p-4 border-t border-(--border-color)">
+      <div className="p-1 md:p-2 lg:p-4 border-t border-(--border-color)">
         <button
           onClick={handleSignOut}
           className="flex items-center gap-4 w-full p-3 text-(--text-muted) hover:text-red-600 transition-colors group cursor-pointer"

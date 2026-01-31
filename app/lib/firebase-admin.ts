@@ -12,19 +12,27 @@ function initializeAdmin() {
   if (getApps().length > 0) return getApp();
 
   if (!projectId || !clientEmail || !privateKey) {
-    console.warn("Firebase Admin SDK: Missing environment variables.");
+    const missing = [];
+    if (!projectId) missing.push("FIREBASE_PROJECT_ID");
+    if (!clientEmail) missing.push("FIREBASE_CLIENT_EMAIL");
+    if (!privateKey) missing.push("FIREBASE_PRIVATE_KEY");
+    console.error(`Firebase Admin SDK: Missing environment variables: ${missing.join(", ")}`);
     return null;
   }
 
-  const formattedKey = privateKey.replace(/\\n/g, "\n");
-
-  return admin.initializeApp({
-    credential: cert({
-      projectId,
-      clientEmail,
-      privateKey: formattedKey,
-    }),
-  });
+  try {
+    const formattedKey = privateKey.replace(/\\n/g, "\n");
+    return admin.initializeApp({
+      credential: cert({
+        projectId,
+        clientEmail,
+        privateKey: formattedKey,
+      }),
+    });
+  } catch (error: any) {
+    console.error("Firebase Admin SDK: Initialization failed:", error.message);
+    return null;
+  }
 }
 
 const app = initializeAdmin();

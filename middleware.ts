@@ -19,8 +19,17 @@ export default async function middleware(request: NextRequest) {
   }
 
   // 3. Admin vs Client logic
-  // Full JWT verification is handled in the Layouts we built
-  // to avoid blocking the Edge runtime with heavy SDKs.
+  const isAuthPage =
+    pathname.startsWith("/signin") || pathname.startsWith("/signup");
+
+  if (!session && (isAdminRoute || isDashboardRoute)) {
+    return NextResponse.redirect(new URL("/signin", request.url));
+  }
+
+  // Optional: If they ARE logged in, don't let them go back to signin
+  if (session && isAuthPage) {
+    return NextResponse.redirect(new URL("/admin/monitor", request.url));
+  }
 
   return NextResponse.next();
 }

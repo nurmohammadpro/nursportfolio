@@ -7,9 +7,8 @@ export default function AdminSettings() {
     <div className="space-y-12 fade-in">
       {/* Header */}
       <div className="space-y-1">
-        <p className="p-engine-sm">System Config</p>
         <p className="p-engine-xl">
-          Admin <span className="font-bold italic">Settings.</span>
+          Admin <span className="font-semibold">Settings.</span>
         </p>
       </div>
 
