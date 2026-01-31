@@ -1,96 +1,126 @@
 "use client";
 
 import Link from "next/link";
-import { Github, Linkedin, ArrowUp } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Github, Linkedin, Twitter, Globe } from "lucide-react";
 
 const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const pathname = usePathname();
+
+  // Navigation array with path tracking
+  const navLinks = [
+    { name: "About", href: "/#about" },
+    { name: "Projects", href: "/#projects" },
+    { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/#contact" },
+  ];
+
+  const socialLinks = [
+    { icon: Github, href: "https://github.com", label: "Github" },
+    { icon: Linkedin, href: "https://linkedin.com", label: "Linkedin" },
+    { icon: Twitter, href: "#", label: "Twitter" },
+  ];
 
   return (
-    <footer className="w-full bg-(--surface) border-t border-(--border-color) py-12 md:py-20">
+    <footer className="w-full bg-(--surface) border-t border-(--border-color) py-16 md:py-24 dashboard-engine">
       <div className="layout-container">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
           {/* Brand Identity */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold tracking-tight">Nur Mohammad</h3>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-(--text-subtle) font-bold">
-              Full-Stack Web Application Developer
+          <div className="md:col-span-5 space-y-6">
+            <h3 className="text-2xl font-black tracking-tighter text-(--text-main)">
+              Nur<span className="text-(--text-subtle)"> Mohammad</span>
+            </h3>
+            <p className="p-engine-body text-(--text-subtle) max-w-sm leading-relaxed">
+              Web Application Developer specializing in high-performance SaaS
+              engines and automated infrastructure.
             </p>
-          </div>
-
-          {/* Social Links & Navigation */}
-          <div className="flex flex-wrap gap-8 md:gap-12">
-            <div className="space-y-4">
-              <h4 className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
-                Connect
-              </h4>
-              <div className="flex gap-6">
+            <div className="flex gap-5">
+              {socialLinks.map((social) => (
                 <a
-                  href="#"
-                  className="text-(--text-muted) hover:text-(--text-main) transition-colors"
+                  key={social.label}
+                  href={social.href}
+                  className="p-2 border border-(--border-color) rounded-xl text-(--text-muted) hover:text-(--text-main) hover:border-(--text-main) transition-all"
+                  aria-label={social.label}
                 >
-                  <Github size={20} />
+                  <social.icon size={18} />
                 </a>
-                <a
-                  href="#"
-                  className="text-(--text-muted) hover:text-(--text-main) transition-colors"
-                >
-                  <Linkedin size={20} />
-                </a>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
-                Navigation
-              </h4>
-              <div className="flex gap-6 text-xs font-medium">
-                <Link
-                  href="#about"
-                  className="text-(--text-muted) hover:text-(--text-main)"
-                >
-                  About
-                </Link>
-                <Link
-                  href="#projects"
-                  className="text-(--text-muted) hover:text-(--text-main)"
-                >
-                  Projects
-                </Link>
-                <Link
-                  href="#contact"
-                  className="text-(--text-muted) hover:text-(--text-main)"
-                >
-                  Contact
-                </Link>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Back to Top */}
-          <button
-            onClick={scrollToTop}
-            className="group flex items-center gap-3 text-[10px] uppercase tracking-widest font-bold text-(--text-muted) hover:text-(--text-main) transition-all cursor-pointer"
-          >
-            Back to Top
-            <div className="p-2 border border-(--border-color) rounded-full group-hover:-translate-y-1 transition-transform">
-              <ArrowUp size={14} />
+          {/* Navigation with isActive Logic */}
+          <div className="md:col-span-3 space-y-6">
+            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-(--text-muted)">
+              Navigation
+            </p>
+            <ul className="space-y-4">
+              {navLinks.map((link) => {
+                // Determine if the link is active based on current path
+                const isActive = pathname === link.href;
+
+                return (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className={`text-xs font-bold transition-colors ${
+                        isActive
+                          ? "text-(--text-main) border-l-2 border-(--text-main) pl-2"
+                          : "text-(--text-subtle) hover:text-(--text-main)"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Status & Availability */}
+          <div className="md:col-span-4 space-y-6">
+            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-(--text-muted)">
+              Availability
+            </p>
+            <div className="p-6 border border-(--border-color) rounded-2xl bg-(--subtle)/5">
+              <p className="text-xs font-bold leading-relaxed">
+                Currently accepting direct service inquiries via
+                nurmohammad.pro.
+              </p>
+              <Link
+                href="/#contact"
+                className="inline-block mt-4 text-[10px] font-black uppercase tracking-widest text-(--text-main) border-b border-(--text-main) pb-1"
+              >
+                Start a Project
+              </Link>
             </div>
-          </button>
+          </div>
         </div>
 
-        {/* Legal & Copyright */}
-        <div className="mt-20 pt-8 border-t border-(--border-color)/50 flex flex-col md:flex-row justify-between gap-4 text-[10px] uppercase tracking-widest text-(--text-subtle) font-bold">
-          <p>© 2026 Nur Mohammad. All Rights Reserved.</p>
-          <div className="flex gap-8">
-            <Link href="/privacy" className="hover:text-(--text-main)">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="hover:text-(--text-main)">
-              Terms of Service
-            </Link>
+        {/* Legal & System Status */}
+        <div className="mt-20 pt-8 border-t border-(--border-color)/50 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="mt-20 pt-8 border-t border-(--border-color)/50 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] uppercase tracking-widest text-(--text-subtle) font-bold">
+              © 2026 Nur Mohammad. All Rights Reserved.
+            </p>
+            <div className="flex gap-8 text-[10px] uppercase tracking-widest text-(--text-subtle) font-bold">
+              <Link
+                href="/privacy"
+                className="hover:text-(--text-main) transition-colors"
+              >
+                Privacy
+              </Link>
+              <Link
+                href="/terms"
+                className="hover:text-(--text-main) transition-colors"
+              >
+                Terms
+              </Link>
+              <div className="flex items-center gap-2">
+                {/* Pulse indicator for reliability */}
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <p>Systems Online</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

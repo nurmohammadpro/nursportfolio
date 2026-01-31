@@ -47,7 +47,10 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-(--surface) px-4">
+    <div
+      className="flex min-h-screen items-center justify-center bg-(--surface) px-4"
+      style={{ minHeight: "calc(100vh - 180px)" }}
+    >
       <div className="w-full max-w-sm space-y-12 py-12">
         <div className="text-center space-y-4">
           <h3 className="text-5xl font-heading">

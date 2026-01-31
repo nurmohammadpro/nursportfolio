@@ -60,7 +60,10 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-(--surface) fade-in">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-6 bg-(--surface) fade-in"
+      style={{ minHeight: "calc(100vh - 180px)" }}
+    >
       <div className="max-w-md w-full space-y-12">
         {/* Header Section */}
         <div className="space-y-4 text-center">

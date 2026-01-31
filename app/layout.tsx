@@ -4,21 +4,18 @@ import "./globals.css";
 import ThemeProvider from "@/app/components/ThemeProvider";
 import LayoutWrapper from "./components/LayoutWrapper";
 
-// Configure the Serif for headings
 const dmSerif = DM_Serif_Display({
   subsets: ["latin"],
   weight: ["400"],
-  variable: "--font-heading", // This maps to your CSS variable
+  variable: "--font-heading",
 });
 
-// Configure Raleway for body text
 const raleway = Raleway({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
-  variable: "--font-body", // This maps to your CSS variable
+  variable: "--font-body",
 });
 
-// Backend font: Inter is perfect for the "Engine" workstation
 const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -27,7 +24,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Nur Mohammad | Full-Stack Web Developer",
+    default: "Nur Mohammad | Web Application Developer",
     template: "%s | Nur Mohammad",
   },
   description:
@@ -40,13 +37,14 @@ export const metadata: Metadata = {
     "Firebase Specialist",
     "Malware Removal Services",
     "SaaS Development",
+    "nurmohammad.pro",
   ],
   authors: [{ name: "Nur Mohammad" }],
   creator: "Nur Mohammad",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://nurmohammad.dev",
+    url: "https://nurmohammad.pro",
     siteName: "Nur Mohammad Portfolio",
     title: "Nur Mohammad | Full-Stack Web Application Developer",
     description:
@@ -63,13 +61,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
 };
 
@@ -78,8 +69,79 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Define the structured data for Google
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Nur Mohammad",
+    url: "https://nurmohammad.pro",
+    image: "https://nurmohammad.pro/Nur-New-Photo-1.png",
+    jobTitle: "Web Application Developer",
+    description:
+      "Expert in React, Next.js, Firebase, and custom SaaS development.",
+    sameAs: ["https://github.com", "https://linkedin.com"],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Professional Web Services",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Custom SaaS Development",
+            description:
+              "Building scalable SaaS applications with React, Next.js, and Firebase.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Custom Web Application Development",
+            description:
+              "Building fast, reliable, modern web applications with React, Next.js, tailwindCSS, ShadcnUI etc.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Web Automation & Bot Development",
+            description:
+              "Automating web app, building custom BOT will, fill up forms, listing products, emails to the recipient, generate leads to the client",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "WordPress Design & Customization",
+            description:
+              "Customizing and Wordpress theme designing help to get started for the StartUps",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "WordPress Security & Malware Removal",
+            description:
+              "Specialized malware removal and security hardening for WordPress websites.",
+          },
+        },
+      ],
+    },
+  };
+
   return (
     <html lang="en">
+      <head>
+        {/* JSON-LD Schema Markup */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${dmSerif.variable} ${raleway.variable} ${inter.variable} font-body antialiased`}
       >
