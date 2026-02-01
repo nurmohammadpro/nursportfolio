@@ -52,7 +52,7 @@ const Navbar = () => {
         {/* Logo Section */}
         <div className="shrink-0">
           <Link href="/" onClick={closeMenu} className="block">
-            <Image src={logoSrc} alt="Nur Logo" width={48} height={48} />
+            <Image src={logoSrc} alt="Nur Logo" width={36} height={36} />
           </Link>
         </div>
 
