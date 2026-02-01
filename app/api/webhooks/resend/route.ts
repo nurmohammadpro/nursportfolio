@@ -4,55 +4,85 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const payload = await req.json();
-    // Resend Inbound Payload Structure
-    const { from, to, subject, text, html } = payload;
-    const toAddress = to[0];
+    const { type, data } = payload;
 
-    // Extract clean email from "Name <email@domain.com>"
-    const fromEmail = from.includes("<")
-      ? from.split("<")[1].replace(">", "")
-      : from;
+    // We only care about tracking status updates here
+    if (
+      [
+        "email.sent",
+        "email.delivered",
+        "email.bounced",
+        "email.opened",
+      ].includes(type)
+    ) {
+      const emailId = data.email_id || data.id;
 
-    let projectId = toAddress.split("+")[1]?.split("@")[0];
-    let docRef;
-
-    if (projectId) {
-      docRef = adminDb.collection("projects").doc(projectId);
-    } else {
-      // Fallback: Search by client email
-      const projectQuery = await adminDb
-        .collection("projects")
-        .where("clientEmail", "==", fromEmail)
-        .orderBy("updatedAt", "desc")
+      // Find the message across all projects using the Resend ID
+      const messageSnap = await adminDb
+        .collectionGroup("messages")
+        .where("resendId", "==", emailId)
         .limit(1)
         .get();
 
-      if (!projectQuery.empty) docRef = projectQuery.docs[0].ref;
+      if (!messageSnap.empty) {
+        const messageDoc = messageSnap.docs[0];
+        // Update the specific message status (e.g., from 'sent' to 'delivered')
+        await messageDoc.ref.update({
+          deliveryStatus: type.split(".")[1], // 'delivered', 'bounced', etc.
+          statusUpdatedAt: new Date().toISOString(),
+        });
+      }
     }
 
-    if (!docRef)
-      return NextResponse.json({ error: "No thread found" }, { status: 200 });
+    // 1. Extract from 'data' object
+    const webhookData = payload.data;
+    if (!webhookData || payload.type !== "email.received") {
+      return NextResponse.json({ ok: true });
+    }
 
+    // 2. Extract Sender
+    const fromRaw = webhookData.from || "";
+    const fromEmail = fromRaw.includes("<")
+      ? fromRaw.split("<")[1].replace(">", "").toLowerCase().trim()
+      : fromRaw.toLowerCase().trim();
+
+    // 3. Find Thread in Firestore
+    const snap = await adminDb
+      .collection("projects")
+      .where("clientEmail", "==", fromEmail)
+      .orderBy("updatedAt", "desc")
+      .limit(1)
+      .get();
+
+    if (snap.empty) {
+      console.log(`No project found for sender: ${fromEmail}`);
+      return NextResponse.json({ ok: true });
+    }
+
+    const docRef = snap.docs[0].ref;
     const timestamp = new Date().toISOString();
 
-    // 1. Add message to sub-collection for real-time UI updates
+    // 4. Update with limited data (Free Tier)
     await docRef.collection("messages").add({
-      text: text || html,
+      text: `Incoming Email: ${webhookData.subject || "No Subject"} (Body hidden in Resend Free Tier)`,
       sender: fromEmail,
       type: "inbound",
       createdAt: timestamp,
     });
 
-    // 2. Move to Inbox and mark Unread
     await docRef.update({
-      unread: true,
       status: "inbox",
-      lastMessage: text?.slice(0, 100) || "New reply received",
+      unread: true,
+      lastMessage: (webhookData.subject || "New Message Received").slice(
+        0,
+        100,
+      ),
       updatedAt: timestamp,
     });
 
-    return NextResponse.json({ received: true });
+    return NextResponse.json({ ok: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Webhook Error:", error.message);
+    return NextResponse.json({ ok: true }); // Always 200 to stop Resend retries
   }
 }

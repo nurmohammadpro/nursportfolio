@@ -32,7 +32,7 @@ import {
   Search,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Select from "@/app/components/Select"; // Updated custom Select
+import Select from "@/app/components/Select";
 
 // --- HELPERS ---
 const MenuAction = ({ icon: Icon, label, onClick, className = "" }: any) => (
@@ -135,7 +135,98 @@ export default function EmailPage() {
     }
   };
 
-  // --- MOBILE UI ---
+  const handleCompose = async () => {
+    const res = await fetch("/api/email/compose", {
+      method: "POST",
+      body: JSON.stringify({ ...newEmail, status: "sent" }),
+    });
+    if (res.ok) {
+      setIsComposing(false);
+      setNewEmail({ to: "", subject: "", body: "", fromEmail: "" });
+    }
+  };
+
+  // Unified Compose Overlay for both Mobile and Desktop
+  const renderComposeOverlay = () => (
+    <AnimatePresence>
+      {isComposing && (
+        <div
+          className="fixed inset-0 z-[999] bg-(--text-main)/40 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setIsComposing(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-(--surface) w-full max-w-2xl rounded-3xl border border-(--border-color) shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 border-b border-(--border-color) flex justify-between bg-(--subtle)">
+              <p className="p-engine-sm font-black uppercase text-(--text-main)">
+                New Eamil
+              </p>
+              <X
+                size={20}
+                className="cursor-pointer text-(--text-main)"
+                onClick={() => setIsComposing(false)}
+              />
+            </div>
+            <div className="p-8 space-y-6 flex-1 overflow-y-auto">
+              <Select
+                label="From Address"
+                value={newEmail.fromEmail}
+                onChange={(val: string) =>
+                  setNewEmail({ ...newEmail, fromEmail: val })
+                }
+                options={mailboxes.map((box: any) => ({
+                  label: box.email,
+                  value: box.email,
+                }))}
+              />
+              <input
+                value={newEmail.to}
+                onChange={(e) =>
+                  setNewEmail({ ...newEmail, to: e.target.value })
+                }
+                placeholder="To: Client Email"
+                className="w-full border-b border-(--border-color) py-2 outline-none p-body text-(--text-main) bg-transparent"
+              />
+              <input
+                value={newEmail.subject}
+                onChange={(e) =>
+                  setNewEmail({ ...newEmail, subject: e.target.value })
+                }
+                placeholder="Subject"
+                className="w-full border-b border-(--border-color) py-2 outline-none p-body font-bold text-(--text-main) bg-transparent"
+              />
+              <textarea
+                value={newEmail.body}
+                onChange={(e) =>
+                  setNewEmail({ ...newEmail, body: e.target.value })
+                }
+                placeholder="Your message..."
+                className="w-full h-48 bg-transparent outline-none p-engine-body resize-none text-(--text-main)"
+              />
+            </div>
+            <div className="p-6 bg-(--subtle) flex justify-end items-center gap-4">
+              <button
+                onClick={() => setIsComposing(false)}
+                className="p-engine-sm uppercase opacity-50 text-(--text-main)"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCompose}
+                className="btn-brand p-engine-sm uppercase px-8"
+              >
+                Send Now
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+
   if (isMobile) {
     return (
       <div className="h-screen bg-(--primary) text-(--text-main) flex flex-col overflow-hidden font-sans">
@@ -224,7 +315,6 @@ export default function EmailPage() {
           </>
         ) : (
           <div className="flex-1 flex flex-col bg-(--surface) animate-fade-in">
-            {/* MOBILE ACTION HEADER */}
             <header className="p-4 border-b border-(--border-color) flex items-center justify-between">
               <div className="flex items-center gap-4 min-w-0">
                 <button onClick={() => setMobileScreen("list")}>
@@ -266,17 +356,16 @@ export default function EmailPage() {
                     onClick={() => handleAction(selectedThread.id, "trash")}
                   />
                 )}
-                {activeFolder === "spam" ? (
-                  <ShieldCheck
-                    size={18}
-                    onClick={() => handleAction(selectedThread.id, "restore")}
-                  />
-                ) : (
-                  <ShieldAlert
-                    size={18}
-                    onClick={() => handleAction(selectedThread.id, "spam")}
-                  />
-                )}
+                <ShieldAlert
+                  size={18}
+                  onClick={() =>
+                    handleAction(
+                      selectedThread.id,
+                      activeFolder === "spam" ? "restore" : "spam",
+                    )
+                  }
+                  className={activeFolder === "spam" ? "text-green-500" : ""}
+                />
               </div>
             </header>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -301,19 +390,19 @@ export default function EmailPage() {
         )}
         <button
           onClick={() => setIsComposing(true)}
-          className="fixed bottom-8 right-6 w-14 h-14 bg-(--text-main) text-(--surface) rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-90"
+          className="fixed bottom-8 right-6 w-14 h-14 bg-(--text-main) text-(--surface) rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-90 z-50"
         >
           <Plus size={24} />
         </button>
+        {renderComposeOverlay()}
       </div>
     );
   }
 
   // --- DESKTOP UI ---
   return (
-    <div className="dashboard-engine h-[calc(100vh-120px)] flex bg-(--surface) border border-(--border-color) rounded-3xl overflow-hidden">
-      {/* Sidebar */}
-      <div className="w-64 border-r border-(--border-color) bg-(--subtle) p-6 flex flex-col gap-8">
+    <div className="dashboard-engine h-[calc(100vh-120px)] flex bg-(--surface) border border-(--border-color) rounded-xl overflow-hidden relative">
+      <div className="w-48 border-r border-(--border-color) bg-(--subtle) p-2 flex flex-col gap-8">
         <button
           onClick={() => setIsComposing(true)}
           className="btn-brand w-full flex items-center justify-center gap-2"
@@ -355,8 +444,7 @@ export default function EmailPage() {
         </div>
       </div>
 
-      {/* Message List */}
-      <div className="w-96 border-r border-(--border-color) flex flex-col bg-(--surface)">
+      <div className="w-64 border-r border-(--border-color) flex flex-col bg-(--surface)">
         <div className="p-6 border-b border-(--border-color) flex justify-between items-center">
           <p className="p-engine-xl capitalize">{activeFolder}</p>
           <Search size={16} className="text-(--text-muted)" />
@@ -488,17 +576,27 @@ export default function EmailPage() {
         {selectedThread ? (
           <div className="flex-1 overflow-y-auto p-12">
             <div className="max-w-3xl mx-auto bg-(--surface) p-10 border border-(--border-color) rounded-sm shadow-sm">
-              <h2 className="p-engine-xl border-b border-(--border-color) pb-4 mb-6">
+              <h2 className="dashboard-engine border-b border-(--border-color) pb-4 mb-6">
                 {selectedThread.title}
               </h2>
-              <div className="space-y-4">
+              <div className="flex flex-col gap-1">
                 {messages.length > 0 ? (
                   messages.map((m, i) => (
                     <div
                       key={i}
-                      className={`p-4 rounded-xl p-engine-body ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--brand) text-(--surface) ml-12"}`}
+                      className={`p-4 rounded-xl p-engine-body ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--main) ml-12"}`}
                     >
                       <p className="whitespace-pre-wrap">{m.text}</p>
+                      {m.type === "outbound" && (
+                        <div className="flex items-center gap-1 mt-2">
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${m.deliveryStatus === "delivered" ? "bg-green-500" : m.deliveryStatus === "bounced" ? "bg-red-500" : "bg-slate-300"}`}
+                          />
+                          <p className="p-engine-sm uppercase text-[8px] font-black opacity-50">
+                            {m.deliveryStatus || "Pending"}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -515,6 +613,7 @@ export default function EmailPage() {
           </div>
         )}
       </div>
+      {renderComposeOverlay()}
     </div>
   );
 }

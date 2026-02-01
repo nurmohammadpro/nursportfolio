@@ -71,7 +71,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const baseClasses = `
       relative inline-flex items-center justify-center
-      font-medium uppercase rounded-md overflow-hidden
+      font-medium uppercase rounded-sm overflow-hidden
       transition-all duration-200 ease-out
       focus-visible:outline-none focus-visible:ring-2 
       focus-visible:ring-(--text-main)/50 focus-visible:ring-offset-2

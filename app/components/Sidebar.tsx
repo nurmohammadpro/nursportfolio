@@ -15,6 +15,8 @@ import {
   LayoutDashboard,
   Mailbox,
 } from "lucide-react";
+import { useTheme } from "./ThemeProvider";
+import Image from "next/image";
 
 interface SidebarProps {
   role: "admin" | "client";
@@ -57,21 +59,18 @@ export default function Sidebar({ role }: SidebarProps) {
   ];
 
   const menuItems = role === "admin" ? adminItems : clientItems;
+  const { theme } = useTheme();
+  const logoSrc = theme === "dark" ? "/Nur-New-Light.png" : "/Nur-New-Dark.png";
 
   return (
-    <aside className="h-screen bg-(--surface) border-r border-(--border-color) flex flex-col transition-all duration-300 w-16 md:w-64">
+    <aside className="h-screen bg-(--surface) border-r border-(--border-color) flex flex-col transition-all duration-300 w-16 md:w-48">
       {/* Brand Identity - Minimalist P-tag */}
       <div className="p-6 mb-4 flex justify-center md:justify-start">
         <Link
           href="/admin/monitor"
           className="text-xl font-bold tracking-tighter"
         >
-          <p className="text-sm font-black tracking-tighter uppercase">
-            {role}{" "}
-            <span className="hidden md:inline text-(--text-muted)">
-              Dashboard
-            </span>
-          </p>
+          <Image src={logoSrc} alt="Logo" width={16} height={16} />
         </Link>
       </div>
 

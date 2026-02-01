@@ -149,7 +149,8 @@ html {
 
   .dashboard-engine {
     font-family: var(--font-body), sans-serif;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: medium;
   }
 
   .p-engine-xl {
