@@ -4,7 +4,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Animation keyframes */
   @keyframes marquee {
     0% {
       transform: translateX(0%);
@@ -35,40 +34,44 @@
 
 @layer base {
   :root {
-    --primary: #f8fafc;
+    /* Refined colors - more professional */
+    --primary: #f9fafb;
     --surface: #ffffff;
-    --subtle: #f1f5f9;
+    --subtle: #f3f4f6;
 
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --text-subtle: #94a3b8;
+    --text-main: #111827;
+    --text-muted: #4b5563;
+    --text-subtle: #6b7280;
 
-    --brand: #093fb4;
-    --brand-hover: #073496;
+    --brand: #3b82f6;
+    --brand-hover: #2563eb;
 
-    --radius-md: 12px;
-    --border-color: #f1f5f9;
+    --radius-md: 10px;
+    --border-color: #e5e7eb;
 
     --font-heading: "DM Serif Display", serif;
     --font-body: "Raleway", sans-serif;
   }
 
   .dark {
-    --primary: #0f172a;
-    --surface: #1e293b;
-    --subtle: #1e293b;
+    --primary: #111827;
+    --surface: #1f2937;
+    --subtle: #1f2937;
 
-    --text-main: #f8fafc;
-    --text-muted: #cbd5e1;
-    --text-subtle: #94a3b8;
+    --text-main: #f9fafb;
+    --text-muted: #d1d5db;
+    --text-subtle: #9ca3af;
 
-    --brand: #3b82f6;
-    --border-color: #334155;
+    --brand: #60a5fa;
+    --border-color: #374151;
   }
 
   body {
     @apply bg-(--primary) text-(--text-main) transition-colors duration-300 antialiased;
     font-family: var(--font-body);
+    font-weight: 450;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
   }
 
   h1,
@@ -79,77 +82,90 @@
   h6 {
     font-family: var(--font-heading);
     @apply font-normal text-(--text-main);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
   }
 }
 
 @layer components {
-  /* Center-aligned container logic */
   .layout-container {
-    @apply w-full max-w-7xl mx-auto px-4 md:px-8;
+    @apply w-full max-w-6xl mx-auto px-5 md:px-6;
   }
 
   .btn-brand {
-    @apply bg-(--text-main) text-(--surface) px-6 py-2.5 rounded-md 
-           font-medium transition-all active:scale-95;
+    @apply bg-(--text-main) text-(--surface) px-5 py-2.5 rounded-(--radius-md) 
+           font-medium transition-all duration-200 active:scale-95
+           hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-(--brand) focus:ring-offset-2;
   }
 
-  /* Marquee Animation Utility */
   .animate-marquee {
-    animation: marquee 30s linear infinite;
+    animation: marquee 35s linear infinite;
   }
 
   .fade-in {
-    animation: fade-in 0.8s ease-out forwards;
+    animation: fade-in 0.6s ease-out forwards;
   }
+
   .slide-up {
-    animation: slide-up 0.8s ease-out forwards;
+    animation: slide-up 0.6s ease-out forwards;
   }
 }
 
 html {
   scroll-behavior: smooth;
-  /* Adjust this value based on your Navbar height (h-16 or h-20) */
   scroll-padding-top: 5rem;
 }
 
-/* Optional: Custom scrollbar to match the minimalist theme */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--surface);
+  background: var(--subtle);
+  border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 10px;
+  border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-subtle);
 }
 
 @layer utilities {
   .p-heading-xl {
-    @apply text-3xl font-light tracking-tighter leading-none;
+    @apply text-4xl font-light tracking-tight leading-none; /* Changed to standard text-4xl */
   }
+
   .p-heading-sm {
-    @apply text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle);
+    @apply text-[10px] font-bold uppercase tracking-[0.35em] text-(--text-subtle);
   }
+
   .p-body {
-    @apply text-sm font-medium tracking-tight text-(--text-muted);
+    @apply text-sm font-normal tracking-tight text-(--text-muted) leading-relaxed;
   }
+
   .dashboard-engine {
-    font-family: var(--font-dashboard), sans-serif;
+    font-family: var(--font-body), sans-serif;
+    font-weight: 500;
   }
 
   .p-engine-xl {
-    @apply text-3xl font-light tracking-normal leading-none;
+    @apply text-3xl font-normal tracking-normal leading-snug; /* Back to standard text-3xl */
   }
 
   .p-engine-sm {
-    @apply text-[10px] font-semibold text-(--text-subtle);
+    @apply text-[11px] font-semibold text-(--text-subtle) tracking-wide;
   }
 
   .p-engine-body {
     @apply text-sm font-medium tracking-tight leading-relaxed;
+  }
+
+  /* If you need custom font sizes, use arbitrary values */
+  .text-custom-lg {
+    font-size: 2.125rem; /* Between 2xl and 3xl */
   }
 }

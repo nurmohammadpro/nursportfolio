@@ -15,8 +15,11 @@ const Hero = () => {
     "The Believer's Path",
     "EZO Media",
     "BlacAds",
+    "Dubali Vape Mart",
+    "Tiger Vai",
     "Style House",
     "Tech Tweaks",
+    "Harmony Heaven",
     "AREI Group",
     "Duncun Law",
   ];
@@ -26,7 +29,7 @@ const Hero = () => {
       {/* Main Content Area - Dropped down with pt-32 */}
       <div
         className={`
-        layout-container relative z-10 flex-1 flex flex-col items-center text-center pt-32 pb-20
+        layout-container relative z-10 flex-1 flex flex-col items-center text-center pt-16 md:pt-24 lg:pt-32 pb-20
         transition-all duration-1000 ${isLoaded ? "fade-in" : "opacity-0"}
       `}
       >
@@ -56,13 +59,13 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-20">
           <Button
             variant="primary"
-            size="lg"
+            size="md"
             icon={<ArrowRight />}
             iconPosition="right"
           >
             Explore Projects
           </Button>
-          <Button variant="outlined" size="lg" icon={<Download />}>
+          <Button variant="outlined" size="md" icon={<Download />}>
             Download CV
           </Button>
         </div>

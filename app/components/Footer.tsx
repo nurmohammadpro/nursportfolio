@@ -35,7 +35,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
           {/* Brand Identity */}
           <div className="md:col-span-5 space-y-6">
-            <h3 className="text-2xl font-black tracking-tighter text-(--text-main)">
+            <h3 className="text-2xl font-medium text-(--text-main)">
               Nur<span className="text-(--text-subtle)"> Mohammad</span>
             </h3>
             <p className="p-engine-body text-(--text-subtle) max-w-sm leading-relaxed">
