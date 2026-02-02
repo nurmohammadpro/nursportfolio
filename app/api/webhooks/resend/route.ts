@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         type: payload.type,
         hasData: !!payload.data,
       });
-    } catch (e) {
+    } catch (e: any) {
       await adminDb.collection("webhook_raw").add({
         timestamp: new Date().toISOString(),
         error: "Failed to parse JSON",
