@@ -62,9 +62,12 @@ export async function processSendGridWebhook(payload: any) {
           const base64Data = attachment.content;
           const buffer = Buffer.from(base64Data, "base64");
 
+          // Convert buffer to base64 data URL
+          const dataUrl = `data:${attachment.type};base64,${buffer.toString("base64")}`;
+
           // Upload to Cloudinary
           const cloudinaryResult = await uploadUrlToCloudinary(
-            buffer,
+            dataUrl,
             attachment.filename,
             `attachments/${docRef.id}`,
           );
