@@ -154,6 +154,47 @@ export default function EmailPage() {
     }
   };
 
+  // In your EmailPage component, add this function
+  const handleFileUpload = async (file: File) => {
+    // Use selectedThread.id if replying to an existing thread
+    // Or generate a temporary ID for new compositions
+    const folderId = selectedThread?.id || `temp-${Date.now()}`;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", `attachments/${folderId}`);
+
+    try {
+      const response = await fetch("/api/upload-cloudinary", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        // Add to newEmail attachments
+        setNewEmail((prev) => ({
+          ...prev,
+          attachments: [
+            ...prev.attachments,
+            {
+              name: file.name,
+              size: file.size,
+              url: result.url,
+              publicId: result.publicId,
+              type: file.type,
+            },
+          ],
+        }));
+        return result.url;
+      }
+      throw new Error("Upload failed");
+    } catch (error) {
+      console.error("Upload error:", error);
+      throw error;
+    }
+  };
+
   const handleDownloadAttachment = async (attachment: any) => {
     try {
       // For Cloudinary, we can create a download link with transformations
