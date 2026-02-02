@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Select from "@/app/components/Select";
+import { cloudinary } from "@/app/lib/cloudinary";
 
 // --- HELPERS ---
 const MenuAction = ({ icon: Icon, label, onClick, className = "" }: any) => (
@@ -64,6 +65,7 @@ export default function EmailPage() {
     subject: "",
     body: "",
     fromEmail: "",
+    attachments: [] as any[],
   });
 
   useEffect(() => {
@@ -142,16 +144,47 @@ export default function EmailPage() {
     });
     if (res.ok) {
       setIsComposing(false);
-      setNewEmail({ to: "", subject: "", body: "", fromEmail: "" });
+      setNewEmail({
+        to: "",
+        subject: "",
+        body: "",
+        fromEmail: "",
+        attachments: [],
+      });
     }
   };
 
+  const handleDownloadAttachment = async (attachment: any) => {
+    try {
+      // For Cloudinary, we can create a download link with transformations
+      const downloadUrl = attachment.url;
+
+      // Create a temporary link element to trigger the download
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = attachment.name;
+      link.target = "_blank"; // Open in new tab for better UX
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading attachment:", error);
+      // You could show an error message to the user here
+    }
+  };
+
+  const removeAttachment = (index: number) => {
+    setNewEmail((prev) => ({
+      ...prev,
+      attachments: prev.attachments.filter((_, i) => i !== index),
+    }));
+  };
   // Unified Compose Overlay for both Mobile and Desktop
   const renderComposeOverlay = () => (
     <AnimatePresence>
       {isComposing && (
         <div
-          className="fixed inset-0 z-[999] bg-(--text-main)/40 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-999 bg-(--text-main)/40 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setIsComposing(false)}
         >
           <motion.div
@@ -207,19 +240,61 @@ export default function EmailPage() {
                 className="w-full h-48 bg-transparent outline-none p-engine-body resize-none text-(--text-main)"
               />
             </div>
-            <div className="p-6 bg-(--subtle) flex justify-end items-center gap-4">
-              <button
-                onClick={() => setIsComposing(false)}
-                className="p-engine-sm uppercase opacity-50 text-(--text-main)"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCompose}
-                className="btn-brand p-engine-sm uppercase px-8"
-              >
-                Send Now
-              </button>
+            <div className="p-6 bg-(--subtle) flex justify-between items-center gap-4">
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  {newEmail.attachments.map((file, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-xl"
+                    >
+                      <Paperclip size={10} className="text-(--brand)" />
+                      <span className="text-[10px] font-bold text-(--text-main)">
+                        {file.name}
+                      </span>
+                      <button
+                        onClick={() => removeAttachment(idx)}
+                        className="hover:bg-red-500/10 p-1 rounded"
+                      >
+                        <X size={10} className="text-red-500" />
+                      </button>
+                    </div>
+                  ))}
+
+                  <label className="cursor-pointer flex items-center gap-2 px-4 py-1.5 bg-(--text-main) text-(--surface) rounded-xl text-[10px] font-black uppercase transition-transform active:scale-95">
+                    <Plus size={12} /> Add File
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            await handleFileUpload(file);
+                          } catch (error) {
+                            // Handle upload error (show toast, etc.)
+                            console.error("Failed to upload file:", error);
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setIsComposing(false)}
+                  className="p-engine-sm uppercase opacity-50 text-(--text-main)"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCompose}
+                  className="btn-brand p-engine-sm uppercase px-8"
+                >
+                  Send Now
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -401,11 +476,11 @@ export default function EmailPage() {
 
   // --- DESKTOP UI ---
   return (
-    <div className="dashboard-engine h-[calc(100vh-120px)] flex bg-(--surface) border border-(--border-color) rounded-xl overflow-hidden relative">
+    <div className="dashboard-engine h-[calc(100vh-120px)] flex bg-(--surface) border border-(--border-color) rounded-sm overflow-hidden relative">
       <div className="w-48 border-r border-(--border-color) bg-(--subtle) p-2 flex flex-col gap-8">
         <button
           onClick={() => setIsComposing(true)}
-          className="btn-brand w-full flex items-center justify-center gap-2"
+          className="btn-brand-sm w-full flex items-center justify-center gap-2"
         >
           <Plus size={16} /> Compose
         </button>
@@ -435,7 +510,7 @@ export default function EmailPage() {
             <button
               key={f.id}
               onClick={() => setActiveFolder(f.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all ${activeFolder === f.id ? "bg-(--text-main) text-(--surface)" : "text-(--text-muted) hover:bg-(--surface)"}`}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-sm transition-all ${activeFolder === f.id ? "bg-(--text-main) text-(--surface)" : "text-(--text-muted) hover:bg-(--surface)"}`}
             >
               <f.icon size={14} />
               <p className="p-engine-sm font-bold">{f.label}</p>
@@ -574,8 +649,8 @@ export default function EmailPage() {
 
       <div className="flex-1 flex flex-col bg-(--primary)">
         {selectedThread ? (
-          <div className="flex-1 overflow-y-auto p-12">
-            <div className="max-w-3xl mx-auto bg-(--surface) p-10 border border-(--border-color) rounded-sm shadow-sm">
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="max-w-3xl mx-auto bg-(--surface) p-4 border border-(--border-color) rounded-sm shadow-sm">
               <h2 className="dashboard-engine border-b border-(--border-color) pb-4 mb-6">
                 {selectedThread.title}
               </h2>
@@ -587,6 +662,35 @@ export default function EmailPage() {
                       className={`p-4 rounded-xl p-engine-body ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--main) ml-12"}`}
                     >
                       <p className="whitespace-pre-wrap">{m.text}</p>
+                      {/* ATTACHMENT SECTION */}
+                      // In your attachment display // Keep this for displaying
+                      received attachments
+                      {m.attachments?.length > 0 && (
+                        <div className="mt-4 pt-3 border-t border-(--border-color)/20 flex flex-wrap gap-2">
+                          {m.attachments.map((file: any, idx: number) => (
+                            <div
+                              key={file.id || idx}
+                              className="flex items-center gap-2 px-3 py-1.5 bg-(--surface) border border-(--border-color) rounded-xl shadow-sm group cursor-pointer hover:bg-(--subtle)"
+                              onClick={() => handleDownloadAttachment(file)}
+                            >
+                              <Paperclip
+                                size={12}
+                                className="text-(--text-muted) group-hover:text-(--brand) transition-colors"
+                              />
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-[10px] font-bold text-(--text-main) truncate max-w-37.5">
+                                  {file.name || "Attachment"}
+                                </span>
+                                <span className="text-[8px] font-black uppercase opacity-40">
+                                  {file.size
+                                    ? (file.size / 1024).toFixed(1) + " KB"
+                                    : "File"}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {m.type === "outbound" && (
                         <div className="flex items-center gap-1 mt-2">
                           <div
@@ -600,9 +704,29 @@ export default function EmailPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="p-engine-body italic opacity-50">
-                    {selectedThread.description}
-                  </p>
+                  <div className="flex flex-col gap-4">
+                    <p className="p-engine-body italic opacity-50">
+                      {selectedThread.description}
+                    </p>
+                    {/* Show attachments from the thread description if any */}
+                    {selectedThread.attachments?.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {selectedThread.attachments.map(
+                          (file: any, idx: number) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-xl"
+                            >
+                              <Paperclip size={12} className="text-(--brand)" />
+                              <span className="text-[10px] font-bold">
+                                {file.name}
+                              </span>
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

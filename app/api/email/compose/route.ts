@@ -6,8 +6,7 @@ import { Resend } from "resend";
 export async function POST(req: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    const { clientEmail, title, description, fromEmail, attachments } =
-      await req.json();
+    const { to, subject, body, fromEmail, attachments } = await req.json();
 
     const cookieStore = await cookies();
     const session = cookieStore.get("session")?.value;
@@ -18,10 +17,10 @@ export async function POST(req: Request) {
 
     // Create project with 'sent' status so it doesn't appear in Inbox
     const projectRef = await adminDb.collection("projects").add({
-      clientEmail,
-      clientName: clientEmail.split("@")[0],
-      title,
-      description,
+      clientEmail: to.toLowerCase().trim(),
+      clientName: to.split("@")[0],
+      title: subject,
+      description: body,
       fromEmail, // Critical for mailbox shifting logic
       status: "sent",
       starred: false,
@@ -32,7 +31,7 @@ export async function POST(req: Request) {
 
     // Add initial message to the sub-collection
     await projectRef.collection("messages").add({
-      text: description,
+      text: body,
       sender: fromEmail,
       type: "outbound",
       createdAt: timestamp,
@@ -41,13 +40,13 @@ export async function POST(req: Request) {
     // Send via Resend
     await resend.emails.send({
       from: `Nur Mohammad <${fromEmail}>`,
-      to: [clientEmail],
-      subject: title,
+      to: [to],
+      subject: subject,
       attachments: attachments?.map((a: any) => ({
         filename: a.name,
         path: a.url,
       })),
-      text: description,
+      text: body,
     });
 
     return NextResponse.json({ success: true, id: projectRef.id });

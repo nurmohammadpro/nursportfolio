@@ -93,7 +93,12 @@
   }
 
   .btn-brand {
-    @apply bg-(--text-main) text-(--surface) px-5 py-2.5 rounded-(--radius-md) 
+    @apply bg-(--text-main) text-(--surface) px-5 py-2.5 rounded-md 
+           font-medium transition-all duration-200 active:scale-95
+           hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-(--brand) focus:ring-offset-2;
+  }
+  .btn-brand-sm {
+    @apply bg-(--text-main) text-(--surface) px-5 py-2.5 rounded-sm 
            font-medium transition-all duration-200 active:scale-95
            hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-(--brand) focus:ring-offset-2;
   }
