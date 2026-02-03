@@ -14,7 +14,7 @@ export default function AdminLayout({
   const router = useRouter();
 
   useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
+    auth.onAuthStateChanged(async (user: any) => {
       if (user) {
         const tokenResult = await user.getIdTokenResult();
         if (tokenResult.claims.role === "admin") {
