@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Mail, Shield, Clock, Loader2, CheckCircle2 } from "lucide-react";
+import Select from "@/app/components/Select";
 import { db } from "@/app/lib/firebase"; // Frontend SDK
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
@@ -10,6 +11,13 @@ export default function MailboxManager() {
   const [role, setRole] = useState("Primary");
   const [isCreating, setIsCreating] = useState(false);
   const [mailboxes, setMailboxes] = useState<any[]>([]);
+
+  const roleOptions = [
+    { value: "Primary", label: "Primary" },
+    { value: "Billing", label: "Billing" },
+    { value: "Support", label: "Support" },
+    { value: "Automation", label: "Automation" },
+  ];
 
   // 1. Real-time Registry Sync
   useEffect(() => {
@@ -80,20 +88,13 @@ export default function MailboxManager() {
             </div>
           </div>
 
-          <div className="w-48 space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-(--text-muted)">
-              Role
-            </p>
-            <select
+          <div className="w-56 flex items-end">
+            <Select
+              label="Role"
+              options={roleOptions}
               value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full bg-transparent border-b border-(--border-color) outline-none text-sm font-semibold"
-            >
-              <option>Primary</option>
-              <option>Billing</option>
-              <option>Support</option>
-              <option>Automation</option>
-            </select>
+              onChange={setRole}
+            />
           </div>
 
           <button

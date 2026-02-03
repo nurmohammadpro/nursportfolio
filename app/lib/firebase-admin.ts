@@ -3,12 +3,12 @@ import admin from "firebase-admin";
 import { getApps, cert, getApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
-import { getStorage } from "firebase-admin/storage"; // Add this import for storage
+import { getStorage } from "firebase-admin/storage"; 
 
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
 const privateKey = process.env.FIREBASE_PRIVATE_KEY;
-const storageBucket = process.env.FIREBASE_STORAGE_BUCKET; // Add this for storage bucket
+const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
 
 function initializeAdmin() {
   if (getApps().length > 0) return getApp();
@@ -25,7 +25,7 @@ function initializeAdmin() {
   }
 
   try {
-    const formattedKey = privateKey.replace(/\\n/g, "\n");
+    const formattedKey = privateKey.replace(/\\n/g, "\n").replace(/"/g, "");
     return admin.initializeApp({
       credential: cert({
         projectId,
