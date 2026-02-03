@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ThemeProvider from "@/app/components/ThemeProvider";
 import LayoutWrapper from "./components/LayoutWrapper";
+import { Analytics } from "@vercel/analytics/next";
 
 const dmSerif = DM_Serif_Display({
   subsets: ["latin"],
@@ -153,6 +154,7 @@ export default function RootLayout({
         <ThemeProvider>
           <LayoutWrapper>{children}</LayoutWrapper>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
