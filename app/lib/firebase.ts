@@ -20,20 +20,18 @@ const firebaseConfig = {
 
 // Initialize Firebase
 let app;
-if (getApps().length === 0) {
-  if (firebaseConfig.apiKey) {
-    app = initializeApp(firebaseConfig);
-  } else {
-    // If we're here, it's likely a build-time prerender where env vars aren't populated.
-    // We provide a dummy app object if not already initialized to prevent crashes.
-    console.warn("Firebase: API key is missing. Skipping initialization (likely build-time).");
-    app = null as any; 
-  }
-} else {
+if (getApps().length > 0) {
   app = getApp();
+} else if (firebaseConfig.apiKey) {
+  app = initializeApp(firebaseConfig);
+} else {
+  // If we're here, it's likely a build-time prerender or missing env vars in production.
+  console.warn("Firebase: API key is missing. Services will not be initialized.");
+  app = null;
 }
-// const analytics = getAnalytics(app);
-const db = getFirestore(app);
-const auth = getAuth(app);
+
+// const analytics = app ? getAnalytics(app) : null;
+const db = app ? getFirestore(app) : (null as any);
+const auth = app ? getAuth(app) : (null as any);
 
 export { app, db, auth };
