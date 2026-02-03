@@ -15,7 +15,7 @@ export default function EngineLayout({
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user: any | null) => {
       if (!user) {
         router.push("/signin");
         return;
