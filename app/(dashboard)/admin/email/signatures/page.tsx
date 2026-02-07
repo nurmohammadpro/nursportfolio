@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db } from "@/app/lib/firebase";
-import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { PenTool, Save, ShieldCheck } from "lucide-react";
 
 export default function SignatureManager() {

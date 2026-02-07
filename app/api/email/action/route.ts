@@ -59,6 +59,15 @@ export async function PATCH(req: Request) {
         await EmailThread.findByIdAndDelete(threadId);
         break;
 
+      case "toggleStar":
+        const starThread = await EmailThread.findById(threadId);
+        if (starThread) {
+          starThread.starred = !starThread.starred;
+          starThread.updatedAt = timestamp;
+          await starThread.save();
+        }
+        break;
+
       default:
         return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }

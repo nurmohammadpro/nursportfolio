@@ -1,17 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db } from "@/app/lib/firebase";
-import { collection, onSnapshot, addDoc } from "firebase/firestore";
 import { FileText, Plus, Zap } from "lucide-react";
 
 export default function TemplateManager() {
   const [templates, setTemplates] = useState<any[]>([]);
 
   useEffect(() => {
-    return onSnapshot(collection(db, "email_templates"), (snapshot) => {
-      setTemplates(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-    });
+    const fetchTemplates = async () => {
+      try {
+        const res = await fetch("/api/email/templates");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setTemplates(data);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    };
+    fetchTemplates();
   }, []);
 
   return (

@@ -2,7 +2,7 @@ import mongoose, { Schema, model, models } from "mongoose";
 
 const SignatureSchema = new Schema(
   {
-    alias: { type: String, required: true },
+    alias: { type: String },
     mailboxId: { type: String, required: true },
     content: { type: String, required: true },
   },

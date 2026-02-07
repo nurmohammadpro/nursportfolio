@@ -1,18 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db } from "@/app/lib/firebase";
-import {
-  collection,
-  query,
-  onSnapshot,
-  orderBy,
-  where,
-  doc,
-  getDoc,
-  updateDoc,
-  DocumentSnapshot,
-} from "firebase/firestore";
 import {
   Plus,
   Mail,
@@ -69,67 +57,88 @@ export default function EmailPage() {
   });
 
   useEffect(() => {
+    const fetchMailboxes = async () => {
+      const res = await fetch("/api/email/mailbox");
+      const data = await res.json();
+      if (Array.isArray(data)) setMailboxes(data);
+    };
+    fetchMailboxes();
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
     window.addEventListener("resize", handleResize);
-    const unsubBoxes = onSnapshot(collection(db, "mailboxes"), (s) =>
-      setMailboxes(s.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    );
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      unsubBoxes();
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // 1. Thread Listener
+  // 1. Thread Fetcher
   useEffect(() => {
-    const projectsRef = collection(db, "projects");
-    const q =
-      activeFolder === "starred"
-        ? query(
-            projectsRef,
-            where("starred", "==", true),
-            orderBy("updatedAt", "desc"),
-          )
-        : query(
-            projectsRef,
-            where("status", "==", activeFolder),
-            orderBy("updatedAt", "desc"),
-          );
+    const fetchThreads = async () => {
+      const res = await fetch("/api/admin/projects");
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        let filtered = data;
+        if (activeFolder !== "starred") {
+          filtered = data.filter((t: any) => t.status === activeFolder);
+        } else {
+          filtered = data.filter((t: any) => t.starred);
+        }
 
-    return onSnapshot(q, (s) => {
-      let data = s.docs.map((d) => ({ id: d.id, ...d.data() }));
-      if (activeAlias !== "all") {
-        data = data.filter(
-          (t: any) =>
-            t.fromEmail === activeAlias ||
-            t.clientEmail === activeAlias ||
-            (!t.fromEmail && activeAlias === "info@nurmohammad.pro"),
-        );
+        if (activeAlias !== "all") {
+          filtered = filtered.filter(
+            (t: any) =>
+              t.fromEmail === activeAlias ||
+              t.clientEmail === activeAlias ||
+              (!t.fromEmail && activeAlias === "info@nurmohammad.pro"),
+          );
+        }
+        setThreads(filtered);
       }
-      setThreads(data);
-    });
+    };
+    fetchThreads();
+    // Refresh every 30 seconds for "pseudo" real-time
+    const interval = setInterval(fetchThreads, 30000);
+    return () => clearInterval(interval);
   }, [activeAlias, activeFolder]);
 
   useEffect(() => {
-    if (!selectedThread) return;
-    const q = query(
-      collection(db, "projects", selectedThread.id, "messages"),
-      orderBy("createdAt", "asc"),
-    );
-    return onSnapshot(q, (s) =>
-      setMessages(s.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    );
+    if (selectedThread) {
+      setMessages(selectedThread.messages || []);
+    }
   }, [selectedThread]);
 
-  const toggleStar = async (id: string, state: boolean) =>
-    await updateDoc(doc(db, "projects", id), { starred: !state });
+  const toggleStar = async (id: string, state: boolean) => {
+    await handleAction(id, "toggleStar");
+  };
 
   const handleAction = async (threadId: string, action: string) => {
-    await fetch("/api/email/action", {
+    const res = await fetch("/api/email/action", {
       method: "PATCH",
       body: JSON.stringify({ threadId, action }),
     });
+    if (res.ok) {
+      // Refresh current threads to see updates
+      const fetchThreads = async () => {
+        const resThreads = await fetch("/api/admin/projects");
+        const data = await resThreads.json();
+        if (Array.isArray(data)) {
+          let filtered = data;
+          if (activeFolder !== "starred") {
+            filtered = data.filter((t: any) => t.status === activeFolder);
+          } else {
+            filtered = data.filter((t: any) => t.starred);
+          }
+          if (activeAlias !== "all") {
+            filtered = filtered.filter((t: any) => t.fromEmail === activeAlias || t.clientEmail === activeAlias);
+          }
+          setThreads(filtered);
+          // Update selected thread if it was the one modified
+          if (selectedThread && selectedThread.id === threadId) {
+            const updated = data.find((t: any) => t._id === threadId || t.id === threadId);
+            if (updated) setSelectedThread(updated);
+          }
+        }
+      };
+      await fetchThreads();
+    }
     setMenuOpen(null);
     if (["delete", "archive", "trash", "restore", "spam"].includes(action)) {
       if (isMobile) setMobileScreen("list");
@@ -140,7 +149,7 @@ export default function EmailPage() {
   const handleCompose = async () => {
     const res = await fetch("/api/email/compose", {
       method: "POST",
-      body: JSON.stringify({ ...newEmail, status: "sent" }),
+      body: JSON.stringify({ ...newEmail }),
     });
     if (res.ok) {
       setIsComposing(false);
@@ -399,7 +408,7 @@ export default function EmailPage() {
                         size={14}
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleStar(t.id, t.starred);
+                          toggleStar(t._id || t.id, t.starred);
                         }}
                         className={
                           t.starred
@@ -449,7 +458,7 @@ export default function EmailPage() {
                 <Star
                   size={18}
                   onClick={() =>
-                    toggleStar(selectedThread.id, selectedThread.starred)
+                    toggleStar(selectedThread._id || selectedThread.id, selectedThread.starred)
                   }
                   className={
                     selectedThread?.starred
@@ -459,24 +468,24 @@ export default function EmailPage() {
                 />
                 <Mail
                   size={18}
-                  onClick={() => handleAction(selectedThread.id, "toggleRead")}
+                  onClick={() => handleAction(selectedThread._id || selectedThread.id, "toggleRead")}
                 />
                 {activeFolder === "trash" ? (
                   <Inbox
                     size={18}
-                    onClick={() => handleAction(selectedThread.id, "restore")}
+                    onClick={() => handleAction(selectedThread._id || selectedThread.id, "restore")}
                   />
                 ) : (
                   <Trash2
                     size={18}
-                    onClick={() => handleAction(selectedThread.id, "trash")}
+                    onClick={() => handleAction(selectedThread._id || selectedThread.id, "trash")}
                   />
                 )}
                 <ShieldAlert
                   size={18}
                   onClick={() =>
                     handleAction(
-                      selectedThread.id,
+                      selectedThread._id || selectedThread.id,
                       activeFolder === "spam" ? "restore" : "spam",
                     )
                   }
@@ -597,14 +606,14 @@ export default function EmailPage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setMenuOpen(menuOpen === t.id ? null : t.id);
+                      setMenuOpen(menuOpen === (t._id || t.id) ? null : (t._id || t.id));
                     }}
                     className="p-1 hover:bg-(--border-color) rounded-md text-(--text-subtle)"
                   >
                     <MoreVertical size={14} />
                   </button>
                   <AnimatePresence>
-                    {menuOpen === t.id && (
+                    {menuOpen === (t._id || t.id) && (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -616,13 +625,13 @@ export default function EmailPage() {
                             <MenuAction
                               icon={Inbox}
                               label="Restore to Inbox"
-                              onClick={() => handleAction(t.id, "restore")}
+                              onClick={() => handleAction(t._id || t.id, "restore")}
                             />
                             <div className="h-px bg-(--border-color) my-1" />
                             <MenuAction
                               icon={Trash2}
                               label="Delete Permanently"
-                              onClick={() => handleAction(t.id, "delete")}
+                               onClick={() => handleAction(t._id || t.id, "delete")}
                               className="text-red-500"
                             />
                           </>
@@ -631,13 +640,13 @@ export default function EmailPage() {
                             <MenuAction
                               icon={ShieldCheck}
                               label="Not Spam"
-                              onClick={() => handleAction(t.id, "restore")}
+                              onClick={() => handleAction(t._id || t.id, "restore")}
                             />
                             <div className="h-px bg-(--border-color) my-1" />
                             <MenuAction
                               icon={Trash2}
                               label="Move to Trash"
-                              onClick={() => handleAction(t.id, "trash")}
+                              onClick={() => handleAction(t._id || t.id, "trash")}
                             />
                           </>
                         ) : (
@@ -656,18 +665,18 @@ export default function EmailPage() {
                             <MenuAction
                               icon={Mail}
                               label={t.unread ? "Mark Read" : "Mark Unread"}
-                              onClick={() => handleAction(t.id, "toggleRead")}
+                               onClick={() => handleAction(t._id || t.id, "toggleRead")}
                             />
                             <div className="h-px bg-(--border-color) my-1" />
                             <MenuAction
                               icon={ShieldAlert}
                               label="Spam"
-                              onClick={() => handleAction(t.id, "spam")}
+                               onClick={() => handleAction(t._id || t.id, "spam")}
                             />
                             <MenuAction
                               icon={Trash2}
                               label="Move to Trash"
-                              onClick={() => handleAction(t.id, "trash")}
+                              onClick={() => handleAction(t._id || t.id, "trash")}
                               className="text-red-500"
                             />
                           </>
