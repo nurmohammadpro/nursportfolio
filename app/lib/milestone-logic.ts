@@ -1,3 +1,7 @@
+import dbConnect from "./dbConnect";
+import AgencyProject from "../models/AgencyProject";
+import Quote from "../models/Quote";
+
 /**
  * PRODUCTION-GRADE MILESTONE LINKAGE
  * Automatically generates a quote when a technical phase is completed.
@@ -8,32 +12,28 @@ export const completeMilestoneAndRequestPayment = async (
   milestoneLabel: string,
 ) => {
   try {
-    const projectRef = doc(db, "projects", projectId);
-    const projectSnap = await getDoc(projectRef);
+    await dbConnect();
+    const project = await AgencyProject.findById(projectId);
 
-    if (!projectSnap.exists()) return;
-    const projectData = projectSnap.data();
+    if (!project) return;
 
     // 1. Update the technical status in the project document
-    const updatedMilestones = [...projectData.milestones];
-    updatedMilestones[milestoneIndex].completed = true;
-    updatedMilestones[milestoneIndex].completedAt = new Date().toISOString();
+    project.milestones[milestoneIndex].completed = true;
+    project.milestones[milestoneIndex].completedAt = new Date();
+    project.status = "in_progress";
+    project.updatedAt = new Date();
 
-    await updateDoc(projectRef, {
-      milestones: updatedMilestones,
-      updatedAt: new Date().toISOString(),
-    });
+    await project.save();
 
     // 2. Automate the Quote Generation for this Milestone
-    const quoteAmount = projectData.totalPrice / projectData.milestones.length;
+    const quoteAmount = project.totalPrice / project.milestones.length;
 
-    await addDoc(collection(db, "quotes"), {
+    await Quote.create({
       projectId: projectId,
-      clientId: projectData.clientId,
-      amount: quoteAmount.toFixed(2),
+      clientId: project.clientId,
+      amount: quoteAmount,
       subject: `Payment for Milestone: ${milestoneLabel}`,
       status: "pending",
-      createdAt: new Date().toISOString(),
     });
 
     console.log(`Milestone ${milestoneLabel} locked. Payment requested.`);

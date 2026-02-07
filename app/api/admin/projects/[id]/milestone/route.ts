@@ -1,6 +1,6 @@
 import { withAuth, AuthenticatedContext } from "@/app/lib/auth-middleware";
 import dbConnect from "@/app/lib/dbConnect";
-import EmailThread from "@/app/models/EmailThread";
+import AgencyProject from "@/app/models/AgencyProject";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteParams = {
@@ -19,7 +19,7 @@ export const PATCH = withAuth<RouteParams>(
 
       await dbConnect();
 
-      const updatedEmailThread = await EmailThread.findByIdAndUpdate(
+      const updatedProject = await AgencyProject.findByIdAndUpdate(
         projectId,
         {
           $set: {
@@ -32,13 +32,13 @@ export const PATCH = withAuth<RouteParams>(
         { new: true }
       );
 
-      if (!updatedEmailThread) {
+      if (!updatedProject) {
         return NextResponse.json({ error: "Project not found" }, { status: 404 });
       }
 
       return NextResponse.json({
         message: "Project updated successfully",
-        project: updatedEmailThread,
+        project: updatedProject,
       });
     } catch (error) {
       console.error("Error updating project:", error);
