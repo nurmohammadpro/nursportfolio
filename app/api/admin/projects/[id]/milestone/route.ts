@@ -1,39 +1,48 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { withAuth, AuthenticatedContext } from "@/app/lib/auth-middleware";
 import dbConnect from "@/app/lib/dbConnect";
 import EmailThread from "@/app/models/EmailThread";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(req:NextRequest, {params}: {params: {id: string}}) {
+type RouteParams = {
+  id: string;
+};
+
+export const PATCH = withAuth<RouteParams>(
+  async (req: NextRequest, context: AuthenticatedContext<RouteParams>) => {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any).role !== "ADMIN") {
-            return Response.json({ error: "Unauthorized" }, { status: 401 });
-        }
+      if ((context.user as any).role !== "admin") {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
 
-        const {index} = await req.json()
-        const projectId = params.id;
+      const { index } = await req.json();
+      const projectId = context.params.id;
 
-        await dbConnect()
+      await dbConnect();
 
-        const updatedEmailThread = await EmailThread.findByIdAndUpdate(
-            projectId,
-            {$set: {
-                [`milestones.${index}.completed`]: true,
-                [`milestones.${index}.completedAt`]: new Date(),
-                status: "in_progress",
-                updatedAt: new Date()
-            }},
-            {new: true}
-        )
+      const updatedEmailThread = await EmailThread.findByIdAndUpdate(
+        projectId,
+        {
+          $set: {
+            [`milestones.${index}.completed`]: true,
+            [`milestones.${index}.completedAt`]: new Date(),
+            status: "in_progress",
+            updatedAt: new Date(),
+          },
+        },
+        { new: true }
+      );
 
-        if (!updatedEmailThread) {
-            return NextResponse.json({error: "Project not found"}, {status: 404})
-        }
+      if (!updatedEmailThread) {
+        return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      }
 
-        return NextResponse.json({message: "Project updated successfully", project: updatedEmailThread})
+      return NextResponse.json({
+        message: "Project updated successfully",
+        project: updatedEmailThread,
+      });
     } catch (error) {
-        console.error("Error updating project:", error);
-        return NextResponse.json({error: "Internal server error"}, {status: 500})
+      console.error("Error updating project:", error);
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
-}
+  }
+);
