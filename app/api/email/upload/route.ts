@@ -1,14 +1,16 @@
 import { AwsClient } from "aws4fetch";
 import { NextResponse } from "next/server";
 
-const r2 = new AwsClient({
-  accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  service: "s3",
-  region: "auto",
-});
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+  const r2 = new AwsClient({
+    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+    service: "s3",
+    region: "auto",
+  });
+
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
