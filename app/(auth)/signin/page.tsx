@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { auth } from "@/app/lib/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { LogIn, Loader2, Lock, Mail } from "lucide-react";
 import Input from "@/app/components/Input";
 import Button from "@/app/components/Button";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -22,41 +21,27 @@ export default function SignInPage() {
     setError("");
 
     try {
-      // 1. Authenticate with Firebase Client SDK
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      const user = userCredential.user;
-
-      // 2. Retrieve the ID Token (force refresh to get current claims)
-      const idToken = await user.getIdToken(true);
-
-      // 3. Sync the session with the Server (API Route) to set the 'session' cookie
-      const response = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
+      const result = await signIn("credentials", {
+        email: email.toLocaleLowerCase().trim(),
+        password: password,
+        redirect: false,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to establish server session.");
+      if (result?.error) {
+        throw new Error("Invalid email or password");
       }
 
-      const { role } = await response.json();
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+      const userRole = session?.user?.role;
 
-      // 4. Role-Based Redirection
-      // Based on your admin status, you will be routed to /admin
-      if (role === "admin") {
-        router.push("/admin/monitor");
+      if (userRole === "admin") {
+        router.push("admin/monitor");
       } else {
-        router.push("/dashboard");
+        router.push("/client/dashboard");
       }
-    } catch (err: any) {
-      console.error("Sign-in Client Error:", err);
-      setError(err.message || "Invalid credentials or access denied.");
+    } catch (error: any) {
+      setError(error.message || "An unexpected error occurred");
+      console.error("Sign-in error:", error);
     } finally {
       setLoading(false);
     }

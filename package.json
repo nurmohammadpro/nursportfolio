@@ -9,6 +9,7 @@
     "deploy": "npx @opennextjs/cloudflare deploy"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.11.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.7",
@@ -22,7 +23,10 @@
     "firebase-admin": "^12.7.0",
     "framer-motion": "^12.29.2",
     "lucide-react": "^0.563.0",
+    "mongodb": "^6.21.0",
+    "mongoose": "^8.10.0",
     "next": "^16.1.6",
+    "next-auth": "^4.24.13",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-type-animation": "^3.2.0",

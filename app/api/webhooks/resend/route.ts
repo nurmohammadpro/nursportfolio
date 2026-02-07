@@ -1,44 +1,64 @@
-// app/api/webhooks/resend/route.ts
+import dbConnect from "@/app/lib/dbConnect";
+import Project from "@/app/models/Project";
 import { NextResponse } from "next/server";
-import { adminDb } from "@/app/lib/firebase-admin";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
-  console.log("=== WEBHOOK START ===");
-
   try {
-    // Just log that we received something
-    await adminDb.collection("webhook_raw").add({
-      timestamp: new Date().toISOString(),
-      received: true,
-      method: req.method,
-    });
+    await dbConnect(); 
+    const payload = await req.json();
+    
+    if (payload.type !== "email.received") return NextResponse.json({ ok: true });
 
-    // Try to parse the payload
-    let payload;
-    try {
-      payload = await req.json();
-      await adminDb.collection("webhook_raw").add({
-        timestamp: new Date().toISOString(),
-        type: payload.type,
-        hasData: !!payload.data,
-      });
-    } catch (e: any) {
-      await adminDb.collection("webhook_raw").add({
-        timestamp: new Date().toISOString(),
-        error: "Failed to parse JSON",
-        errorMessage: e.message,
-      });
+    const emailId = payload.data?.email_id || payload.data?.id;
+    let emailData = payload.data;
+
+    // Fetch full content using the Resend Receiving API
+    if (emailId && !emailId.startsWith("re_ts_")) {
+      const { data } = await resend.emails.receiving.get(emailId);
+      if (data) emailData = data;
     }
 
-    return NextResponse.json({ received: true });
-  } catch (error: any) {
-    console.error("Webhook error:", error);
-    await adminDb.collection("webhook_raw").add({
-      timestamp: new Date().toISOString(),
-      error: "Webhook failed",
-      errorMessage: error.message,
-    });
+    const fromRaw = emailData.from || "";
+    const fromEmail = fromRaw.includes("<") 
+      ? fromRaw.split("<")[1].replace(">", "").toLowerCase().trim() 
+      : fromRaw.toLowerCase().trim();
+    const newMessage = {
+      text: emailData.html || emailData.text || `Subject: ${emailData.subject}`,
+      sender: fromEmail,
+      type: "inbound",
+      createdAt: new Date(),
+      attachments: emailData.attachments?.map((att: any) => ({
+        id: att.id,
+        name: att.filename,
+        type: att.content_type,
+        size: att.size
+      })) || []
+    };
 
-    return NextResponse.json({ error: true });
+    const updatedProject = await Project.findOneAndUpdate(
+      { clientEmail: fromEmail },
+      { 
+        $push: { messages: newMessage },
+        $set: { 
+          status: "inbox", 
+          unread: true, 
+          updatedAt: new Date(),
+          title: emailData.subject || "No Subject" // Optional: Update thread title
+        } 
+      },
+      { new: true }
+    );
+
+    if (!updatedProject) {
+      console.log(`No project found for sender: ${fromEmail}`);
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error: any) {
+    console.error("Mongoose Inbound Error:", error.message);
+    return NextResponse.json({ ok: true }); // Prevent Resend retries
   }
 }

@@ -1,9 +1,10 @@
 import { DM_Serif_Display, Raleway, Inter } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
-import ThemeProvider from "@/app/components/ThemeProvider";
+import { Providers } from "./components/Providers";
 import LayoutWrapper from "./components/LayoutWrapper";
 import { Analytics } from "@vercel/analytics/next";
+import { SessionProvider } from "next-auth/react";
 
 const dmSerif = DM_Serif_Display({
   subsets: ["latin"],
@@ -151,9 +152,9 @@ export default function RootLayout({
       <body
         className={`${dmSerif.variable} ${raleway.variable} ${inter.variable} font-body antialiased`}
       >
-        <ThemeProvider>
+        <Providers>
           <LayoutWrapper>{children}</LayoutWrapper>
-        </ThemeProvider>
+        </Providers>
         <Analytics />
       </body>
     </html>
