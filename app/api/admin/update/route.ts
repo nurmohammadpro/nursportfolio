@@ -1,7 +1,7 @@
-//app/api/admin/update/route.ts
 import { withAuth } from "@/app/lib/auth-middleware";
-import { adminDb } from "@/app/lib/firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/app/lib/dbConnect";
+import ServiceRequest from "@/app/models/ServiceRequest";
 
 export const PATCH = withAuth(async (req: NextRequest, { user }) => {
   console.log(`Admin ${user.email} is updating a service request`);
@@ -14,25 +14,17 @@ export const PATCH = withAuth(async (req: NextRequest, { user }) => {
       );
     }
 
-    const updateData: {
-      progress?: number;
-      status?: string;
-      updatedAt: string;
-    } = {
-      updatedAt: new Date().toISOString(),
-    };
+    await dbConnect();
 
-    if (progress !== undefined) {
-      updateData.progress = progress;
-    }
-    if (status !== undefined) {
-      updateData.status = status;
-    }
+    const updateData: any = {};
+    if (progress !== undefined) updateData.progress = progress;
+    if (status !== undefined) updateData.status = status;
 
-    await adminDb
-      .collection("service_requests")
-      .doc(requestId)
-      .update(updateData);
+    const updatedRequest = await ServiceRequest.findByIdAndUpdate(
+      requestId,
+      { $set: updateData },
+      { new: true }
+    );
 
     return NextResponse.json({ message: "Update successful" }, { status: 200 });
   } catch (error) {

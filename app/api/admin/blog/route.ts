@@ -1,36 +1,15 @@
-//app/api/admin/blog/route.ts
-import { adminDb } from "@/app/lib/firebase-admin";
 import { NextResponse, NextRequest } from "next/server";
-import { Post } from "@/app/lib/blog-types";
 import { withAuth } from "@/app/lib/auth-middleware";
 import { generateSlug } from "@/app/lib/blog-types";
+import dbConnect from "@/app/lib/dbConnect";
+import Post from "@/app/models/Post";
 
 // Wrap the GET handler with withAuth
 export const GET = withAuth(async (req: NextRequest, { user }) => {
   console.log(`Authenticated user: ${user.email} is fetching all admin posts.`);
   try {
-    const postsQuery = adminDb
-      .collection("posts")
-      .orderBy("createdAt", "desc")
-      .limit(50);
-
-    const querySnapshot = await postsQuery.get();
-    const posts: Post[] = [];
-
-    interface FirestoreDocument {
-      id: string;
-      data: () => Post;
-    }
-
-    interface FirestoreQuerySnapshot {
-      forEach: (callback: (doc: FirestoreDocument) => void) => void;
-    }
-
-    (querySnapshot as FirestoreQuerySnapshot).forEach(
-      (doc: FirestoreDocument) => {
-        posts.push(doc.data() as Post);
-      },
-    );
+    await dbConnect();
+    const posts = await Post.find().sort({ createdAt: -1 }).limit(50);
 
     return NextResponse.json(posts, { status: 200 });
   } catch (error) {
@@ -54,11 +33,11 @@ export const POST = withAuth(async (req: NextRequest, { user }) => {
       );
     }
     const slug = generateSlug(body.title);
-    const existingPost = await adminDb
-      .collection("posts")
-      .where("slug", "==", slug)
-      .get();
-    if (!existingPost.empty) {
+    
+    await dbConnect();
+
+    const existingPost = await Post.findOne({ slug });
+    if (existingPost) {
       return NextResponse.json(
         {
           error:
@@ -67,25 +46,18 @@ export const POST = withAuth(async (req: NextRequest, { user }) => {
         { status: 409 },
       );
     }
-    const newPostRef = adminDb.collection("posts").doc();
-    const newPostData: Omit<Post, "id"> = {
+
+    const newPost = await Post.create({
       title: body.title,
       slug: slug,
       content: body.content,
-      authorId: user.uid,
+      authorId: user.id,
       authorName: user.name || user.email,
       imageUrl: body.imageUrl || null,
       isPublished: body.isPublished || false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      likeCount: 0,
-      commentCount: 0,
-    };
-    await newPostRef.set({ id: newPostRef.id, ...newPostData });
-    return NextResponse.json(
-      { id: newPostRef.id, ...newPostData },
-      { status: 201 },
-    );
+    });
+
+    return NextResponse.json(newPost, { status: 201 });
   } catch (error) {
     // ... error handling remains the same
     console.error("Failed to create post:", error);

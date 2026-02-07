@@ -1,10 +1,10 @@
-import { adminDb } from "@/app/lib/firebase-admin";
 import { NextResponse, NextRequest } from "next/server";
 import { Resend } from "resend";
+import dbConnect from "@/app/lib/dbConnect";
+import Client from "@/app/models/Client";
+import AgencyProject from "@/app/models/AgencyProject";
 import {
   InquiryData,
-  Project,
-  Client,
   ServiceType,
   Milestone,
 } from "@/app/lib/agency-types";
@@ -25,57 +25,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const now = new Date().toISOString();
+    await dbConnect();
 
     // 1. Client Management
-    const clientsRef = adminDb.collection("clients");
-    const clientSnapshot = await clientsRef
-      .where("email", "==", email)
-      .limit(1)
-      .get();
+    let client = await Client.findOne({ email });
 
-    let clientId: string;
-
-    if (clientSnapshot.empty) {
-      const newClientRef = clientsRef.doc();
-      const newClient: Client = {
-        id: newClientRef.id,
+    if (!client) {
+      client = await Client.create({
         name,
         email,
         phone: body.phone ?? null,
         company: body.company ?? null,
         source: "portfolio_inquiry",
-        createdAt: now,
-        updatedAt: now,
-      };
-      await newClientRef.set(newClient);
-      clientId = newClientRef.id;
-    } else {
-      clientId = clientSnapshot.docs[0].id;
+      });
     }
 
-    // 2. Project Creation (Matching your exact PaymentModel: "milestone" | "advance")
-    const projectsRef = adminDb.collection("projects");
-    const newProjectRef = projectsRef.doc();
-
-    const newProject: Project = {
-      id: newProjectRef.id,
-      clientId,
+    // 2. Project Creation
+    const newProject = await AgencyProject.create({
+      clientId: client._id,
       serviceType,
       title: `Inquiry: ${serviceType.replace("-", " ")}`,
       description: projectDescription,
       status: "new_inquiry",
       progress: 0,
       milestones: getDefaultMilestones(serviceType),
-      paymentModel: "advance", // Matches your type: "milestone" | "advance"
+      paymentModel: "advance",
       totalPrice: body.budget
         ? parseFloat(body.budget.replace(/[^0-9.]/g, ""))
         : 0,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    await newProjectRef.set(newProject);
+    });
 
     // 3. Email Notification
     try {

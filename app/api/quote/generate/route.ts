@@ -1,12 +1,12 @@
-import { adminDb } from "@/app/lib/firebase-admin";
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { InvoiceTemplate } from "@/app/components/InvoiceTemplate";
 import React from "react";
-import { QuoteData } from "@/app/lib/agency-types";
-
-// 1. Types are now imported from @/app/lib/agency-types
+import dbConnect from "@/app/lib/dbConnect";
+import Quote from "@/app/models/Quote";
+import AgencyProject from "@/app/models/AgencyProject";
+import Client from "@/app/models/Client";
 
 export async function POST(req: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -20,34 +20,23 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Fetch Data using Admin SDK
-    const quoteDoc = await adminDb.collection("quotes").doc(quoteId).get();
-    const projectDoc = await adminDb
-      .collection("projects")
-      .doc(projectId)
-      .get();
+    await dbConnect();
 
-    if (!quoteDoc.exists || !projectDoc.exists) {
+    // 2. Fetch Data using Mongoose
+    const quoteData = await Quote.findById(quoteId);
+    const projectData = await AgencyProject.findById(projectId);
+
+    if (!quoteData || !projectData) {
       return NextResponse.json(
         { error: "Project or Quote data not found" },
         { status: 404 },
       );
     }
 
-    // Explicitly cast the data so TypeScript recognizes 'subject' and 'amount'
-    const quoteData = {
-      id: quoteDoc.id,
-      ...(quoteDoc.data() as Omit<QuoteData, "id">),
-    };
-    const projectData = projectDoc.data();
-
     // 3. Fetch Client Email via the Client ID stored in the project
-    const clientSnapshot = await adminDb
-      .collection("clients")
-      .doc(projectData?.clientId)
-      .get();
+    const clientData = await Client.findById(projectData.clientId);
 
-    const clientEmail = clientSnapshot.data()?.email;
+    const clientEmail = clientData?.email;
 
     if (!clientEmail) {
       return NextResponse.json(
@@ -94,10 +83,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    // 6. Update Quote status to 'sent' in Firestore
-    await adminDb.collection("quotes").doc(quoteId).update({
+    // 6. Update Quote status to 'sent' in Mongo
+    await Quote.findByIdAndUpdate(quoteId, {
       status: "sent",
-      sentAt: new Date().toISOString(),
+      sentAt: new Date(),
     });
 
     return NextResponse.json({

@@ -10,18 +10,26 @@ export default function SignatureManager() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    return onSnapshot(collection(db, "signatures"), (snapshot) => {
-      setSignatures(
-        snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-      );
-      setLoading(false);
-    });
+    const fetchSignatures = async () => {
+      try {
+        const res = await fetch("/api/email/signature");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setSignatures(data);
+        }
+      } catch (error) {
+        console.error("Fetch Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSignatures();
   }, []);
 
-  const handleUpdate = async (id: string, newContent: string) => {
-    await updateDoc(doc(db, "signatures", id), {
-      content: newContent,
-      updatedAt: new Date().toISOString(),
+  const handleUpdate = async (mailboxId: string, newContent: string) => {
+    await fetch("/api/email/signature", {
+      method: "POST",
+      body: JSON.stringify({ mailboxId, html: newContent }),
     });
   };
 

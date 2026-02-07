@@ -1,9 +1,14 @@
-import { adminAuth } from "@/app/lib/firebase-admin";
 import { NextRequest } from "next/server";
-import { DecodedIdToken } from "firebase-admin/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export type AuthenticatedContext<T = Record<string, never>> = {
-  user: DecodedIdToken;
+  user: {
+    id: string;
+    email: string;
+    name?: string;
+    role: string;
+  };
   params: T;
 };
 
@@ -15,42 +20,30 @@ export function withAuth<T = Record<string, unknown>>(
 ) {
   return async (req: NextRequest, context: { params: Promise<T> }) => {
     try {
-      //Get the token from the Authorization header
-      const authHeader = req.headers.get("Authorization");
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      const session = await getServerSession(authOptions);
+
+      if (!session || !session.user) {
         return new Response(
           JSON.stringify({
-            error: "Unauthorized: Missing or malformed Authorization header.",
+            error: "Unauthorized: No session found.",
           }),
           { status: 401, headers: { "Content-Type": "application/json" } },
         );
       }
 
-      const token = authHeader.split("Bearer ")[1];
-
-      //Verify the token with Firebase Admin SDK
-      const decodedToken = await adminAuth.verifyIdToken(token);
-
       //Resolve the params promise from Next.js
       const resolvedParams = await context.params;
 
       //Call the original handler with the user and resolved params
-      return handler(req, { user: decodedToken, params: resolvedParams });
+      return handler(req, { 
+        user: session.user as any, 
+        params: resolvedParams 
+      });
     } catch (error) {
       console.error("Authentication error:", error);
-      if (
-        error instanceof Error &&
-        error.message.includes("id-token-expired")
-      ) {
-        return new Response(
-          JSON.stringify({ error: "Unauthorized: Token has expired." }),
-          { status: 401, headers: { "Content-Type": "application/json" } },
-        );
-      }
-
       return new Response(
-        JSON.stringify({ error: "Unauthorized: Invalid token." }),
-        { status: 401, headers: { "Content-Type": "application/json" } },
+        JSON.stringify({ error: "Internal Server Error during authentication." }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
       );
     }
   };

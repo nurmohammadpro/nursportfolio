@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/app/lib/dbConnect";
-import Project from "@/app/models/Project";
+import EmailThread from "@/app/models/EmailThread";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,7 +16,7 @@ export async function PATCH(req:NextRequest, {params}: {params: {id: string}}) {
 
         await dbConnect()
 
-        const updatedProjcet = await Project.findByIdAndUpdate(
+        const updatedEmailThread = await EmailThread.findByIdAndUpdate(
             projectId,
             {$set: {
                 [`milestones.${index}.completed`]: true,
@@ -27,11 +27,11 @@ export async function PATCH(req:NextRequest, {params}: {params: {id: string}}) {
             {new: true}
         )
 
-        if (!updatedProjcet) {
+        if (!updatedEmailThread) {
             return NextResponse.json({error: "Project not found"}, {status: 404})
-        })
+        }
 
-        return NextResponse.json({message: "Project updated successfully", project: updatedProjcet})
+        return NextResponse.json({message: "Project updated successfully", project: updatedEmailThread})
     } catch (error) {
         console.error("Error updating project:", error);
         return NextResponse.json({error: "Internal server error"}, {status: 500})

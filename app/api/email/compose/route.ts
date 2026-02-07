@@ -1,40 +1,31 @@
-import { adminDb, adminAuth } from "@/app/lib/firebase-admin";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import dbConnect from "@/app/lib/dbConnect";
+import EmailThread from "@/app/models/EmailThread";
 
 export async function POST(req: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     const { to, subject, body, fromEmail, attachments } = await req.json();
 
-    const cookieStore = await cookies();
-    const session = cookieStore.get("session")?.value;
-    if (!session)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    await dbConnect();
 
-    const timestamp = new Date().toISOString();
-
-    // Create project with 'sent' status so it doesn't appear in Inbox
-    const projectRef = await adminDb.collection("projects").add({
+    // Create email thread with 'sent' status
+    const newThread = await EmailThread.create({
       clientEmail: to.toLowerCase().trim(),
       clientName: to.split("@")[0],
       title: subject,
       description: body,
-      fromEmail, // Critical for mailbox shifting logic
+      fromEmail,
       status: "sent",
       starred: false,
       unread: false,
-      updatedAt: timestamp,
-      createdAt: timestamp,
-    });
-
-    // Add initial message to the sub-collection
-    await projectRef.collection("messages").add({
-      text: body,
-      sender: fromEmail,
-      type: "outbound",
-      createdAt: timestamp,
+      messages: [{
+        text: body,
+        sender: fromEmail,
+        type: "outbound",
+        createdAt: new Date(),
+      }],
     });
 
     // Send via Resend
@@ -49,7 +40,7 @@ export async function POST(req: Request) {
       text: body,
     });
 
-    return NextResponse.json({ success: true, id: projectRef.id });
+    return NextResponse.json({ success: true, id: newThread._id });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

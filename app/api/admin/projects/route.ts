@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 import dbConnect from "@/app/lib/dbConnect";
-import Project from "@/app/models/Project";
+import EmailThread from "@/app/models/EmailThread";
 
 export async function GET() {
   try {
@@ -13,7 +13,7 @@ export async function GET() {
 
     await dbConnect();
 
-    const projects = await Project.find({}).sort({ updatedAt: -1 });
+    const projects = await EmailThread.find({}).sort({ updatedAt: -1 });
 
     return NextResponse.json(projects);
   } catch (error) {

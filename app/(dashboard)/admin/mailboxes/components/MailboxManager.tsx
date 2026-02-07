@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Mail, Shield, Clock, Loader2, CheckCircle2 } from "lucide-react";
 import Select from "@/app/components/Select";
-import { db } from "@/app/lib/firebase"; // Frontend SDK
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
 export default function MailboxManager() {
   const [alias, setAlias] = useState("");
@@ -19,21 +17,20 @@ export default function MailboxManager() {
     { value: "Automation", label: "Automation" },
   ];
 
-  // 1. Real-time Registry Sync
+  // 1. Registry Sync
   useEffect(() => {
-    const q = query(collection(db, "mailboxes"), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        setMailboxes(
-          snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-        );
-      },
-      (error) => {
-        console.error("Registry Error: Check Firestore Rules", error);
-      },
-    );
-    return () => unsubscribe();
+    const fetchMailboxes = async () => {
+      try {
+        const res = await fetch("/api/email/mailbox");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setMailboxes(data);
+        }
+      } catch (error) {
+        console.error("Registry Error:", error);
+      }
+    };
+    fetchMailboxes();
   }, []);
 
   // 2. Identity Provisioning Logic

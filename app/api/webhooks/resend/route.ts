@@ -1,5 +1,5 @@
 import dbConnect from "@/app/lib/dbConnect";
-import Project from "@/app/models/Project";
+import EmailThread from "@/app/models/EmailThread";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       })) || []
     };
 
-    const updatedProject = await Project.findOneAndUpdate(
+    const updatedEmailThread = await EmailThread.findOneAndUpdate(
       { clientEmail: fromEmail },
       { 
         $push: { messages: newMessage },
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       { new: true }
     );
 
-    if (!updatedProject) {
+    if (!updatedEmailThread) {
       console.log(`No project found for sender: ${fromEmail}`);
     }
 

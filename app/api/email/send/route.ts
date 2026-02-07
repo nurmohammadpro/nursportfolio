@@ -1,6 +1,6 @@
-// app/api/email/send/route.ts
 import { NextResponse } from "next/server";
-import { adminDb } from "@/app/lib/firebase-admin";
+import dbConnect from "@/app/lib/dbConnect";
+import EmailThread from "@/app/models/EmailThread";
 
 export async function POST(req: Request) {
   try {
@@ -37,19 +37,21 @@ export async function POST(req: Request) {
       throw new Error("Failed to send email");
     }
 
-    // Save to Firestore
-    const timestamp = new Date().toISOString();
-    await adminDb
-      .collection("projects")
-      .doc(projectId)
-      .collection("messages")
-      .add({
-        text: body,
-        sender: fromEmail,
-        type: "outbound",
-        createdAt: timestamp,
-        deliveryStatus: "sent",
-      });
+    await dbConnect();
+
+    // Save to Mongo
+    await EmailThread.findByIdAndUpdate(projectId, {
+      $push: {
+        messages: {
+          text: body,
+          sender: fromEmail,
+          type: "outbound",
+          createdAt: new Date(),
+          deliveryStatus: "sent",
+        },
+      },
+      $set: { updatedAt: new Date() },
+    });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

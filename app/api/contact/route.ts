@@ -1,7 +1,6 @@
-//app/api/contact/route.ts
-export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
-import { adminDb, admin } from "@/app/lib/firebase-admin";
+import dbConnect from "@/app/lib/dbConnect";
+import ContactMessage from "@/app/models/ContactMessage";
 
 export async function POST(request: Request) {
   try {
@@ -16,16 +15,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // Save data to firerstore
-    const docRef = await adminDb.collection("messages").add({
+    await dbConnect();
+
+    // Save data to mongo
+    const newMessage = await ContactMessage.create({
       name,
       email,
       phone: phone || null,
       message,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    return NextResponse.json({ success: true, id: docRef.id }, { status: 200 });
+    return NextResponse.json({ success: true, id: newMessage._id }, { status: 200 });
   } catch (error) {
     console.error("Failed to submit contact message:", error);
     return NextResponse.json(

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db } from "@/app/lib/firebase"; // Frontend SDK
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { Mail, Shield, User, Clock, CheckCircle2 } from "lucide-react";
 import MailboxManager from "./components/MailboxManager"; // Your existing creation component
 
@@ -11,26 +9,21 @@ export default function MailboxesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Real-time listener for the 'mailboxes' collection
-    const q = query(collection(db, "mailboxes"), orderBy("createdAt", "desc"));
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const mailboxData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setMailboxes(mailboxData);
+    const fetchMailboxes = async () => {
+      try {
+        const res = await fetch("/api/email/mailbox");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setMailboxes(data);
+        }
+      } catch (error) {
+        console.error("Fetch Error:", error);
+      } finally {
         setLoading(false);
-      },
-      (error) => {
-        console.error("Listener Error:", error);
-        setLoading(false);
-      },
-    );
+      }
+    };
 
-    return () => unsubscribe();
+    fetchMailboxes();
   }, []);
 
   return (

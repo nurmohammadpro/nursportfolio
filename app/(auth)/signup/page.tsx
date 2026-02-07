@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/app/lib/firebase";
 import { usePasswordVisibility } from "@/app/hooks/usePasswordVisibility";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input";
@@ -33,12 +31,22 @@ export default function SignupPage() {
     }
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password,
-      );
-      router.push("/dashboard");
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          name: formData.name,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Signup failed.");
+      }
+
+      router.push("/signin");
     } catch (err: any) {
       setError(err.message || "Signup failed.");
     } finally {

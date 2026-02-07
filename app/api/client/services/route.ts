@@ -1,8 +1,7 @@
-//app/api/client/services/route.ts
-import { adminDb } from "@/app/lib/firebase-admin";
 import { NextResponse, NextRequest } from "next/server";
 import { withAuth, AuthenticatedContext } from "@/app/lib/auth-middleware";
-import { ServiceRequest } from "@/app/lib/service-types"; // Import the shared type
+import dbConnect from "@/app/lib/dbConnect";
+import ServiceRequest from "@/app/models/ServiceRequest";
 
 // Define the allowed package types for validation
 const ALLOWED_PACKAGE_TYPES = ["basic", "standard", "premium"];
@@ -19,7 +18,6 @@ export const POST = withAuth(
 
       // 1. Enhanced Validation
       if (!serviceName || !packageType || price == null) {
-        // Check for null/undefined for price
         return NextResponse.json(
           {
             error:
@@ -29,7 +27,7 @@ export const POST = withAuth(
         );
       }
 
-      // Validate packageType is one of the allowed values
+      // Validate packageType
       if (!ALLOWED_PACKAGE_TYPES.includes(packageType)) {
         return NextResponse.json(
           {
@@ -39,7 +37,7 @@ export const POST = withAuth(
         );
       }
 
-      // Validate price is a positive number
+      // Validate price
       if (typeof price !== "number" || price <= 0) {
         return NextResponse.json(
           { error: "Invalid price. Must be a positive number." },
@@ -47,14 +45,15 @@ export const POST = withAuth(
         );
       }
 
-      // 2. Create the new service request object
-      const newServiceRef = adminDb.collection("service_requests").doc();
-      const newServiceData: Omit<ServiceRequest, "id" | "updatedAt"> = {
-        clientId: user.uid, // Get ID from authenticated user
-        clientEmail: user.email || "", // Get email from authenticated user
+      await dbConnect();
+
+      // 2. Create the new service request
+      const newServiceRequest = await ServiceRequest.create({
+        clientId: user.id,
+        clientEmail: user.email || "",
         serviceName,
-        packageType, // This is now validated
-        price, // This is now validated
+        packageType,
+        price,
         status: "pending_payment",
         progress: 0,
         milestones: [
@@ -63,19 +62,9 @@ export const POST = withAuth(
           { label: "Development", completed: false },
           { label: "Delivery", completed: false },
         ],
-        createdAt: new Date().toISOString(),
-      };
+      });
 
-      // 3. Save to Firestore
-      await newServiceRef.set({ id: newServiceRef.id, ...newServiceData });
-
-      // 4. Return the complete, created object for consistency
-      const createdServiceRequest: ServiceRequest = {
-        id: newServiceRef.id,
-        ...newServiceData,
-      };
-
-      return NextResponse.json(createdServiceRequest, { status: 201 });
+      return NextResponse.json(newServiceRequest, { status: 201 });
     } catch (error) {
       console.error("Failed to create service request:", error);
       return NextResponse.json(

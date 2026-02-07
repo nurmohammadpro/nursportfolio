@@ -1,64 +1,62 @@
-import { adminDb, adminAuth } from "@/app/lib/firebase-admin";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import dbConnect from "@/app/lib/dbConnect";
+import EmailThread from "@/app/models/EmailThread";
 
 export async function PATCH(req: Request) {
   try {
     const { threadId, action } = await req.json();
-    const cookieStore = await cookies();
-    const session = cookieStore.get("session")?.value;
 
-    if (!session || !adminAuth)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    await dbConnect();
 
-    const docRef = adminDb.collection("projects").doc(threadId);
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date();
 
     switch (action) {
       case "archive":
-        await docRef.update({
+        await EmailThread.findByIdAndUpdate(threadId, {
           status: "archive",
           updatedAt: timestamp,
         });
         break;
 
       case "trash":
-        await docRef.update({
+        await EmailThread.findByIdAndUpdate(threadId, {
           status: "trash",
           updatedAt: timestamp,
         });
         break;
 
       case "restore":
-        // Move back to inbox
-        await docRef.update({
+        await EmailThread.findByIdAndUpdate(threadId, {
           status: "inbox",
           updatedAt: timestamp,
         });
         break;
 
       case "spam":
-        await docRef.update({
+        await EmailThread.findByIdAndUpdate(threadId, {
           status: "spam",
           updatedAt: timestamp,
         });
         break;
 
       case "toggleRead":
-        const docSnap = await docRef.get();
-        if (docSnap.exists) {
-          const currentUnread = docSnap.data()?.unread;
-          await docRef.update({ unread: !currentUnread });
+        const thread = await EmailThread.findById(threadId);
+        if (thread) {
+          thread.unread = !thread.unread;
+          thread.updatedAt = timestamp;
+          await thread.save();
         }
         break;
 
       case "markAsRead":
-        await docRef.update({ unread: false });
+        await EmailThread.findByIdAndUpdate(threadId, {
+          unread: false,
+          updatedAt: timestamp,
+        });
         break;
 
       case "delete":
-        // Permanent deletion
-        await docRef.delete();
+        await EmailThread.findByIdAndDelete(threadId);
         break;
 
       default:

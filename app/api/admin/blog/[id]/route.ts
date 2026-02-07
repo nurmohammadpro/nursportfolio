@@ -1,8 +1,8 @@
-//app/api/admin/blog/[id]/route.ts
-import { adminDb } from "@/app/lib/firebase-admin";
 import { NextResponse, NextRequest } from "next/server";
-import { Post, generateSlug } from "@/app/lib/blog-types";
-import { withAuth, AuthenticatedContext } from "@/app/lib/auth-middleware"; // Import the new types
+import { generateSlug } from "@/app/lib/blog-types";
+import { withAuth, AuthenticatedContext } from "@/app/lib/auth-middleware";
+import dbConnect from "@/app/lib/dbConnect";
+import Post from "@/app/models/Post";
 
 type RouteParams = {
   id: string;
@@ -24,34 +24,32 @@ export const PUT = withAuth<RouteParams>(
           { status: 400 },
         );
       }
-      const postRef = adminDb.collection("posts").doc(id);
-      const postDoc = await postRef.get();
-      if (!postDoc.exists) {
+
+      await dbConnect();
+
+      const currentPost = await Post.findById(id);
+      if (!currentPost) {
         return NextResponse.json({ error: "Post not found" }, { status: 404 });
       }
-      const currentPost = postDoc.data() as Post;
+
       let newSlug = currentPost.slug;
       if (body.title && body.title !== currentPost.title) {
         newSlug = generateSlug(body.title);
-        const conflictingPost = await adminDb
-          .collection("posts")
-          .where("slug", "==", newSlug)
-          .get();
-        if (!conflictingPost.empty && conflictingPost.docs[0].id !== id) {
+        const conflictingPost = await Post.findOne({ slug: newSlug });
+        if (conflictingPost && conflictingPost._id.toString() !== id) {
           return NextResponse.json(
             { error: "A post with this new title already exists." },
             { status: 409 },
           );
         }
       }
-      const updateData = {
-        ...body,
-        slug: newSlug,
-        updatedAt: new Date().toISOString(),
-      };
-      await postRef.update(updateData);
-      const updatedPostDoc = await postRef.get();
-      const updatedPost = updatedPostDoc.data() as Post;
+
+      const updatedPost = await Post.findByIdAndUpdate(
+        id,
+        { ...body, slug: newSlug },
+        { new: true }
+      );
+
       return NextResponse.json(updatedPost, { status: 200 });
     } catch (error) {
       console.error(`Failed to update post with id:`, id, error);
@@ -78,12 +76,14 @@ export const DELETE = withAuth<RouteParams>(
           { status: 400 },
         );
       }
-      const postRef = adminDb.collection("posts").doc(id);
-      const postDoc = await postRef.get();
-      if (!postDoc.exists) {
+
+      await dbConnect();
+
+      const deletedPost = await Post.findByIdAndDelete(id);
+      if (!deletedPost) {
         return NextResponse.json({ error: "Post not found" }, { status: 404 });
       }
-      await postRef.delete();
+
       return NextResponse.json(
         { message: "Post deleted successfully" },
         { status: 200 },

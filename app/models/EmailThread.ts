@@ -33,6 +33,6 @@ const ProjectSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 
-const Project = models.Project || model('Project', ProjectSchema);
+const EmailThread = models.EmailThread || model('EmailThread', ProjectSchema);
 
-export default Project;
+export default EmailThread;

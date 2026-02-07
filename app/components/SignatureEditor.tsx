@@ -1,7 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { db } from "@/app/lib/firebase";
-import { doc, getDoc, DocumentSnapshot } from "firebase/firestore";
 
 export default function SignatureEditor({ mailboxId }: { mailboxId: string }) {
   const [signature, setSignature] = useState("");
@@ -10,11 +8,10 @@ export default function SignatureEditor({ mailboxId }: { mailboxId: string }) {
   // Load existing signature
   useEffect(() => {
     const loadSignature = async () => {
-      const snap: DocumentSnapshot = await getDoc(
-        doc(db, "mailboxes", mailboxId, "signatures", "default"),
-      );
-      if (snap.exists()) {
-        setSignature(snap.data()?.html || "");
+      const res = await fetch(`/api/email/signature?mailboxId=${mailboxId}`);
+      const data = await res.json();
+      if (data.signature) {
+        setSignature(data.signature);
       }
     };
     loadSignature();
@@ -22,7 +19,6 @@ export default function SignatureEditor({ mailboxId }: { mailboxId: string }) {
 
   const saveSignature = async () => {
     setIsSaving(true);
-    // This uses the IAM permissions we verified for backend writes
     await fetch("/api/email/signature", {
       method: "POST",
       body: JSON.stringify({ mailboxId, html: signature }),
