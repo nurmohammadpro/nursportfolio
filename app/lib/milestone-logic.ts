@@ -1,6 +1,3 @@
-import { db } from "@/app/lib/firebase";
-import { doc, updateDoc, collection, addDoc, getDoc } from "firebase/firestore";
-
 /**
  * PRODUCTION-GRADE MILESTONE LINKAGE
  * Automatically generates a quote when a technical phase is completed.

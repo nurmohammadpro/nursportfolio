@@ -1,42 +1,45 @@
-import { adminAuth } from "@/app/lib/firebase-admin"; // Ensure your admin config is exported as adminAuth
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import dbConnect from "@/app/lib/dbConnect";
+import User from "@/app/models/User";
+import bcrypt from "bcryptjs";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const { email, password, name } = await req.json();
 
-    if (!email || !password) {
+    if (!email || !password || !name) {
+      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    await dbConnect();
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
       return NextResponse.json(
-        { error: "Email and password required" },
+        { error: "User already exists" },
         { status: 400 },
       );
     }
 
-    // 1. Create the user in Firebase Authentication
-    const userRecord = await adminAuth.createUser({
-      email,
-      password,
-      displayName: name,
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Auto-assign Admin for your email
+    const role = email === "nurprodev@gmail.com" ? "ADMIN" : "USER";
+
+    const newUser = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      role,
     });
 
-    // 2. Role Assignment Logic
-    // Since you are 'nurprodev@gmail.com', we grant admin status automatically
-    let role = "client";
-    if (email === "nurprodev@gmail.com") {
-      role = "admin";
-    }
-
-    await adminAuth.setCustomUserClaims(userRecord.uid, { role });
-
     return NextResponse.json(
-      {
-        message: `User created successfully as ${role}`,
-        uid: userRecord.uid,
-      },
+      { message: "User created", role: newUser.role },
       { status: 201 },
     );
   } catch (error: any) {
-    console.error("Signup Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

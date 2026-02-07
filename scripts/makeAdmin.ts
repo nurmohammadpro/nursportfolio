@@ -1,6 +1,6 @@
 // Run this with: npx ts-node scripts/makeAdmin.ts
 import mongoose from "mongoose";
-import User from "@/app/models/User";
+import User from "../app/models/User";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });

@@ -1,17 +1,24 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+"use client";
 
-export default async function AdminLayout({
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+export default function EngineLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  if (!session || (session.user as any).role !== "ADMIN") {
-    redirect("/signin");
-  }
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/signin");
+    }
+  }, [status, router]);
 
-  return <section className="admin-wrapper">{children}</section>;
+  if (status === "loading") return <div>Loading...</div>;
+
+  return <>{children}</>;
 }

@@ -39,6 +39,12 @@ export default function SignInPage() {
       } else {
         router.push("/client/dashboard");
       }
+
+      if (userRole?.toUpperCase() === "ADMIN") {
+        router.push("/admin/monitor");
+      } else {
+        router.push("/client/dashboard");
+      }
     } catch (error: any) {
       setError(error.message || "An unexpected error occurred");
     } finally {

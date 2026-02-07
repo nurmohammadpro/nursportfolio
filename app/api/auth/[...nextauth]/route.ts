@@ -1,17 +1,13 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/app/lib/mongodb";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import type { Adapter } from "next-auth/adapters";
+import User from "@/app/models/User";
+import dbConnect from "@/app/lib/dbConnect";
 
-// 1. Define and export the authOptions object
 export const authOptions: NextAuthOptions = {
-  adapter: MongoDBAdapter(clientPromise) as Adapter,
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -24,18 +20,19 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const client = await clientPromise;
-        const user = await client.db().collection("users").findOne({
+        await dbConnect();
+        const user = await User.findOne({
           email: credentials?.email?.toLowerCase(),
         });
 
-        if (!user || !user.password) throw new Error("User not found");
+        if (!user || !user.password)
+          throw new Error("No user found with this email");
 
         const isValid = await bcrypt.compare(
           credentials!.password,
           user.password,
         );
-        if (!isValid) throw new Error("Invalid password");
+        if (!isValid) throw new Error("Incorrect password");
 
         return {
           id: user._id.toString(),
@@ -52,19 +49,22 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = (user as any).role;
       }
+
       return token;
     },
     async session({ session, token }) {
+      // 3. This sends the role to the frontend
       if (session?.user) {
-        (session.user as any).id = token.id;
-        (session.user as any).role = token.role;
+        (session.user as any).id = token.id as string;
+        (session.user as any).role = token.role as string;
       }
       return session;
     },
   },
+  pages: {
+    signIn: "/signin",
+  },
 };
 
-// 2. Initialize NextAuth handler
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

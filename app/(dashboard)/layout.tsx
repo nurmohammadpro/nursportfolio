@@ -1,56 +1,32 @@
-"use client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import Sidebar from "../components/Sidebar";
 
-import { useEffect, useState } from "react";
-import { auth } from "@/app/lib/firebase";
-import Sidebar from "@/app/components/Sidebar";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-
-export default function EngineLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [role, setRole] = useState<"admin" | "client" | null>(null);
-  const router = useRouter();
+  const session = await getServerSession(authOptions);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user: any ) => {
-      if (!user) {
-        router.push("/signin");
-        return;
-      }
-
-      // Force refresh to get the latest custom claims for your UID
-      const token = await user.getIdTokenResult(true);
-      const userRole = (token.claims.role as "admin" | "client") || "client";
-
-      setRole(userRole);
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
-  // Minimalist loading state using Raleway P-tag
-  if (!role) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center bg-(--surface) space-y-4">
-        <Loader2 className="w-6 h-6 animate-spin text-(--text-subtle)" />
-        <p className="text-[10px] uppercase dashboard-engine font-bold tracking-[0.3em] text-(--text-subtle)">
-          Initializing Engine
-        </p>
-      </div>
-    );
+  // Guard: If no session, redirect to signin
+  if (!session) {
+    redirect("/signin");
   }
 
-  return (
-    <div className="flex h-screen overflow-hidden dashboard-engine bg-(--surface) text-(--text-main)">
-      {/* Shared Sidebar with role awareness */}
-      <Sidebar role={role} />
+  // Normalize the role to match your SidebarProps: "admin" | "client"
+  const userRole =
+    session.user.role?.toLowerCase() === "admin" ? "admin" : "client";
 
-      {/* The Dashboard Workspace */}
-      <main className="flex-1 overflow-y-auto font-body scrollbar-hide">
-        <div className="p-6 md:p-10 max-w-7xl mx-auto">{children}</div>
+  return (
+    <div className="flex h-screen overflow-hidden bg-(--primary)">
+      {/* Sidebar Component with dynamic role */}
+      <Sidebar role={userRole} />
+
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="layout-container py-10">{children}</div>
       </main>
     </div>
   );

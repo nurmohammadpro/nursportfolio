@@ -143,7 +143,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* JSON-LD Schema Markup */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
