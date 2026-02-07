@@ -1,7 +1,6 @@
 "use client";
 
-import { auth } from "@/app/lib/firebase";
-import { signOut } from "firebase/auth";
+import { signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -19,6 +18,7 @@ import { useTheme } from "./ThemeProvider";
 import Image from "next/image";
 
 interface SidebarProps {
+  // Keeping your role structure intact
   role: "admin" | "client";
 }
 
@@ -28,15 +28,10 @@ export default function Sidebar({ role }: SidebarProps) {
 
   const handleSignOut = async () => {
     try {
-      // 1. Clear Firebase Client Session
-      await signOut(auth);
-
-      // 2. Clear Server-Side Session Cookie
-      await fetch("/api/auth/logout", { method: "POST" });
-
-      // 3. Redirect to login
-      router.push("/signin");
-      router.refresh();
+      await signOut({
+        callbackUrl: "/signin",
+        redirect: true,
+      });
     } catch (error) {
       console.error("Sign out failed:", error);
     }
@@ -64,17 +59,15 @@ export default function Sidebar({ role }: SidebarProps) {
 
   return (
     <aside className="h-screen bg-(--surface) border-r border-(--border-color) flex flex-col transition-all duration-300 w-16 md:w-48">
-      {/* Brand Identity - Minimalist P-tag */}
       <div className="p-6 mb-4 flex justify-center md:justify-start">
         <Link
-          href="/admin/monitor"
+          href={role === "admin" ? "/admin/monitor" : "/client/dashboard"}
           className="text-xl font-bold tracking-tighter"
         >
           <Image src={logoSrc} alt="Logo" width={16} height={16} />
         </Link>
       </div>
 
-      {/* Role-Based Navigation */}
       <nav className="flex-1 px-3 space-y-1">
         {menuItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
@@ -101,7 +94,6 @@ export default function Sidebar({ role }: SidebarProps) {
         })}
       </nav>
 
-      {/* Sign Out Action */}
       <div className="p-1 md:p-2 lg:p-4 border-t border-(--border-color)">
         <button
           onClick={handleSignOut}
