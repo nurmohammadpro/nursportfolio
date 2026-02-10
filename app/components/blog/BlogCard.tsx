@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Clock, Tag } from "lucide-react";
-import { Post, formatDate } from "@/app/lib/blog-types";
+import { BlogPost, formatDate } from "@/app/lib/blog-types";
 
 interface BlogCardProps {
-  post: Post;
+  post: BlogPost;
   variant?: "default" | "compact" | "featured";
 }
 

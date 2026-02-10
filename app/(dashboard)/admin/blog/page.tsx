@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PenTool, Eye, Trash2, Edit, Plus, Search, Filter } from "lucide-react";
-import { Post } from "@/app/lib/blog-types";
+import { BlogPost } from "@/app/lib/blog-types";
 import { cn } from "@/app/lib/utils";
 
 export default function BlogAdmin() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
@@ -58,7 +58,7 @@ export default function BlogAdmin() {
     }
   };
 
-  const handleTogglePublish = async (post: Post) => {
+  const handleTogglePublish = async (post: BlogPost) => {
     try {
       const response = await fetch(`/api/admin/blog/${post._id || post.id}`, {
         method: "PUT",

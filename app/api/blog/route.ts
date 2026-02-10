@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/lib/dbConnect";
 import Post from "@/app/models/Post";
-import { BlogFilters, PaginatedResponse, Post } from "@/app/lib/blog-types";
+import { BlogFilters, PaginatedResponse, BlogPost } from "@/app/lib/blog-types";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (featured) {
-      query.featuredImage = { $exists: true, $ne: null, $ne: "" };
+      query.featuredImage = { $exists: true, $ne: null, $nin: ["", null] };
     }
 
     // Calculate pagination
@@ -64,13 +64,13 @@ export async function GET(req: NextRequest) {
     const totalPages = Math.ceil(total / limit);
 
     // Format response
-    const formattedPosts: Post[] = posts.map((post: any) => ({
+    const formattedPosts: BlogPost[] = posts.map((post: any) => ({
       ...post,
       id: post._id.toString(),
       _id: undefined,
     }));
 
-    const response: PaginatedResponse<Post> = {
+    const response: PaginatedResponse<BlogPost> = {
       data: formattedPosts,
       pagination: {
         total,

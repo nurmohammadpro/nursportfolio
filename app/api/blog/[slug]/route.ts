@@ -23,15 +23,19 @@ export async function GET(
       );
     }
 
+    // Handle lean() result which could be array or single object
+    const postData = Array.isArray(post) ? post[0] : post;
+    const postId = (postData as any)._id;
+
     // Increment view count
-    await Post.findByIdAndUpdate(post._id, {
+    await Post.findByIdAndUpdate(postId, {
       $inc: { viewCount: 1 },
     });
 
     // Format response
     const formattedPost = {
-      ...post,
-      id: post._id.toString(),
+      ...postData,
+      id: postId.toString(),
       _id: undefined,
     };
 

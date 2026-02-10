@@ -34,10 +34,11 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     const enrichedProjects = await Promise.all(
       projects.map(async (project) => {
         const client = await Client.findById(project.clientId).lean();
+        const clientData = client ? (Array.isArray(client) ? client[0] : client) : null;
         return {
           ...project,
-          clientName: client?.name || "Unknown",
-          clientCompany: client?.company || "",
+          clientName: clientData?.name || "Unknown",
+          clientCompany: clientData?.company || "",
           // Format status for display
           statusDisplay: project.status.replace(/_/g, " ").toUpperCase(),
           // Service type formatted

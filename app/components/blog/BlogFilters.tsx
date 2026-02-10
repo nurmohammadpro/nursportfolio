@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Search, X, Filter } from "lucide-react";
-import { debounce } from "lodash";
 import { cn } from "@/app/lib/utils";
 import { BLOG_CATEGORIES } from "@/app/lib/blog-types";
 
@@ -12,9 +11,34 @@ interface BlogFiltersProps {
     category?: string;
     tags?: string[];
   }) => void;
-  availableCategories?: Array<{ slug: string; name: string; postCount: number }>;
-  availableTags?: Array<{ slug: string; name: string; postCount: number }>;
+  availableCategories?: Array<{ slug: string; name: string; postCount?: number }>;
+  availableTags?: Array<{ slug: string; name: string; postCount?: number }>;
   className?: string;
+}
+
+// Custom debounce hook
+function useDebounce<T extends (...args: any[]) => any>(callback: T, delay: number): { debouncedCallback: T; cancel: () => void } {
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+
+  const debouncedCallback = useCallback(
+    (...args: Parameters<T>) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay]
+  ) as T;
+
+  const cancel = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }, []);
+
+  return { debouncedCallback, cancel };
 }
 
 export default function BlogFilters({
@@ -29,21 +53,18 @@ export default function BlogFilters({
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Debounced search handler
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      onFilterChange({
-        search: value || undefined,
-        category: category !== "all" ? category : undefined,
-        tags: selectedTags.length > 0 ? selectedTags : undefined,
-      });
-    }, 300),
-    [category, selectedTags, onFilterChange]
-  );
+  const { debouncedCallback, cancel } = useDebounce((value: string) => {
+    onFilterChange({
+      search: value || undefined,
+      category: category !== "all" ? category : undefined,
+      tags: selectedTags.length > 0 ? selectedTags : undefined,
+    });
+  }, 300);
 
   useEffect(() => {
-    debouncedSearch(search);
-    return () => debouncedSearch.cancel();
-  }, [search, debouncedSearch]);
+    debouncedCallback(search);
+    return () => cancel();
+  }, [search, debouncedCallback, cancel]);
 
   const handleCategoryChange = (newCategory: string) => {
     setCategory(newCategory);

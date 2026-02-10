@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
-import { Post } from "@/app/lib/blog-types";
+import { BlogPost } from "@/app/lib/blog-types";
 
 interface RelatedPostsProps {
   currentPostSlug: string;
@@ -17,7 +17,7 @@ export default function RelatedPosts({
   tags = [],
   limit = 3,
 }: RelatedPostsProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

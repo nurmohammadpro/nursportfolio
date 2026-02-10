@@ -1,5 +1,5 @@
-// Post interfaces
-export interface Post {
+// Blog post interface (type-safe version of Post model, excludes Mongoose document methods)
+export interface BlogPost {
   _id?: string;
   id?: string;
   title: string;

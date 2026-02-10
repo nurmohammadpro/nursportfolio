@@ -25,12 +25,15 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
         const project = await AgencyProject.findById(quote.projectId).lean();
         const client = await Client.findById(quote.clientId).lean();
 
+        const projectData = project ? (Array.isArray(project) ? project[0] : project) : null;
+        const clientData = client ? (Array.isArray(client) ? client[0] : client) : null;
+
         return {
           ...quote,
-          projectName: project?.title || "Unknown Project",
-          clientName: client?.name || "Unknown Client",
-          clientEmail: client?.email || "",
-          serviceType: project?.serviceType || "web-development",
+          projectName: projectData?.title || "Unknown Project",
+          clientName: clientData?.name || "Unknown Client",
+          clientEmail: clientData?.email || "",
+          serviceType: projectData?.serviceType || "web-development",
         };
       })
     );

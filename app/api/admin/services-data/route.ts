@@ -19,16 +19,18 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     // Fetch all projects with client info
     const projects = await AgencyProject.find({})
       .sort({ createdAt: -1 })
+      .select("title serviceType clientId status updatedAt createdAt")
       .lean();
 
     // Enrich with client data
     const enrichedProjects = await Promise.all(
       projects.map(async (project) => {
         const client = await Client.findById(project.clientId).lean();
+        const clientData = client ? (Array.isArray(client) ? client[0] : client) : null;
         return {
-          ...project,
-          clientName: client?.name || "Unknown Client",
-          clientEmail: client?.email || "",
+          ...(project as any),
+          clientName: clientData?.name || "Unknown Client",
+          clientEmail: clientData?.email || "",
         };
       })
     );

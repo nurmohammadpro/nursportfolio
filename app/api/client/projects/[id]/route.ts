@@ -18,10 +18,14 @@ export const GET = withAuth(async (
       return NextResponse.json({ error: "Client not found" }, { status: 404 });
     }
 
+    // Handle lean() result which could be array or single object
+    const clientData = Array.isArray(client) ? client[0] : client;
+    const clientId = (clientData as any)._id.toString();
+
     // Get project
     const project = await AgencyProject.findOne({
       _id: params.id,
-      clientId: client._id.toString(),
+      clientId,
     }).lean();
 
     if (!project) {

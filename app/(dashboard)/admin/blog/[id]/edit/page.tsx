@@ -121,12 +121,12 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
 
     setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", file);
 
       const response = await fetch("/api/admin/blog/upload", {
         method: "POST",
-        body: formData,
+        body: uploadFormData,
       });
 
       if (response.ok) {
@@ -144,12 +144,12 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
   };
 
   const handleEditorImageUpload = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("file", file);
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
 
     const response = await fetch("/api/admin/blog/upload", {
       method: "POST",
-      body: formData,
+      body: uploadFormData,
     });
 
     if (!response.ok) {

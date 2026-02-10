@@ -18,14 +18,18 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
       );
     }
 
+    // Handle lean() result which could be array or single object
+    const clientData = Array.isArray(client) ? client[0] : client;
+    const clientId = (clientData as any)._id.toString();
+
     // Get recent projects with their status
-    const projects = await AgencyProject.find({ clientId: client._id.toString() })
+    const projects = await AgencyProject.find({ clientId })
       .sort({ createdAt: -1 })
       .limit(5)
       .lean();
 
     const messages = projects.map((project) => ({
-      id: project._id,
+      id: (project as any)._id,
       subject: project.title,
       preview: project.description
         ? project.description.substring(0, 100) + (project.description.length > 100 ? "..." : "")

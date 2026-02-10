@@ -28,8 +28,8 @@ export default function ShareButtons({ title, url, className }: ShareButtonsProp
       } catch (error) {
         console.log("Share cancelled");
       }
-    } else {
-      window.open(shareUrls[platform], "_blank", "width=600,height=400");
+    } else if (platform !== "native") {
+      window.open(shareUrls[platform as keyof typeof shareUrls], "_blank", "width=600,height=400");
     }
   };
 
@@ -48,7 +48,7 @@ export default function ShareButtons({ title, url, className }: ShareButtonsProp
       <span className="text-sm text-(--text-subtle) font-medium">Share:</span>
 
       {/* Native Share (mobile) */}
-      {typeof navigator !== "undefined" && navigator.share && (
+      {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
         <button
           onClick={() => handleShare("native")}
           className="p-2 rounded-full bg-(--secondary) border border-(--border-color) hover:border-(--brand) hover:text-(--brand) transition-colors"

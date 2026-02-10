@@ -18,8 +18,12 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
       );
     }
 
+    // Handle lean() result which could be array or single object
+    const clientData = Array.isArray(client) ? client[0] : client;
+    const clientId = (clientData as any)._id.toString();
+
     // Get project count and latest project
-    const projects = await AgencyProject.find({ clientId: user._id.toString() })
+    const projects = await AgencyProject.find({ clientId })
       .sort({ createdAt: -1 })
       .limit(1)
       .lean();
@@ -27,9 +31,9 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     const latestProject = projects[0] || null;
 
     return NextResponse.json({
-      client,
+      client: clientData,
       latestProject,
-      projectCount: await AgencyProject.countDocuments({ clientId: user._id.toString() })
+      projectCount: await AgencyProject.countDocuments({ clientId })
     }, { status: 200 });
   } catch (error) {
     console.error("Error fetching client profile:", error);
