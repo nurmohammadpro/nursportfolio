@@ -40,13 +40,13 @@ export default function ServicesPage() {
 
   return (
     <div className="fade-in space-y-12">
-      {/* Header - No Headings */}
+      {/* Header */}
       <div className="space-y-1">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle)">
+        <p className="text-xs text-(--text-subtle)">
           Engineering Catalog
         </p>
-        <p className="text-3xl font-light tracking-tighter">
-          Available <span className="font-bold italic">Services.</span>
+        <p className="text-2xl font-semibold">
+          Available <span className="font-medium">Services</span>
         </p>
       </div>
 
@@ -54,26 +54,26 @@ export default function ServicesPage() {
         {services.map((service) => (
           <div
             key={service.id}
-            className="group p-10 bg-(--surface) hover:bg-(--subtle) transition-all duration-500 flex flex-col justify-between h-80"
+            className="group p-6 bg-(--surface) hover:bg-(--subtle) transition-all duration-300 flex flex-col justify-between h-72"
           >
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="text-(--text-subtle) group-hover:text-(--text-main) transition-colors">
                 {service.icon}
               </div>
-              <p className="text-xl font-bold tracking-tight group-hover:italic transition-all">
+              <p className="text-lg font-semibold">
                 {service.name}
               </p>
-              <p className="text-sm font-medium text-(--text-muted) leading-relaxed line-clamp-2">
+              <p className="text-sm text-(--text-muted) line-clamp-2">
                 {service.description}
               </p>
             </div>
 
-            <div className="pt-6 flex justify-between items-end border-t border-(--border-color)/50">
+            <div className="pt-4 flex justify-between items-end border-t border-(--border-color)/50">
               <div className="space-y-0.5">
-                <p className="text-[9px] uppercase font-black text-(--text-subtle) tracking-widest">
+                <p className="text-xs text-(--text-subtle)">
                   Base Rate
                 </p>
-                <p className="text-lg font-bold">${service.startingPrice}</p>
+                <p className="text-base font-semibold">${service.startingPrice}</p>
               </div>
               <Button
                 variant="outlined"

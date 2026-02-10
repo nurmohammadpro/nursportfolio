@@ -32,24 +32,24 @@ export default function SignatureManager() {
   };
 
   return (
-    <div className="space-y-12 dashboard-engine">
+    <div className="space-y-12">
       <div className="space-y-1">
-        <p className="p-engine-sm text-(--text-muted)">Identity Control</p>
-        <p className="p-engine-xl">
-          Email <span className="font-bold italic">Signatures.</span>
+        <p className="text-xs text-(--text-muted)">Identity Control</p>
+        <p className="text-2xl font-semibold">
+          Email <span className="font-medium">Signatures</span>
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 gap-6">
         {signatures.map((sig) => (
           <div
             key={sig.id}
-            className="p-8 border border-(--border-color) rounded-2xl bg-(--surface) space-y-6"
+            className="p-6 border border-(--border-color) rounded-lg bg-(--surface) space-y-4"
           >
-            <div className="flex justify-between items-center border-b border-(--border-color) pb-4">
+            <div className="flex justify-between items-center border-b border-(--border-color) pb-3">
               <div className="flex items-center gap-3">
                 <PenTool size={16} className="text-(--text-main)" />
-                <p className="text-xs font-black uppercase tracking-widest">
+                <p className="text-sm font-medium">
                   {sig.alias}
                 </p>
               </div>
@@ -59,18 +59,18 @@ export default function SignatureManager() {
             <textarea
               defaultValue={sig.content}
               onBlur={(e) => handleUpdate(sig.id, e.target.value)}
-              className="w-full h-32 p-4 bg-(--subtle)/5 border border-(--border-color) rounded-xl text-xs font-medium leading-relaxed outline-none focus:border-(--text-main) transition-all"
+              className="w-full h-32 p-3 bg-(--subtle)/5 border border-(--border-color) rounded-lg text-sm outline-none focus:border-(--text-main) transition-all resize-none"
               placeholder="Enter professional signature..."
             />
 
             <div className="flex justify-between items-center">
-              <p className="text-[10px] text-(--text-subtle) italic leading-tight">
+              <p className="text-xs text-(--text-subtle) italic">
                 This signature is automatically appended to all{" "}
-                <span className="font-bold">{sig.alias}</span> transmissions.
+                <span className="font-medium">{sig.alias}</span> transmissions.
               </p>
-              <button className="flex items-center gap-2 px-4 py-2 bg-(--text-main) text-(--surface) rounded-lg hover:opacity-90 transition-all">
+              <button className="flex items-center gap-2 px-4 py-2 bg-(--brand) text-white rounded-lg hover:bg-(--brand-hover) transition-colors">
                 <Save size={12} />
-                <p className="text-[9px] font-black uppercase tracking-widest">
+                <p className="text-sm font-medium">
                   Update
                 </p>
               </button>

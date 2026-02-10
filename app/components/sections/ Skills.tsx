@@ -4,33 +4,33 @@ import { Cpu, ShieldCheck, Layers, Terminal, Globe, Zap } from "lucide-react";
 
 const expertisePillars = [
   {
-    title: "The Core Engine",
+    title: "Web Applications",
     description:
-      "Architecting high-performance web applications with a focus on reactivity and speed.",
+      "Building fast, responsive web applications that people enjoy using.",
     tools: ["Next.js 15", "TypeScript", "React", "Node.js"],
     icon: <Cpu size={28} />,
     gridSpan: "md:col-span-2",
   },
   {
-    title: "Security & Defense",
+    title: "Security",
     description:
-      "Hardening digital assets against vulnerabilities and malware.",
-    tools: ["Wordpress Security Audits", "Malware Removal", "SSL/Auth"],
+      "Keeping your applications and data safe from threats.",
+    tools: ["Wordpress Security", "Malware Removal", "SSL/Auth"],
     icon: <ShieldCheck size={28} />,
     gridSpan: "md:col-span-1",
   },
   {
-    title: "Cloud Infrastructure",
+    title: "Cloud Services",
     description:
-      "Scalable global deployment and real-time data synchronization.",
+      "Making sure your app is fast and available wherever your users are.",
     tools: ["Cloudflare", "Workers", "Firebase", "MongoDB"],
     icon: <Globe size={28} />,
     gridSpan: "md:col-span-1",
   },
   {
-    title: "Strategic Automation",
+    title: "Automation",
     description:
-      "Transforming manual business processes into automated, efficient workflows.",
+      "Saving time by automating repetitive tasks and workflows.",
     tools: ["Web Automation", "API Integration", "SaaS Logic"],
     icon: <Zap size={28} />,
     gridSpan: "md:col-span-2",
@@ -46,17 +46,16 @@ const Skills = () => {
       <div className="layout-container">
         {/* Section Header */}
         <div className="max-w-3xl mb-16 md:mb-24">
-          <h2 className="text-5xl md:text-7xl mb-8 leading-tight">
-            Expertise &{" "}
-            <span className="italic text-(--text-muted)">Tooling</span>
+          <h2 className="text-5xl md:text-7xl lg:text-8xl mb-8 leading-tight">
+            What I Do{" "}
+            <span className="italic text-(--text-muted)">Best</span>
           </h2>
           <p className="text-xl text-(--text-muted) font-light leading-relaxed">
-            I specialize in the full lifecycle of digital product development,
-            bridging the gap between{" "}
+            I help businesses with{" "}
             <span className="text-(--text-main) font-medium">
-              complex engineering
-            </span>{" "}
-            and intuitive business solutions.
+              web development
+            </span>
+            , security, and automation—turning ideas into working applications.
           </p>
         </div>
 
@@ -82,7 +81,7 @@ const Skills = () => {
                 {pillar.tools.map((tool, tIdx) => (
                   <span
                     key={tIdx}
-                    className="px-3 py-1 rounded-full bg-(--subtle) text-(--text-main) text-[10px] uppercase tracking-wider font-bold"
+                    className="px-3 py-1 rounded-full bg-(--subtle) text-(--text-main) text-xs uppercase tracking-wider font-bold"
                   >
                     {tool}
                   </span>

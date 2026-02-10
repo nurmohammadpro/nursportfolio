@@ -61,10 +61,10 @@ export default function SignInPage() {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-(--surface) fade-in">
       <div className="max-w-md w-full space-y-12">
         <div className="space-y-4 text-center">
-          <h1 className="text-6xl font-heading tracking-tighter italic">
-            Sign <span className="not-italic text-(--text-muted)">In.</span>
+          <h1 className="text-2xl font-semibold">
+            Sign <span className="text-(--text-muted)">In</span>
           </h1>
-          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
+          <p className="text-xs text-(--text-subtle)">
             Sign in to your dashboard
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function SignInPage() {
                   fill="#EA4335"
                 />
               </svg>
-              <span className="text-xs uppercase tracking-widest font-bold text-(--text-main)">
+              <span className="text-sm font-medium text-(--text-main)">
                 Continue with Google
               </span>
             </div>
@@ -105,15 +105,15 @@ export default function SignInPage() {
 
           <div className="relative flex items-center py-2">
             <div className="grow border-t border-(--border-color)"></div>
-            <span className="shrink mx-4 text-[10px] font-bold text-(--text-subtle) uppercase tracking-widest">
+            <span className="shrink mx-4 text-xs text-(--text-subtle)">
               or use key
             </span>
             <div className="grow border-t border-(--border-color)"></div>
           </div>
 
-          <form onSubmit={handleSignIn} className="space-y-8">
+          <form onSubmit={handleSignIn} className="space-y-6">
             {error && (
-              <div className="p-4 bg-red-50 text-red-600 text-xs font-bold uppercase tracking-widest border border-red-100 rounded-xl">
+              <div className="p-3 bg-red-50 text-red-600 text-sm border border-red-100 rounded-lg">
                 {error}
               </div>
             )}
@@ -158,11 +158,11 @@ export default function SignInPage() {
           </form>
         </div>
 
-        <p className="text-center text-[10px] uppercase font-bold text-(--text-subtle) tracking-widest">
+        <p className="text-center text-sm text-(--text-subtle)">
           New client?{" "}
           <Link
             href="/signup"
-            className="text-(--text-main) underline underline-offset-4"
+            className="text-(--text-main) underline underline-offset-4 font-medium"
           >
             Create Account
           </Link>

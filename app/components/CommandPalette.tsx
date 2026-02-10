@@ -43,7 +43,7 @@ export default function CommandPalette() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <div className="flex items-center gap-1 px-2 py-1 bg-(--subtle) rounded border border-(--border-color) text-[10px] font-bold text-(--text-subtle)">
+          <div className="flex items-center gap-1 px-2 py-1 bg-(--subtle) rounded border border-(--border-color) text-xs font-bold text-(--text-subtle)">
             <Command size={10} /> ESC
           </div>
         </div>
@@ -54,7 +54,7 @@ export default function CommandPalette() {
             <>
               {/* Category: Projects */}
               <div className="space-y-2">
-                <h4 className="px-4 text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
+                <h4 className="px-4 text-xs uppercase tracking-widest font-bold text-(--text-subtle)">
                   Active Projects
                 </h4>
                 <button
@@ -70,7 +70,7 @@ export default function CommandPalette() {
                   />
                   <div>
                     <p className="text-sm font-medium">AREI Group Sync</p>
-                    <p className="text-[10px] text-(--text-subtle)">
+                    <p className="text-xs text-(--text-subtle)">
                       In Progress • 75%
                     </p>
                   </div>
@@ -79,7 +79,7 @@ export default function CommandPalette() {
 
               {/* Category: Blog */}
               <div className="space-y-2">
-                <h4 className="px-4 text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
+                <h4 className="px-4 text-xs uppercase tracking-widest font-bold text-(--text-subtle)">
                   Blog Content
                 </h4>
                 <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-(--subtle) transition-colors text-left group">
@@ -98,7 +98,7 @@ export default function CommandPalette() {
               <p className="text-sm text-(--text-muted)">
                 Start typing to search your ecosystem
               </p>
-              <p className="text-[10px] uppercase tracking-widest text-(--text-subtle)">
+              <p className="text-xs uppercase tracking-widest text-(--text-subtle)">
                 Quick Jump: Projects, Inquiries, Blog
               </p>
             </div>

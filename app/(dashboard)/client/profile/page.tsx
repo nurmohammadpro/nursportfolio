@@ -12,7 +12,7 @@ export default function ProfilePage() {
   const { isVisible, toggleVisibility } = usePasswordVisibility();
 
   const [profile, setProfile] = useState({
-    name: "Nur Mohammad", // This would come from your auth context
+    name: "Nur Mohammad",
     email: "client@example.com",
     phone: "+880 1234 567890",
     company: "AREI Group",
@@ -21,23 +21,22 @@ export default function ProfilePage() {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
     setTimeout(() => setLoading(false), 1000);
   };
 
   return (
-    <div className="max-w-4xl space-y-16 fade-in pb-20">
+    <div className="max-w-4xl space-y-12 fade-in pb-20">
       {/* 1. Profile Header */}
-      <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between border-b border-(--border-color) pb-12">
+      <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between border-b border-(--border-color) pb-8">
         <div className="flex items-center gap-6">
           <div className="w-20 h-20 bg-(--subtle) rounded-full flex items-center justify-center border border-(--border-color)">
             <User size={40} className="text-(--text-subtle)" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-4xl font-heading tracking-tight">
+            <h1 className="text-2xl font-semibold">
               {profile.name}
             </h1>
-            <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-(--text-subtle)">
+            <p className="text-xs text-(--text-subtle)">
               Verified Client Account
             </p>
           </div>
@@ -47,20 +46,20 @@ export default function ProfilePage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* 2. Personal Information */}
-        <div className="lg:col-span-7 space-y-10">
+        <div className="lg:col-span-7 space-y-6">
           <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-sm font-medium flex items-center gap-2">
               <User size={16} /> Personal Identity
             </h3>
-            <p className="text-sm text-(--text-muted) font-light italic">
+            <p className="text-sm text-(--text-muted)">
               Update how your name and company appear in reports.
             </p>
           </div>
 
-          <form onSubmit={handleUpdateProfile} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <form onSubmit={handleUpdateProfile} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 label="Full Name"
                 value={profile.name}
@@ -105,18 +104,18 @@ export default function ProfilePage() {
         </div>
 
         {/* 3. Security Section */}
-        <div className="lg:col-span-5 space-y-8">
-          <div className="p-8 border border-(--border-color) rounded-3xl bg-(--subtle)/30 space-y-8">
+        <div className="lg:col-span-5 space-y-6">
+          <div className="p-6 border border-(--border-color) rounded-xl bg-(--subtle)/30 space-y-6">
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-widest flex items-center gap-2 text-(--text-main)">
+              <h4 className="text-sm font-medium flex items-center gap-2 text-(--text-main)">
                 <Shield size={16} /> Security
               </h4>
-              <p className="text-[10px] text-(--text-subtle) uppercase font-bold tracking-tight">
+              <p className="text-xs text-(--text-subtle)">
                 Access Credentials
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               <Input
                 label="Current Password"
                 type={isVisible ? "text" : "password"}
@@ -139,7 +138,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="px-4">
-            <p className="text-[10px] leading-relaxed text-(--text-subtle) uppercase tracking-tighter">
+            <p className="text-xs text-(--text-subtle)">
               Last login: Today at 1:03 PM <br />
               From: Feni, Bangladesh (Current Session)
             </p>

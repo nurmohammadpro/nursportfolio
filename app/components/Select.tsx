@@ -29,33 +29,31 @@ const Select = ({ label, options, value, onChange }: any) => {
       onClick={() => setIsOpen(!isOpen)}
     >
       <div className="flex flex-col w-full">
-        {/* Scaled down the label to p-engine-sm equivalent */}
         <span
-          className={`transition-all duration-300 uppercase tracking-[0.15em] font-black ${
+          className={`transition-all duration-200 font-medium ${
             value || isOpen
-              ? "text-[8px] text-(--text-subtle) -translate-y-1"
-              : "text-[10px] text-(--text-muted)"
+              ? "text-xs text-(--text-subtle) -translate-y-1"
+              : "text-sm text-(--text-muted)"
           }`}
         >
           {label}
         </span>
-        {/* Refined selected text to match p-body utility */}
-        <span className="text-[12px] font-bold text-(--text-main) h-4 truncate">
+        <span className="text-sm font-medium text-(--text-main) h-4 truncate">
           {selectedLabel}
         </span>
       </div>
 
       <ChevronDown
-        size={12}
-        className={`transition-transform duration-500 text-(--text-subtle) ${isOpen ? "rotate-180" : ""}`}
+        size={16}
+        className={`transition-transform duration-200 text-(--text-subtle) ${isOpen ? "rotate-180" : ""}`}
       />
 
       {isOpen && (
-        <div className="absolute top-full left-0 w-full bg-(--surface) border border-(--border-color) shadow-2xl z-150 mt-1 py-1 animate-slide-up rounded-xl overflow-hidden">
+        <div className="absolute top-full left-0 w-full bg-(--surface) border border-(--border-color) shadow-lg z-50 mt-1 py-1 rounded-lg overflow-hidden">
           {options.map((opt: any) => (
             <div
               key={opt.value}
-              className="px-4 py-2.5 hover:bg-(--subtle) text-[11px] font-bold transition-colors border-b border-(--border-color)/30 last:border-0 text-(--text-main)"
+              className="px-4 py-2.5 hover:bg-(--subtle) text-sm font-medium transition-colors text-(--text-main)"
               onClick={() => {
                 onChange(opt.value);
                 setIsOpen(false);

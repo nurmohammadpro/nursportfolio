@@ -19,7 +19,6 @@ import {
   Inbox,
   Search,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import Select from "@/app/components/Select";
 import { cloudinary } from "@/app/lib/cloudinary";
 
@@ -30,7 +29,7 @@ const MenuAction = ({ icon: Icon, label, onClick, className = "" }: any) => (
       e.stopPropagation();
       onClick();
     }}
-    className={`w-full flex items-center gap-3 px-4 py-2 text-[11px] font-bold hover:bg-(--subtle) transition-colors ${className}`}
+    className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium hover:bg-(--subtle) transition-colors ${className}`}
   >
     <Icon size={14} />
     {label}
@@ -231,21 +230,19 @@ export default function EmailPage() {
   };
   // Unified Compose Overlay for both Mobile and Desktop
   const renderComposeOverlay = () => (
-    <AnimatePresence>
+    <>
       {isComposing && (
         <div
-          className="fixed inset-0 z-999 bg-(--text-main)/40 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-(--text-main)/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setIsComposing(false)}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-(--surface) w-full max-w-2xl rounded-3xl border border-(--border-color) shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          <div
+            className="bg-(--surface) w-full max-w-2xl rounded-xl border border-(--border-color) shadow-xl overflow-hidden flex flex-col max-h-[90vh] animate-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6 border-b border-(--border-color) flex justify-between bg-(--subtle)">
-              <p className="p-engine-sm font-black uppercase text-(--text-main)">
-                New Eamil
+            <div className="p-4 border-b border-(--border-color) flex justify-between bg-(--subtle)">
+              <p className="text-sm font-semibold text-(--text-main)">
+                New Email
               </p>
               <X
                 size={20}
@@ -253,7 +250,7 @@ export default function EmailPage() {
                 onClick={() => setIsComposing(false)}
               />
             </div>
-            <div className="p-8 space-y-6 flex-1 overflow-y-auto">
+            <div className="p-6 space-y-4 flex-1 overflow-y-auto">
               <Select
                 label="From Address"
                 value={newEmail.fromEmail}
@@ -271,7 +268,7 @@ export default function EmailPage() {
                   setNewEmail({ ...newEmail, to: e.target.value })
                 }
                 placeholder="To: Client Email"
-                className="w-full border-b border-(--border-color) py-2 outline-none p-body text-(--text-main) bg-transparent"
+                className="w-full border-b border-(--border-color) py-2 outline-none text-sm text-(--text-main) bg-transparent"
               />
               <input
                 value={newEmail.subject}
@@ -279,7 +276,7 @@ export default function EmailPage() {
                   setNewEmail({ ...newEmail, subject: e.target.value })
                 }
                 placeholder="Subject"
-                className="w-full border-b border-(--border-color) py-2 outline-none p-body font-bold text-(--text-main) bg-transparent"
+                className="w-full border-b border-(--border-color) py-2 outline-none text-sm font-semibold text-(--text-main) bg-transparent"
               />
               <textarea
                 value={newEmail.body}
@@ -287,32 +284,32 @@ export default function EmailPage() {
                   setNewEmail({ ...newEmail, body: e.target.value })
                 }
                 placeholder="Your message..."
-                className="w-full h-48 bg-transparent outline-none p-engine-body resize-none text-(--text-main)"
+                className="w-full h-48 bg-transparent outline-none text-sm resize-none text-(--text-main)"
               />
             </div>
-            <div className="p-6 bg-(--subtle) flex justify-between items-center gap-4">
+            <div className="p-4 bg-(--subtle) flex justify-between items-center gap-4">
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-2">
                   {newEmail.attachments.map((file, idx) => (
                     <div
                       key={file.publicId || file.url || idx}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-xl"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-lg"
                     >
-                      <Paperclip size={10} className="text-(--brand)" />
-                      <span className="text-[10px] font-bold text-(--text-main)">
+                      <Paperclip size={12} className="text-(--brand)" />
+                      <span className="text-xs font-medium text-(--text-main)">
                         {file.name}
                       </span>
                       <button
                         onClick={() => removeAttachment(idx)}
                         className="hover:bg-red-500/10 p-1 rounded"
                       >
-                        <X size={10} className="text-red-500" />
+                        <X size={12} className="text-red-500" />
                       </button>
                     </div>
                   ))}
 
-                  <label className="cursor-pointer flex items-center gap-2 px-4 py-1.5 bg-(--text-main) text-(--surface) rounded-xl text-[10px] font-black uppercase transition-transform active:scale-95">
-                    <Plus size={12} /> Add File
+                  <label className="cursor-pointer flex items-center gap-2 px-4 py-1.5 bg-(--text-main) text-(--surface) rounded-lg text-xs font-medium transition-all">
+                    <Plus size={14} /> Add File
                     <input
                       type="file"
                       className="hidden"
@@ -322,7 +319,6 @@ export default function EmailPage() {
                           try {
                             await handleFileUpload(file);
                           } catch (error) {
-                            // Handle upload error (show toast, etc.)
                             console.error("Failed to upload file:", error);
                           }
                         }
@@ -334,32 +330,32 @@ export default function EmailPage() {
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setIsComposing(false)}
-                  className="p-engine-sm uppercase opacity-50 text-(--text-main)"
+                  className="text-sm opacity-60 text-(--text-main)"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCompose}
-                  className="btn-brand p-engine-sm uppercase px-8"
+                  className="px-4 py-2 bg-(--brand) text-white text-sm font-medium rounded-lg"
                 >
                   Send Now
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
-    </AnimatePresence>
+    </>
   );
 
   if (isMobile) {
     return (
-      <div className="h-screen bg-(--primary) text-(--text-main) flex flex-col overflow-hidden font-sans">
+      <div className="h-screen bg-(--primary) text-(--text-main) flex flex-col overflow-hidden">
         {mobileScreen === "list" ? (
           <>
             <header className="p-4 space-y-4">
               <div className="flex items-center justify-between">
-                <h1 className="p-heading-xl capitalize">{activeFolder}</h1>
+                <h1 className="text-2xl font-semibold capitalize">{activeFolder}</h1>
                 <button
                   onClick={() => {
                     const idx = mailboxes.findIndex(
@@ -371,7 +367,7 @@ export default function EmailPage() {
                       setActiveAlias("all");
                     else setActiveAlias(mailboxes[idx + 1]?.email);
                   }}
-                  className="bg-(--subtle) text-(--text-main) border border-(--border-color) px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest"
+                  className="bg-(--subtle) text-(--text-main) border border-(--border-color) px-3 py-1.5 rounded-lg text-xs font-medium"
                 >
                   {activeAlias === "all"
                     ? "All Accounts"
@@ -384,7 +380,7 @@ export default function EmailPage() {
                     <button
                       key={f}
                       onClick={() => setActiveFolder(f)}
-                      className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all ${activeFolder === f ? "bg-(--text-main) text-(--surface)" : "bg-(--subtle) text-(--text-muted)"}`}
+                      className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${activeFolder === f ? "bg-(--text-main) text-(--surface)" : "bg-(--subtle) text-(--text-muted)"}`}
                     >
                       {f}
                     </button>
@@ -400,7 +396,7 @@ export default function EmailPage() {
                     setSelectedThread(t);
                     setMobileScreen("detail");
                   }}
-                  className="p-5 active:bg-(--subtle) relative"
+                  className="p-4 active:bg-(--subtle) relative"
                 >
                   <div className="flex justify-between items-start mb-1">
                     <div className="flex items-center gap-2">
@@ -416,22 +412,22 @@ export default function EmailPage() {
                             : "text-(--text-subtle)"
                         }
                       />
-                      <p className="text-[15px] font-bold">{t.clientName}</p>
+                      <p className="text-sm font-semibold">{t.clientName}</p>
                       {t.unread && (
                         <div className="w-1.5 h-1.5 rounded-full bg-(--brand)" />
                       )}
                     </div>
-                    <span className="p-engine-sm">
+                    <span className="text-xs text-(--text-subtle)">
                       {new Date(t.updatedAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
                     </span>
                   </div>
-                  <p className="text-[14px] font-semibold truncate">
+                  <p className="text-sm font-medium truncate">
                     {t.title}
                   </p>
-                  <p className="p-body line-clamp-1 italic text-(--text-subtle)">
+                  <p className="text-xs text-(--text-subtle) line-clamp-1 italic">
                     "{t.lastMessage || t.description}"
                   </p>
                 </div>
@@ -446,10 +442,10 @@ export default function EmailPage() {
                   <ArrowLeft size={20} />
                 </button>
                 <div className="min-w-0">
-                  <h2 className="p-body font-bold truncate">
+                  <h2 className="text-sm font-semibold truncate">
                     {selectedThread?.title}
                   </h2>
-                  <p className="p-engine-sm uppercase font-black text-(--text-subtle)">
+                  <p className="text-xs text-(--text-subtle)">
                     {selectedThread?.clientName}
                   </p>
                 </div>
@@ -498,13 +494,13 @@ export default function EmailPage() {
                 messages.map((m, i) => (
                   <div
                     key={m.createdAt?.toString() || i}
-                    className={`p-4 rounded-2xl p-body ${m.type === "inbound" ? "bg-(--subtle) mr-8" : "bg-(--primary) text-(--surface) ml-8"}`}
+                    className={`p-4 rounded-xl text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-8" : "bg-(--primary) text-(--surface) ml-8"}`}
                   >
                     <p className="whitespace-pre-wrap">{m.text}</p>
                   </div>
                 ))
               ) : (
-                <div className="p-4 bg-(--subtle) rounded-2xl p-body">
+                <div className="p-4 bg-(--subtle) rounded-xl text-sm">
                   <p className="whitespace-pre-wrap">
                     {selectedThread?.description}
                   </p>
@@ -526,11 +522,11 @@ export default function EmailPage() {
 
   // --- DESKTOP UI ---
   return (
-    <div className="dashboard-engine h-[calc(100vh-120px)] flex bg-(--surface) border border-(--border-color) rounded-sm overflow-hidden relative">
-      <div className="w-48 border-r border-(--border-color) bg-(--subtle) p-2 flex flex-col gap-8">
+    <div className="h-[calc(100vh-120px)] flex bg-(--surface) border border-(--border-color) rounded-lg overflow-hidden relative">
+      <div className="w-48 border-r border-(--border-color) bg-(--subtle) p-2 flex flex-col gap-6">
         <button
           onClick={() => setIsComposing(true)}
-          className="btn-brand-sm w-full flex items-center justify-center gap-2"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-(--brand) text-white rounded-lg font-medium hover:bg-(--brand-hover) transition-colors"
         >
           <Plus size={16} /> Compose
         </button>
@@ -560,18 +556,18 @@ export default function EmailPage() {
             <button
               key={f.id}
               onClick={() => setActiveFolder(f.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-sm transition-all ${activeFolder === f.id ? "bg-(--text-main) text-(--surface)" : "text-(--text-muted) hover:bg-(--surface)"}`}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-all ${activeFolder === f.id ? "bg-(--text-main) text-(--surface)" : "text-(--text-muted) hover:bg-(--surface)"}`}
             >
               <f.icon size={14} />
-              <p className="p-engine-sm font-bold">{f.label}</p>
+              <p className="text-sm font-medium">{f.label}</p>
             </button>
           ))}
         </div>
       </div>
 
       <div className="w-64 border-r border-(--border-color) flex flex-col bg-(--surface)">
-        <div className="p-6 border-b border-(--border-color) flex justify-between items-center">
-          <p className="p-engine-xl capitalize">{activeFolder}</p>
+        <div className="p-4 border-b border-(--border-color) flex justify-between items-center">
+          <p className="text-xl font-semibold capitalize">{activeFolder}</p>
           <Search size={16} className="text-(--text-muted)" />
         </div>
         <div className="flex-1 overflow-y-auto divide-y divide-(--border-color)">
@@ -579,7 +575,7 @@ export default function EmailPage() {
             <div
               key={t.id}
               onClick={() => setSelectedThread(t)}
-              className={`p-6 cursor-pointer group relative transition-all ${selectedThread?._id === t._id ? "bg-(--subtle) border-l-4 border-(--brand)" : "hover:bg-(--subtle)"}`}
+              className={`p-4 cursor-pointer group relative transition-all ${selectedThread?._id === t._id ? "bg-(--subtle) border-l-4 border-(--brand)" : "hover:bg-(--subtle)"}`}
             >
               <div className="flex justify-between items-start mb-1">
                 <div className="flex items-center gap-2">
@@ -595,7 +591,7 @@ export default function EmailPage() {
                         : "text-(--text-subtle) hover:text-amber-400"
                     }
                   />
-                  <p className="text-[11px] font-bold text-(--text-main)">
+                  <p className="text-xs font-semibold text-(--text-main)">
                     {t.clientName}
                   </p>
                   {t.unread && (
@@ -612,84 +608,77 @@ export default function EmailPage() {
                   >
                     <MoreVertical size={14} />
                   </button>
-                  <AnimatePresence>
-                    {menuOpen === (t._id || t.id) && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-48 bg-(--surface) border border-(--border-color) rounded-xl shadow-2xl z-50 overflow-hidden"
-                      >
-                        {activeFolder === "trash" ? (
-                          <>
-                            <MenuAction
-                              icon={Inbox}
-                              label="Restore to Inbox"
-                              onClick={() => handleAction(t._id || t.id, "restore")}
-                            />
-                            <div className="h-px bg-(--border-color) my-1" />
-                            <MenuAction
-                              icon={Trash2}
-                              label="Delete Permanently"
-                               onClick={() => handleAction(t._id || t.id, "delete")}
-                              className="text-red-500"
-                            />
-                          </>
-                        ) : activeFolder === "spam" ? (
-                          <>
-                            <MenuAction
-                              icon={ShieldCheck}
-                              label="Not Spam"
-                              onClick={() => handleAction(t._id || t.id, "restore")}
-                            />
-                            <div className="h-px bg-(--border-color) my-1" />
-                            <MenuAction
-                              icon={Trash2}
-                              label="Move to Trash"
-                              onClick={() => handleAction(t._id || t.id, "trash")}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <MenuAction
-                              icon={Reply}
-                              label="Reply"
-                              onClick={() => {
-                                setIsComposing(true);
-                                setNewEmail((prev) => ({
-                                  ...prev,
-                                  to: t.clientEmail,
-                                }));
-                              }}
-                            />
-                            <MenuAction
-                              icon={Mail}
-                              label={t.unread ? "Mark Read" : "Mark Unread"}
-                               onClick={() => handleAction(t._id || t.id, "toggleRead")}
-                            />
-                            <div className="h-px bg-(--border-color) my-1" />
-                            <MenuAction
-                              icon={ShieldAlert}
-                              label="Spam"
-                               onClick={() => handleAction(t._id || t.id, "spam")}
-                            />
-                            <MenuAction
-                              icon={Trash2}
-                              label="Move to Trash"
-                              onClick={() => handleAction(t._id || t.id, "trash")}
-                              className="text-red-500"
-                            />
-                          </>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {menuOpen === (t._id || t.id) && (
+                    <div className="absolute right-0 mt-2 w-48 bg-(--surface) border border-(--border-color) rounded-lg shadow-lg z-50 overflow-hidden">
+                      {activeFolder === "trash" ? (
+                        <>
+                          <MenuAction
+                            icon={Inbox}
+                            label="Restore to Inbox"
+                            onClick={() => handleAction(t._id || t.id, "restore")}
+                          />
+                          <div className="h-px bg-(--border-color) my-1" />
+                          <MenuAction
+                            icon={Trash2}
+                            label="Delete Permanently"
+                             onClick={() => handleAction(t._id || t.id, "delete")}
+                            className="text-red-500"
+                          />
+                        </>
+                      ) : activeFolder === "spam" ? (
+                        <>
+                          <MenuAction
+                            icon={ShieldCheck}
+                            label="Not Spam"
+                            onClick={() => handleAction(t._id || t.id, "restore")}
+                          />
+                          <div className="h-px bg-(--border-color) my-1" />
+                          <MenuAction
+                            icon={Trash2}
+                            label="Move to Trash"
+                            onClick={() => handleAction(t._id || t.id, "trash")}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <MenuAction
+                            icon={Reply}
+                            label="Reply"
+                            onClick={() => {
+                              setIsComposing(true);
+                              setNewEmail((prev) => ({
+                                ...prev,
+                                to: t.clientEmail,
+                              }));
+                            }}
+                          />
+                          <MenuAction
+                            icon={Mail}
+                            label={t.unread ? "Mark Read" : "Mark Unread"}
+                             onClick={() => handleAction(t._id || t.id, "toggleRead")}
+                          />
+                          <div className="h-px bg-(--border-color) my-1" />
+                          <MenuAction
+                            icon={ShieldAlert}
+                            label="Spam"
+                             onClick={() => handleAction(t._id || t.id, "spam")}
+                          />
+                          <MenuAction
+                            icon={Trash2}
+                            label="Move to Trash"
+                            onClick={() => handleAction(t._id || t.id, "trash")}
+                            className="text-red-500"
+                          />
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
-              <p className="p-engine-sm uppercase font-black tracking-widest text-(--text-muted) mb-1 truncate">
+              <p className="text-xs font-medium text-(--text-muted) mb-1 truncate uppercase">
                 {t.title}
               </p>
-              <p className="p-engine-body text-(--text-subtle) line-clamp-1 italic">
+              <p className="text-xs text-(--text-subtle) line-clamp-1 italic">
                 "{t.lastMessage || t.description}"
               </p>
             </div>
@@ -700,27 +689,24 @@ export default function EmailPage() {
       <div className="flex-1 flex flex-col bg-(--primary)">
         {selectedThread ? (
           <div className="flex-1 overflow-y-auto p-4">
-            <div className="max-w-3xl mx-auto bg-(--surface) p-4 border border-(--border-color) rounded-sm shadow-sm">
-              <h2 className="dashboard-engine border-b border-(--border-color) pb-4 mb-6">
+            <div className="max-w-3xl mx-auto bg-(--surface) p-4 border border-(--border-color) rounded-lg shadow-sm">
+              <h2 className="text-lg font-semibold border-b border-(--border-color) pb-4 mb-6">
                 {selectedThread.title}
               </h2>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 {messages.length > 0 ? (
                   messages.map((m, i) => (
                     <div
                       key={i}
-                      className={`p-4 rounded-xl p-engine-body ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--main) ml-12"}`}
+                      className={`p-4 rounded-lg text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--main) ml-12"}`}
                     >
                       <p className="whitespace-pre-wrap">{m.text}</p>
-                      {/* ATTACHMENT SECTION */}
-                      // In your attachment display // Keep this for displaying
-                      received attachments
                       {m.attachments?.length > 0 && (
                         <div className="mt-4 pt-3 border-t border-(--border-color)/20 flex flex-wrap gap-2">
                           {m.attachments.map((file: any, idx: number) => (
                             <div
                               key={file.id || idx}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-(--surface) border border-(--border-color) rounded-xl shadow-sm group cursor-pointer hover:bg-(--subtle)"
+                              className="flex items-center gap-2 px-3 py-1.5 bg-(--surface) border border-(--border-color) rounded-lg shadow-sm group cursor-pointer hover:bg-(--subtle)"
                               onClick={() => handleDownloadAttachment(file)}
                             >
                               <Paperclip
@@ -728,10 +714,10 @@ export default function EmailPage() {
                                 className="text-(--text-muted) group-hover:text-(--brand) transition-colors"
                               />
                               <div className="flex flex-col min-w-0">
-                                <span className="text-[10px] font-bold text-(--text-main) truncate max-w-37.5">
+                                <span className="text-xs font-medium text-(--text-main) truncate">
                                   {file.name || "Attachment"}
                                 </span>
-                                <span className="text-[8px] font-black uppercase opacity-40">
+                                <span className="text-xs uppercase opacity-40">
                                   {file.size
                                     ? (file.size / 1024).toFixed(1) + " KB"
                                     : "File"}
@@ -746,7 +732,7 @@ export default function EmailPage() {
                           <div
                             className={`w-1.5 h-1.5 rounded-full ${m.deliveryStatus === "delivered" ? "bg-green-500" : m.deliveryStatus === "bounced" ? "bg-red-500" : "bg-slate-300"}`}
                           />
-                          <p className="p-engine-sm uppercase text-[8px] font-black opacity-50">
+                          <p className="text-xs uppercase opacity-50">
                             {m.deliveryStatus || "Pending"}
                           </p>
                         </div>
@@ -755,20 +741,19 @@ export default function EmailPage() {
                   ))
                 ) : (
                   <div className="flex flex-col gap-4">
-                    <p className="p-engine-body italic opacity-50">
+                    <p className="text-sm italic opacity-50">
                       {selectedThread.description}
                     </p>
-                    {/* Show attachments from the thread description if any */}
                     {selectedThread.attachments?.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {selectedThread.attachments.map(
                           (file: any, idx: number) => (
                             <div
                               key={file.id || file.publicId || file.name || idx}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-xl"
+                              className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-lg"
                             >
                               <Paperclip size={12} className="text-(--brand)" />
-                              <span className="text-[10px] font-bold">
+                              <span className="text-xs font-medium">
                                 {file.name}
                               </span>
                             </div>
@@ -782,7 +767,7 @@ export default function EmailPage() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center p-engine-body italic opacity-20">
+          <div className="flex-1 flex items-center justify-center text-sm italic opacity-20">
             Select an inquiry to read.
           </div>
         )}

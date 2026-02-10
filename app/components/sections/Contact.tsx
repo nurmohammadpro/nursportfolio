@@ -7,8 +7,8 @@ import Select from "../Select";
 import { Send, ArrowRight } from "lucide-react";
 
 const serviceOptions = [
-  { value: "web-development", label: "Full-Stack SaaS Development" },
-  { value: "web-automation", label: "Strategic Web Automation" },
+  { value: "web-development", label: "Web Application Development" },
+  { value: "web-automation", label: "Web Automation" },
   { value: "wordpress-security", label: "Security & Malware Audit" },
 ];
 
@@ -29,12 +29,15 @@ const Contact = () => {
           {/* Left: Heading (Occupies more space for breathing room) */}
           <div className="lg:col-span-7">
             <h2 className="text-6xl md:text-8xl lg:text-9xl leading-[0.9] mb-8 tracking-tighter">
-              Start a <br />
-              <span className="italic text-(--text-muted)">Conversation.</span>
+              Let's Build <br />
+              <span className="italic text-(--text-muted)">
+                Something
+              </span>{" "}
+              Great
             </h2>
             <p className="text-xl text-(--text-muted) font-light leading-relaxed max-w-md">
-              Reach out to discuss your project architecture, security needs, or
-              custom automation goals.
+              Got a project in mind? Let's talk about how I can help bring your
+              idea to life.
             </p>
           </div>
 
@@ -81,7 +84,7 @@ const Contact = () => {
               </Button>
             </div>
 
-            <p className="text-[10px] text-(--text-subtle) uppercase tracking-widest text-center">
+            <p className="text-xs text-(--text-subtle) uppercase tracking-widest text-center">
               Response time: Usually within 24 hours
             </p>
           </div>

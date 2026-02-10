@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef } from "react";
 import { cn } from "../lib/utils";
 
 type ButtonVariant = "primary" | "outlined";
@@ -36,33 +36,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const [ripple, setRipple] = useState<{
-      x: number;
-      y: number;
-      key: number;
-    } | null>(null);
-
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (!loading && !disabled) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        setRipple({ x, y, key: Date.now() });
-        setTimeout(() => setRipple(null), 600);
-
-        onClick?.(e);
-      }
-    };
-
-    // Icon size based on button size
     const iconSize = {
       sm: "w-4 h-4",
       md: "w-5 h-5",
       lg: "w-6 h-6",
     };
 
-    // Icon spacing based on button size
     const iconSpacing = {
       sm: "gap-2",
       md: "gap-3",
@@ -71,39 +50,35 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const baseClasses = `
       relative inline-flex items-center justify-center
-      font-medium uppercase rounded-sm overflow-hidden
-      transition-all duration-200 ease-out
-      focus-visible:outline-none focus-visible:ring-2 
-      focus-visible:ring-(--text-main)/50 focus-visible:ring-offset-2
-      active:scale-[0.98]
-      ${disabled || loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
+      font-medium rounded-md
+      transition-all duration-150 ease-out
+      focus-visible:outline-none focus-visible:ring-2
+      focus-visible:ring-(--brand) focus-visible:ring-offset-2
+      ${disabled || loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
       ${fullWidth ? "w-full" : ""}
     `;
 
     const variantClasses: Record<ButtonVariant, string> = {
       primary: `
-        bg-(--text-main) text-(--surface) hover:opacity-90
-        shadow-md hover:shadow-lg active:shadow-sm
-        disabled:shadow-none
+        bg-(--brand) text-white hover:bg-(--brand-hover)
       `,
       outlined: `
-        bg-transparent text-(--text-main) border border-(--text-main)
-        hover:bg-(--text-main) hover:text-(--surface)
-        disabled:border-(--text-subtle) disabled:text-(--text-subtle)
+        bg-transparent text-(--text-main) border border-(--border-color)
+        hover:bg-(--subtle) hover:border-(--text-muted)
       `,
     };
 
     const sizeClasses: Record<ButtonSize, string> = {
-      sm: "px-4 py-2 text-sm min-h-9",
-      md: "px-6 py-3 text-base min-h-11",
-      lg: "px-8 py-4 text-lg min-h-13",
+      sm: "px-3 py-1.5 text-sm",
+      md: "px-4 py-2 text-base",
+      lg: "px-6 py-3 text-lg",
     };
 
     return (
       <button
         ref={ref}
         type={type}
-        onClick={handleClick}
+        onClick={onClick}
         disabled={disabled || loading}
         className={cn(
           baseClasses,
@@ -114,19 +89,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {...rest}
       >
-        {/* Ripple effect */}
-        {ripple && (
-          <span
-            key={ripple.key}
-            className="absolute w-2 h-2 bg-current/30 rounded-full animate-ripple"
-            style={{
-              left: ripple.x - 4,
-              top: ripple.y - 4,
-            }}
-          />
-        )}
-
-        {/* Loading spinner */}
         {loading && (
           <svg
             className={cn("animate-spin shrink-0", iconSize[size])}
@@ -150,11 +112,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </svg>
         )}
 
-        {/* Icon on the left */}
         {icon && iconPosition === "left" && !loading && (
           <span
             className={cn(
-              "inline-flex items-center justify-center shrink-0 transition-transform duration-200",
+              "inline-flex items-center justify-center shrink-0",
               iconSize[size],
               iconClassName,
             )}
@@ -163,14 +124,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </span>
         )}
 
-        {/* Button text */}
         <span className="relative z-10 whitespace-nowrap">{children}</span>
 
-        {/* Icon on the right */}
         {icon && iconPosition === "right" && !loading && (
           <span
             className={cn(
-              "inline-flex items-center justify-center shrink-0 transition-transform duration-200",
+              "inline-flex items-center justify-center shrink-0",
               iconSize[size],
               iconClassName,
             )}

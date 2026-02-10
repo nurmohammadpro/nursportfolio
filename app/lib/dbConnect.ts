@@ -6,6 +6,9 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable');
 }
 
+// Debug: Log the URI (remove the first 20 chars for security)
+console.log('MONGODB_URI prefix:', MONGODB_URI.substring(0, 30) + '...');
+
 let cached = (global as any).mongoose;
 
 if (!cached) {

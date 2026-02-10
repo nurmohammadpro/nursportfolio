@@ -34,25 +34,25 @@ const Hero = () => {
       `}
       >
         {/* Availability Badge */}
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-(--border-color) text-(--text-subtle) text-[10px] uppercase tracking-[0.2em] font-bold mb-10">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-(--border-color) text-(--text-subtle) text-xs uppercase tracking-[0.2em] font-bold mb-10">
           <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
           Open for Collaboration
         </div>
 
         {/* Hero Heading */}
         <h1 className="text-6xl md:text-8xl lg:text-9xl leading-none mb-8 max-w-5xl">
-          Building <span className="text-(--text-muted) italic">Smarter</span>{" "}
-          Digital Products
+          Building <span className="text-(--text-muted) italic">Digital</span>{" "}
+          Products That Work
         </h1>
 
         {/* Subheading */}
         <p className="text-lg md:text-xl text-(--text-muted) max-w-2xl mb-12 font-light leading-relaxed">
-          I am{" "}
+          I'm{" "}
           <span className="text-(--text-main) font-medium underline underline-offset-8 decoration-(--text-subtle)/30">
             Nur Mohammad
           </span>
-          . A specialized Full-Stack Engineer focused on performance, security,
-          and scalable automation.
+          , a Web Application Developer who turns ideas into reliable,
+          secure, and easy-to-use web applications.
         </p>
 
         {/* Updated Buttons */}
@@ -96,8 +96,8 @@ const Hero = () => {
       {/* Marquee Section */}
       <div className="w-full border-t border-(--border-color) bg-(--surface) py-12 mt-auto">
         <div className="layout-container mb-6">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-(--text-subtle) font-bold text-center">
-            Trusted by forward-thinking companies
+          <p className="text-xs uppercase tracking-[0.3em] text-(--text-subtle) font-bold text-center">
+            Trusted by great companies
           </p>
         </div>
 

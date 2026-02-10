@@ -66,29 +66,29 @@ export default function AdminMonitor() {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
         <Loader2 className="animate-spin text-(--brand)" size={40} />
-        <p className="p-heading-sm">Initializing Oversight...</p>
+        <p className="text-xs text-(--text-subtle)">Initializing Oversight...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 fade-in dashboard-engine max-w-7xl mx-auto">
+    <div className="space-y-12 fade-in max-w-7xl mx-auto">
       {/* Engine Header */}
       <div className="flex justify-between items-end border-b border-(--border-color) pb-8">
         <div className="space-y-1">
-          <p className="p-engine-sm uppercase tracking-[0.4em]">
+          <p className="text-xs uppercase tracking-wide text-(--text-subtle)">
             System Oversight
           </p>
-          <p className="p-engine-xl">
+          <p className="text-2xl font-semibold">
             Admin{" "}
-            <span className="font-semibold text-(--text-main) italic">
-              Dashboard.
+            <span className="text-(--text-main)">
+              Dashboard
             </span>
           </p>
         </div>
         <div className="flex items-center gap-3 bg-(--subtle)/50 px-4 py-2 rounded-full border border-(--border-color)">
           <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-(--text-muted)">
+          <p className="text-xs font-medium text-(--text-muted)">
             Live Node: MongoDB Atlas
           </p>
         </div>
@@ -97,47 +97,46 @@ export default function AdminMonitor() {
       {/* Project Grid */}
       <div className="grid grid-cols-1 gap-8">
         {projects.length === 0 ? (
-          <div className="py-20 text-center border-2 border-dashed border-(--border-color) rounded-3xl">
+          <div className="py-20 text-center border-2 border-dashed border-(--border-color) rounded-2xl">
             <AlertCircle
               className="mx-auto mb-4 text-(--text-subtle)"
               size={32}
             />
-            <p className="p-heading-sm">No Active Deployments Found</p>
+            <p className="text-xs text-(--text-subtle)">No Active Deployments Found</p>
           </div>
         ) : (
           projects.map((project) => (
             <div
               key={project._id}
-              className="border border-(--border-color) rounded-3xl bg-(--surface) overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+              className="border border-(--border-color) rounded-2xl bg-(--surface) overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
               {/* Project Banner */}
-              <div className="p-8 border-b border-(--border-color) flex justify-between items-center bg-(--subtle)/20">
+              <div className="p-6 border-b border-(--border-color) flex justify-between items-center bg-(--subtle)/20">
                 <div className="space-y-2">
-                  <p className="text-2xl font-heading tracking-tighter italic">
+                  <p className="text-xl font-semibold">
                     {project.title}
-                    <span className="not-italic text-(--text-subtle)">.</span>
                   </p>
-                  <p className="p-engine-sm flex items-center gap-2">
-                    <Activity size={12} className="text-(--brand)" />
+                  <p className="text-sm text-(--text-muted) flex items-center gap-2">
+                    <Activity size={14} className="text-(--brand)" />
                     {project.serviceType} • Allocation: ${project.totalPrice}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-black uppercase px-4 py-1.5 bg-(--text-main) text-(--surface) rounded-full">
+                  <p className="text-xs font-medium px-4 py-1.5 bg-(--text-main) text-(--surface) rounded-full">
                     {project.status?.replace("_", " ")}
                   </p>
                 </div>
               </div>
 
               {/* Milestones Section */}
-              <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {project.milestones?.map((m: any, idx: number) => {
                   const isUpdating = updatingId === `${project._id}-${idx}`;
 
                   return (
                     <div
                       key={idx}
-                      className="p-5 border border-(--border-color) rounded-2xl space-y-4 group transition-all hover:border-(--brand) relative bg-(--primary)/30"
+                      className="p-4 border border-(--border-color) rounded-xl space-y-3 group transition-all hover:border-(--brand) relative bg-(--primary)/30"
                     >
                       <div className="flex items-center justify-between">
                         <div
@@ -153,14 +152,14 @@ export default function AdminMonitor() {
                           />
                         </div>
                         {m.completed && (
-                          <span className="text-[9px] font-black text-green-500 uppercase tracking-tighter">
+                          <span className="text-xs font-medium text-green-500">
                             Verified
                           </span>
                         )}
                       </div>
 
                       <p
-                        className={`text-[13px] tracking-tight ${m.completed ? "font-bold text-(--text-main)" : "font-medium text-(--text-muted)"}`}
+                        className={`text-sm ${m.completed ? "font-semibold text-(--text-main)" : "font-medium text-(--text-muted)"}`}
                       >
                         {m.label}
                       </p>
@@ -171,14 +170,14 @@ export default function AdminMonitor() {
                             handleMilestoneUpdate(project._id, idx, m.label)
                           }
                           disabled={!!updatingId}
-                          className="w-full flex items-center justify-center gap-2 bg-(--text-main) text-(--surface) py-2.5 rounded-xl opacity-0 group-hover:opacity-100 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                          className="w-full flex items-center justify-center gap-2 bg-(--text-main) text-(--surface) py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all disabled:opacity-50 cursor-pointer"
                         >
                           {isUpdating ? (
                             <Loader2 size={14} className="animate-spin" />
                           ) : (
                             <>
                               <DollarSign size={14} />
-                              <p className="text-[10px] font-black uppercase tracking-widest">
+                              <p className="text-xs font-medium">
                                 Execute & Bill
                               </p>
                             </>

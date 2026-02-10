@@ -61,10 +61,10 @@ export default function SignupPage() {
     >
       <div className="w-full max-w-sm space-y-12 py-12">
         <div className="text-center space-y-4">
-          <h3 className="text-5xl font-heading">
-            Join the <span className="italic text-(--text-muted)">Engine</span>
+          <h3 className="text-2xl font-semibold">
+            Join the <span className="text-(--text-muted)">Engine</span>
           </h3>
-          <p className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle)">
+          <p className="text-sm text-(--text-subtle)">
             Register Security Credentials
           </p>
         </div>
@@ -152,11 +152,11 @@ export default function SignupPage() {
           </Button>
         </form>
 
-        <p className="text-[10px] uppercase tracking-widest font-bold text-(--text-subtle) text-center">
+        <p className="text-sm text-(--text-subtle) text-center">
           Already a member?{" "}
           <Link
             href="/signin"
-            className="text-(--text-main) hover:underline underline-offset-4"
+            className="text-(--text-main) hover:underline underline-offset-4 font-medium"
           >
             Sign In
           </Link>

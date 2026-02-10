@@ -34,12 +34,12 @@ export default function PaymentsPage() {
     <div className="space-y-10 fade-in">
       {/* Header */}
       <div className="space-y-1">
-        <p className="text-3xl font-light tracking-tighter text-(--text-main)">
-          Transaction <span className="font-semibold">History</span>
+        <p className="text-2xl font-semibold text-(--text-main)">
+          Transaction <span className="font-medium">History</span>
         </p>
       </div>
 
-      {/* Summary Row - Minimalist Stats using only P tags */}
+      {/* Summary Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "Monthly Revenue", val: "$12,400" },
@@ -49,25 +49,25 @@ export default function PaymentsPage() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="p-4 border border-(--border-color) rounded-xl"
+            className="p-4 border border-(--border-color) rounded-lg"
           >
-            <p className="text-[9px] font-semibold tracking-widest text-(--text-subtle) mb-1">
+            <p className="text-xs font-medium tracking-wide text-(--text-subtle) mb-1">
               {stat.label}
             </p>
-            <p className="text-xl font-semibold tracking-tight">{stat.val}</p>
+            <p className="text-lg font-semibold">{stat.val}</p>
           </div>
         ))}
       </div>
 
       {/* Transaction Table */}
-      <div className="border border-(--border-color) rounded-xl overflow-hidden">
+      <div className="border border-(--border-color) rounded-lg overflow-hidden">
         <div className="bg-(--subtle)/20 p-4 border-b border-(--border-color) flex justify-between items-center">
-          <p className="text-[10px] font-black uppercase tracking-widest">
+          <p className="text-sm font-medium">
             Recent Activity
           </p>
           <button className="flex items-center gap-2 text-(--text-subtle) hover:text-(--text-main) transition-colors">
             <Download size={14} />
-            <p className="text-[9px] font-bold uppercase">Export CSV</p>
+            <p className="text-xs font-medium">Export CSV</p>
           </button>
         </div>
 
@@ -88,8 +88,8 @@ export default function PaymentsPage() {
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-medium ">{tx.client}</p>
-                  <p className="text-[10px] font-medium font-mono text-(--text-subtle)">
+                  <p className="text-sm font-medium">{tx.client}</p>
+                  <p className="text-xs font-mono text-(--text-subtle)">
                     {tx.id} • {tx.method}
                   </p>
                 </div>
@@ -97,7 +97,7 @@ export default function PaymentsPage() {
 
               <div className="flex justify-between md:flex-col md:items-end gap-1">
                 <p className="text-sm font-semibold">${tx.amount}</p>
-                <p className="text-[10px] font-bold text-(--text-subtle) uppercase tracking-widest">
+                <p className="text-xs text-(--text-subtle)">
                   {tx.date}
                 </p>
               </div>

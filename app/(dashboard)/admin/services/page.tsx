@@ -49,10 +49,10 @@ const serviceLogs = [
 export default function ServicesMonitor() {
   return (
     <div className="space-y-12 fade-in">
-      {/* 1. Header - No headings, just weight-based P tags */}
+      {/* 1. Header */}
       <div className="space-y-1">
-        <p className="text-3xl font-light tracking-tighter text-(--text-main)">
-          Active <span className="font-semibold">Services</span>
+        <p className="text-2xl font-semibold text-(--text-main)">
+          Active <span className="font-medium">Services</span>
         </p>
       </div>
 
@@ -61,14 +61,14 @@ export default function ServicesMonitor() {
         {activeServices.map((service) => (
           <div
             key={service.id}
-            className="bg-(--surface) p-8 space-y-6 group hover:bg-(--subtle) transition-colors"
+            className="bg-(--surface) p-6 space-y-4 group hover:bg-(--subtle) transition-colors"
           >
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-(--text-subtle)">
+                <p className="text-xs font-medium uppercase tracking-wide text-(--text-subtle)">
                   {service.id}
                 </p>
-                <p className="text-xl font-bold tracking-tight">
+                <p className="text-lg font-semibold">
                   {service.client}
                 </p>
                 <p className="text-sm font-medium text-(--text-muted)">
@@ -81,16 +81,16 @@ export default function ServicesMonitor() {
                 ) : (
                   <Clock size={12} />
                 )}
-                <p className="text-[10px] font-semibold">{service.status}</p>
+                <p className="text-xs font-medium">{service.status}</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-end">
-                <p className="text-xs font-medium  text-(--text-subtle)">
+                <p className="text-xs font-medium text-(--text-subtle)">
                   Deployment Progress
                 </p>
-                <p className="text-sm font-bold">{service.progress}%</p>
+                <p className="text-sm font-semibold">{service.progress}%</p>
               </div>
               <div className="h-1 bg-(--subtle) rounded-full overflow-hidden">
                 <div
@@ -103,20 +103,20 @@ export default function ServicesMonitor() {
         ))}
       </div>
 
-      {/* 3. Real-time Service Logs (P-tag optimized) */}
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 border-b border-(--border-color) pb-4">
+      {/* 3. Real-time Service Logs */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-3 border-b border-(--border-color) pb-3">
           <History size={16} className="text-(--text-subtle)" />
-          <p className="text-xs font-semibold">System Logs</p>
+          <p className="text-sm font-medium">System Logs</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {serviceLogs.map((log, index) => (
-            <div key={index} className="flex gap-6 items-start">
-              <p className="text-[11px] font-bold font-mono text-(--text-subtle) whitespace-nowrap pt-1">
+            <div key={index} className="flex gap-4 items-start">
+              <p className="text-xs font-medium font-mono text-(--text-subtle) whitespace-nowrap pt-0.5">
                 [{log.time}]
               </p>
-              <p className="text-sm font-normal text-(--text-muted) border-l border-(--border-color) pl-6 group-hover:text-(--text-main) transition-colors">
+              <p className="text-sm text-(--text-muted) border-l border-(--border-color) pl-4 group-hover:text-(--text-main) transition-colors">
                 {log.event}
               </p>
             </div>

@@ -13,8 +13,8 @@ const Input = forwardRef(
       value,
       onFocus,
       onBlur,
-      endAdornment, // 1. Explicitly pull this out of the props
-      ...rest // 2. rest now only contains valid HTML attributes
+      endAdornment,
+      ...rest
     }: any,
     ref: any,
   ) => {
@@ -24,18 +24,18 @@ const Input = forwardRef(
 
     return (
       <div
-        className={`relative transition-all duration-300 ${fullWidth ? "w-full" : ""} ${className}`}
+        className={`relative transition-all duration-200 ${fullWidth ? "w-full" : ""} ${className}`}
       >
         <div
           className={`
-        relative flex items-center h-16 px-0 bg-transparent border-b transition-all duration-500
+        relative flex items-center h-14 px-0 bg-transparent border-b transition-all duration-200
         ${error ? "border-red-500" : isFocused ? "border-(--text-main)" : "border-(--border-color)"}
       `}
         >
           <input
             id={inputId}
             ref={ref}
-            className="w-full bg-transparent outline-none text-(--text-main) pt-6 pb-2 text-lg font-light placeholder-transparent"
+            className="w-full bg-transparent outline-none text-(--text-main) pt-5 pb-2 text-base font-normal placeholder-transparent"
             onFocus={(e) => {
               setIsFocused(true);
               onFocus?.(e);
@@ -45,10 +45,9 @@ const Input = forwardRef(
               onBlur?.(e);
             }}
             value={value}
-            {...rest} // 3. Now rest is "clean" and won't throw errors
+            {...rest}
           />
 
-          {/* 4. Render the endAdornment (Password Toggle) here */}
           {endAdornment && (
             <div className="flex items-center ml-2 transition-colors">
               {endAdornment}
@@ -58,15 +57,15 @@ const Input = forwardRef(
           <label
             htmlFor={inputId}
             className={`
-            absolute transition-all duration-300 pointer-events-none uppercase tracking-[0.2em] font-bold
-            ${isLabelFloated ? "text-[10px] -top-2 text-(--text-subtle)" : "text-xs top-6 text-(--text-muted)"}
+            absolute transition-all duration-200 pointer-events-none font-medium
+            ${isLabelFloated ? "text-xs -top-1 text-(--text-subtle)" : "text-sm top-4 text-(--text-muted)"}
           `}
           >
             {label}
           </label>
         </div>
         {helperText && (
-          <p className="mt-2 text-[10px] uppercase font-bold text-red-500">
+          <p className="mt-1.5 text-xs text-red-500">
             {helperText}
           </p>
         )}

@@ -77,7 +77,7 @@ export default function Sidebar({ role }: SidebarProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-4 p-3 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                 isActive
                   ? "bg-(--subtle) text-(--text-main)"
                   : "text-(--text-muted) hover:text-(--text-main) hover:bg-(--subtle)/40"
@@ -85,7 +85,7 @@ export default function Sidebar({ role }: SidebarProps) {
             >
               <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               <p
-                className={`hidden md:block text-[13px] tracking-tight ${isActive ? "font-bold" : "font-medium"}`}
+                className={`hidden md:block text-sm ${isActive ? "font-semibold" : "font-medium"}`}
               >
                 {item.label}
               </p>
@@ -94,16 +94,16 @@ export default function Sidebar({ role }: SidebarProps) {
         })}
       </nav>
 
-      <div className="p-1 md:p-2 lg:p-4 border-t border-(--border-color)">
+      <div className="p-3 border-t border-(--border-color)">
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-4 w-full p-3 text-(--text-muted) hover:text-red-600 transition-colors group cursor-pointer"
+          className="flex items-center gap-3 w-full p-3 text-(--text-muted) hover:text-red-600 transition-colors group cursor-pointer"
         >
           <LogOut
             size={20}
             className="group-hover:translate-x-0.5 transition-transform"
           />
-          <p className="hidden md:block text-[13px] font-bold uppercase tracking-wider">
+          <p className="hidden md:block text-sm font-medium">
             Sign Out
           </p>
         </button>

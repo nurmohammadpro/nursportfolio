@@ -8,14 +8,14 @@ import Textarea from "./Textarea";
 import { Send, Mail, Linkedin, CheckCircle2 } from "lucide-react";
 
 const serviceOptions = [
-  { value: "web-development", label: "Full-Stack SaaS Development" },
+  { value: "web-development", label: "Web Application Development" },
   {
     value: "web-automation-bot-dev",
-    label: "Web Automation & Bot Development",
+    label: "Web Automation & Bots",
   },
   {
     value: "wordpress-design-security",
-    label: "Wordpress Design & Malware Removal",
+    label: "WordPress Design & Security",
   },
 ];
 
@@ -49,8 +49,8 @@ const Contact = () => {
           Message <span className="italic text-(--text-muted)">Received</span>
         </h2>
         <p className="text-(--text-muted) max-w-sm mb-10">
-          Thank you, {formData.name}. I will review your requirements and
-          respond within 24 hours.
+          Thanks, {formData.name}! I've got your message and will get back to
+          you within 24 hours.
         </p>
         <Button variant="outlined" onClick={() => setSubmitted(false)}>
           Send Another Message
@@ -69,18 +69,18 @@ const Contact = () => {
         <div className="lg:col-span-5 space-y-12">
           <div className="space-y-6">
             <h2 className="text-6xl md:text-7xl leading-tight">
-              Let&apos;s build <br />
-              <span className="italic text-(--text-muted)">excellence.</span>
+              Let's Build <br />
+              <span className="italic text-(--text-muted)">Something</span>
             </h2>
             <p className="text-xl text-(--text-muted) font-light leading-relaxed">
-              I am currently available for specialized projects and strategic
-              consultations.
+              I'm currently available for new projects. Let's talk about what you
+              have in mind.
             </p>
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
-              Direct Channels
+            <h4 className="text-xs uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
+              Get In Touch
             </h4>
             <div className="space-y-3">
               <a

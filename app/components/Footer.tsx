@@ -39,8 +39,8 @@ const Footer = () => {
               Nur<span className="text-(--text-subtle)"> Mohammad</span>
             </h3>
             <p className="p-engine-body text-(--text-subtle) max-w-sm leading-relaxed">
-              Web Application Developer specializing in high-performance SaaS
-              engines and automated infrastructure.
+              Web Application Developer who builds reliable, secure, and
+              easy-to-use applications.
             </p>
             <div className="flex gap-5">
               {socialLinks.map((social) => (
@@ -58,7 +58,7 @@ const Footer = () => {
 
           {/* Navigation with isActive Logic */}
           <div className="md:col-span-3 space-y-6">
-            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-(--text-muted)">
+            <p className="text-xs uppercase tracking-[0.3em] font-black text-(--text-muted)">
               Navigation
             </p>
             <ul className="space-y-4">
@@ -86,17 +86,17 @@ const Footer = () => {
 
           {/* Status & Availability */}
           <div className="md:col-span-4 space-y-6">
-            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-(--text-muted)">
+            <p className="text-xs uppercase tracking-[0.3em] font-black text-(--text-muted)">
               Availability
             </p>
             <div className="p-6 border border-(--border-color) rounded-2xl bg-(--subtle)/5">
               <p className="text-xs font-bold leading-relaxed">
-                Currently accepting direct service inquiries via
-                nurmohammad.pro.
+                I'm currently available for new projects. Reach out and let's
+                talk about your idea.
               </p>
               <Link
                 href="/#contact"
-                className="inline-block mt-4 text-[10px] font-black uppercase tracking-widest text-(--text-main) border-b border-(--text-main) pb-1"
+                className="inline-block mt-4 text-xs font-black uppercase tracking-widest text-(--text-main) border-b border-(--text-main) pb-1"
               >
                 Start a Project
               </Link>
@@ -107,10 +107,10 @@ const Footer = () => {
         {/* Legal & System Status */}
         <div className="mt-20 pt-8 border-t border-(--border-color)/50 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="mt-20 pt-8 border-t border-(--border-color)/50 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-[10px] uppercase tracking-widest text-(--text-subtle) font-bold">
+            <p className="text-xs uppercase tracking-widest text-(--text-subtle) font-bold">
               © 2026 Nur Mohammad. All Rights Reserved.
             </p>
-            <div className="flex gap-8 text-[10px] uppercase tracking-widest text-(--text-subtle) font-bold">
+            <div className="flex gap-8 text-xs uppercase tracking-widest text-(--text-subtle) font-bold">
               <Link
                 href="/privacy"
                 className="hover:text-(--text-main) transition-colors"

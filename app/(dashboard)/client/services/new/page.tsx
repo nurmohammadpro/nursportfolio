@@ -51,7 +51,7 @@ export default function RequestQuotePage() {
         <p className="text-5xl font-light tracking-tighter italic text-(--text-main)">
           Transmission <span className="font-bold not-italic">Complete.</span>
         </p>
-        <p className="text-[10px] uppercase tracking-widest font-black text-(--text-subtle)">
+        <p className="text-xs uppercase tracking-widest font-black text-(--text-subtle)">
           Inquiry logged in engine.
         </p>
       </div>
@@ -63,12 +63,12 @@ export default function RequestQuotePage() {
       <div className="space-y-6">
         <Link
           href="/dashboard/services"
-          className="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] font-black text-(--text-subtle) hover:text-(--text-main) transition-colors"
+          className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-black text-(--text-subtle) hover:text-(--text-main) transition-colors"
         >
           <ArrowLeft size={12} /> Return to Catalog
         </Link>
         <div className="space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-(--text-subtle)">
+          <p className="text-xs font-black uppercase tracking-[0.4em] text-(--text-subtle)">
             Onboarding Brief
           </p>
           <p className="text-4xl font-light tracking-tighter capitalize">
@@ -88,7 +88,7 @@ export default function RequestQuotePage() {
           />
         </div>
         <div className="space-y-2">
-          <p className="text-[9px] uppercase tracking-widest font-black text-(--text-subtle) ml-1">
+          <p className="text-xs uppercase tracking-widest font-black text-(--text-subtle) ml-1">
             Project Objectives
           </p>
           <textarea

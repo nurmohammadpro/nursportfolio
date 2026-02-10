@@ -20,7 +20,7 @@ export default function ProjectDetails({ params }: { params: { id: string } }) {
       {/* 1. Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
         <div className="space-y-4">
-          <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-(--brand)">
+          <span className="text-xs uppercase tracking-[0.3em] font-bold text-(--brand)">
             {project?.status.replace("_", " ") || "Active Project"}
           </span>
           <h1 className="text-5xl md:text-7xl font-heading tracking-tighter">
@@ -30,7 +30,7 @@ export default function ProjectDetails({ params }: { params: { id: string } }) {
 
         <div className="flex gap-4">
           <div className="px-6 py-4 bg-(--subtle) rounded-2xl border border-(--border-color)">
-            <p className="text-[10px] uppercase font-bold text-(--text-subtle) mb-1">
+            <p className="text-xs uppercase font-bold text-(--text-subtle) mb-1">
               Total Budget
             </p>
             <p className="text-xl font-heading">
@@ -38,7 +38,7 @@ export default function ProjectDetails({ params }: { params: { id: string } }) {
             </p>
           </div>
           <div className="px-6 py-4 bg-(--subtle) rounded-2xl border border-(--border-color)">
-            <p className="text-[10px] uppercase font-bold text-(--text-subtle) mb-1">
+            <p className="text-xs uppercase font-bold text-(--text-subtle) mb-1">
               Payment Model
             </p>
             <p className="text-xl font-heading capitalize">
@@ -86,7 +86,7 @@ export default function ProjectDetails({ params }: { params: { id: string } }) {
                       {milestone.label}
                     </p>
                     {milestone.completedAt && (
-                      <p className="text-[10px] uppercase font-bold text-(--text-subtle)">
+                      <p className="text-xs uppercase font-bold text-(--text-subtle)">
                         Completed{" "}
                         {new Date(milestone.completedAt).toLocaleDateString()}
                       </p>
@@ -116,7 +116,7 @@ export default function ProjectDetails({ params }: { params: { id: string } }) {
           </div>
 
           <div className="p-8 bg-(--text-main) text-(--surface) rounded-3xl space-y-4">
-            <h4 className="text-[10px] uppercase tracking-widest font-bold opacity-60">
+            <h4 className="text-xs uppercase tracking-widest font-bold opacity-60">
               Next Action
             </h4>
             <p className="text-xl font-heading">

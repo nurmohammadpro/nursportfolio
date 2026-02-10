@@ -69,7 +69,7 @@ export default function MailboxManager() {
 
         <div className="flex flex-col md:flex-row gap-4 p-6 bg-(--subtle)/5 border border-(--border-color) rounded-2xl">
           <div className="flex-1 space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-(--text-muted)">
+            <p className="text-xs font-black uppercase tracking-widest text-(--text-muted)">
               Email Identity
             </p>
             <div className="flex items-center gap-2">
@@ -104,7 +104,7 @@ export default function MailboxManager() {
             ) : (
               <Plus size={14} />
             )}
-            <p className="text-[10px] font-black uppercase tracking-widest">
+            <p className="text-xs font-black uppercase tracking-widest">
               Create
             </p>
           </button>

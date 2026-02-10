@@ -11,8 +11,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ["DM Serif Display", "serif"],
-        body: ["Raleway", "sans-serif"],
+        sans: ["var(--font-sans)"],
       },
     },
   },

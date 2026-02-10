@@ -6,8 +6,8 @@ export default function BlogAdmin() {
   return (
     <div className="space-y-10 fade-in">
       <div className="space-y-1">
-        <p className="p-engine-xl">
-          Blog <span className="font-semibold">Manager.</span>
+        <p className="text-2xl font-semibold">
+          Blog <span className="font-medium">Manager</span>
         </p>
       </div>
 
@@ -15,13 +15,13 @@ export default function BlogAdmin() {
         {[1, 2].map((i) => (
           <div
             key={i}
-            className="bg-(--surface) p-6 flex justify-between items-center group"
+            className="bg-(--surface) p-4 flex justify-between items-center group"
           >
             <div className="space-y-1">
-              <p className="text-md font-semibold">
+              <p className="text-base font-semibold">
                 Advanced WordPress Security: Hardening your Core
               </p>
-              <p className="text-[10px] font-medium text-(--text-subtle) uppercase tracking-widest">
+              <p className="text-xs text-(--text-subtle)">
                 Published • Jan 28, 2026
               </p>
             </div>

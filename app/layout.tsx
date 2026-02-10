@@ -1,4 +1,4 @@
-import { DM_Serif_Display, Raleway, Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./components/Providers";
@@ -6,22 +6,10 @@ import LayoutWrapper from "./components/LayoutWrapper";
 import { Analytics } from "@vercel/analytics/next";
 import { SessionProvider } from "next-auth/react";
 
-const dmSerif = DM_Serif_Display({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-heading",
-});
-
-const raleway = Raleway({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
-  variable: "--font-body",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-dashboard",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -35,15 +23,15 @@ export const metadata: Metadata = {
     template: "%s | Nur Mohammad",
   },
   description:
-    "Professional Web Application Developer specializing in React, Next.js, and Firebase. Providing custom SaaS solutions, malware removal, and scalable web architectures.",
+    "Web Application Developer who builds reliable, secure, and easy-to-use applications with React, Next.js, and Firebase.",
   keywords: [
     "Nur Mohammad",
     "Web Developer Bangladesh",
-    "Next.js Expert",
+    "Next.js Developer",
     "React Developer",
-    "Firebase Specialist",
+    "Firebase Developer",
     "Malware Removal Services",
-    "SaaS Development",
+    "Web Application Development",
     "nurmohammad.pro",
   ],
   authors: [{ name: "Nur Mohammad" }],
@@ -53,15 +41,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://nurmohammad.pro",
     siteName: "Nur Mohammad Portfolio",
-    title: "Nur Mohammad | Full-Stack Web Application Developer",
+    title: "Nur Mohammad | Web Application Developer",
     description:
-      "Building high-performance web applications with React, Next.js, and modern cloud technologies.",
+      "Building reliable web applications with React, Next.js, and modern technologies.",
     images: [{ url: "/Nur-New-Photo-1.png" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nur Mohammad | Full-Stack Web Developer",
-    description: "Expert in React, Next.js, Firebase, and SaaS development",
+    title: "Nur Mohammad | Web Application Developer",
+    description: "Building web applications with React, Next.js, and Firebase",
     images: ["/Nur-New-Photo-1.png"],
     creator: "@nurmohammaddev",
   },
@@ -85,7 +73,7 @@ export default function RootLayout({
     image: "https://nurmohammad.pro/Nur-New-Photo-1.png",
     jobTitle: "Web Application Developer",
     description:
-      "Expert in React, Next.js, Firebase, and custom SaaS development.",
+      "Web Application Developer working with React, Next.js, and Firebase.",
     sameAs: ["https://github.com", "https://linkedin.com"],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -95,27 +83,27 @@ export default function RootLayout({
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Custom SaaS Development",
+            name: "Web Application Development",
             description:
-              "Building scalable SaaS applications with React, Next.js, and Firebase.",
+              "Building web applications with React, Next.js, and Firebase.",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Custom Web Application Development",
+            name: "Custom Web Applications",
             description:
-              "Building fast, reliable, modern web applications with React, Next.js, tailwindCSS, ShadcnUI etc.",
+              "Creating fast, reliable web applications with React, Next.js, TailwindCSS, and more.",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Web Automation & Bot Development",
+            name: "Web Automation & Bots",
             description:
-              "Automating web app, building custom BOT will, fill up forms, listing products, emails to the recipient, generate leads to the client",
+              "Automating repetitive tasks like form filling, product listings, and email management.",
           },
         },
         {
@@ -124,7 +112,7 @@ export default function RootLayout({
             "@type": "Service",
             name: "WordPress Design & Customization",
             description:
-              "Customizing and Wordpress theme designing help to get started for the StartUps",
+              "Custom WordPress themes and designs to help startups get online.",
           },
         },
         {
@@ -133,7 +121,7 @@ export default function RootLayout({
             "@type": "Service",
             name: "WordPress Security & Malware Removal",
             description:
-              "Specialized malware removal and security hardening for WordPress websites.",
+              "Removing malware and securing WordPress websites from threats.",
           },
         },
       ],
@@ -149,7 +137,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${dmSerif.variable} ${raleway.variable} ${inter.variable} font-body antialiased`}
+        className={`${plusJakartaSans.variable} antialiased`}
       >
         <Providers>
           <LayoutWrapper>{children}</LayoutWrapper>

@@ -2,15 +2,15 @@
 "use client";
 
 import React from "react";
-import Image from "next/image"; // 1. Import the Next.js Image component
+import Image from "next/image";
 import Button from "./Button";
 
 // Define the different visual styles for the card
 const cardVariants = {
   default:
-    "bg-surface border border-outline shadow-[var(--shadow-2)] hover:shadow-[var(--shadow-4)]",
-  outlined: "bg-transparent border border-outline hover:bg-surface-variant/50",
-  text: "bg-transparent border-0 hover:bg-surface-variant/30",
+    "bg-(--surface) border border-(--border-color) shadow-sm hover:shadow-md",
+  outlined: "bg-transparent border border-(--border-color) hover:bg-(--subtle)",
+  text: "bg-transparent border-0 hover:bg-(--subtle)",
 };
 
 interface CardProps {
@@ -56,8 +56,8 @@ const Card = ({
   return (
     <div
       className={`
-        group relative flex flex-col overflow-hidden rounded-xl
-        transition-all duration-300 ease-out
+        group relative flex flex-col overflow-hidden rounded-lg
+        transition-all duration-200 ease-out
         ${cardVariants[variant]}
         ${isClickable ? "cursor-pointer" : ""}
         ${className}

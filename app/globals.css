@@ -1,6 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -49,8 +47,7 @@
     --radius-md: 10px;
     --border-color: #e5e7eb;
 
-    --font-heading: "DM Serif Display", serif;
-    --font-body: "Raleway", sans-serif;
+    --font-sans: "Plus Jakarta Sans", sans-serif;
   }
 
   .dark {
@@ -67,11 +64,11 @@
   }
 
   body {
-    @apply bg-(--primary) text-(--text-main) transition-colors duration-300 antialiased;
-    font-family: var(--font-body);
-    font-weight: 450;
-    line-height: 1.6;
-    letter-spacing: 0.01em;
+    @apply bg-(--primary) text-(--text-main) transition-colors duration-200 antialiased;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0em;
   }
 
   h1,
@@ -80,11 +77,19 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-heading);
-    @apply font-normal text-(--text-main);
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    font-family: var(--font-sans);
+    @apply font-semibold text-(--text-main);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
   }
+
+  /* Simplified size classes */
+  h1 { @apply text-4xl; }
+  h2 { @apply text-3xl; }
+  h3 { @apply text-2xl; }
+  h4 { @apply text-xl; }
+  h5 { @apply text-lg; }
+  h6 { @apply text-base; }
 }
 
 @layer components {
@@ -121,57 +126,12 @@ html {
   scroll-padding-top: 5rem;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--subtle);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-subtle);
-}
-
 @layer utilities {
-  .p-heading-xl {
-    @apply text-4xl font-light tracking-tight leading-none; /* Changed to standard text-4xl */
+  .text-label {
+    @apply text-xs font-medium text-(--text-subtle) uppercase tracking-wide;
   }
 
-  .p-heading-sm {
-    @apply text-[10px] font-bold uppercase tracking-[0.35em] text-(--text-subtle);
-  }
-
-  .p-body {
-    @apply text-sm font-normal tracking-tight text-(--text-muted) leading-relaxed;
-  }
-
-  .dashboard-engine {
-    font-family: var(--font-body), sans-serif;
-    font-weight: 600;
-    font-size: medium;
-  }
-
-  .p-engine-xl {
-    @apply text-3xl font-normal tracking-normal leading-snug; /* Back to standard text-3xl */
-  }
-
-  .p-engine-sm {
-    @apply text-[11px] font-semibold text-(--text-subtle) tracking-wide;
-  }
-
-  .p-engine-body {
-    @apply text-sm font-medium tracking-tight leading-relaxed;
-  }
-
-  /* If you need custom font sizes, use arbitrary values */
-  .text-custom-lg {
-    font-size: 2.125rem; /* Between 2xl and 3xl */
+  .text-lead {
+    @apply text-lg text-(--text-muted);
   }
 }
