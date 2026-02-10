@@ -4,15 +4,17 @@ const UserSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true, select: false },
+    // Changed to optional: Google OAuth users won't have a password
+    password: { type: String, required: false, select: false }, 
     image: { type: String },
     role: {
       type: String,
-      enum: ["ADMIN", "USER"],
+      enum: ["ADMIN", "USER"], // Matches your makeAdmin script
       default: "USER",
     },
     status: { type: String, default: "active" },
-    phone: { type: String, required: true },
+    // Changed to optional: Google doesn't provide phone numbers by default
+    phone: { type: String, required: false }, 
     location: { type: String },
     bio: { type: String },
     emailVerified: { type: Date, default: null },
@@ -20,5 +22,6 @@ const UserSchema = new Schema(
   { timestamps: true },
 );
 
+// Important for Next.js 15 HMR to prevent model re-registration errors
 const User = models.User || model("User", UserSchema);
 export default User;

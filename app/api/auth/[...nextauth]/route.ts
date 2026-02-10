@@ -44,16 +44,23 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      // During initial login, 'user' is the object from your MongoDB/Adapter
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role;
-      }
 
+        if (account?.provider === "google" || account?.provider === "oauth") {
+          await dbConnect();
+          const dbUser = await User.findOne({ email: user.email });
+          token.role = dbUser?.role || "USER";
+        } else {
+          token.role = (user as any).role || "USER";
+        }
+      }
       return token;
     },
     async session({ session, token }) {
-      // 3. This sends the role to the frontend
+      // This transfers the role from the encrypted JWT to the live session object
       if (session?.user) {
         (session.user as any).id = token.id as string;
         (session.user as any).role = token.role as string;
