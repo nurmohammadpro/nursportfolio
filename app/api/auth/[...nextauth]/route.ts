@@ -1,5 +1,4 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import clientPromise from "@/app/lib/mongodb";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -51,7 +50,23 @@ export const authOptions: NextAuthOptions = {
 
         if (account?.provider === "google" || account?.provider === "oauth") {
           await dbConnect();
-          const dbUser = await User.findOne({ email: user.email });
+
+          // Auto-assign Admin role for your email
+          const role = user.email === "nurprodev@gmail.com" ? "ADMIN" : "USER";
+
+          // Create user if doesn't exist, or update role if needed
+          const dbUser = await User.findOneAndUpdate(
+            { email: user.email },
+            {
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              role: role,
+              emailVerified: new Date(),
+            },
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+          );
+
           token.role = dbUser?.role || "USER";
         } else {
           token.role = (user as any).role || "USER";

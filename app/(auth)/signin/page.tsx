@@ -65,7 +65,7 @@ export default function SignInPage() {
             Sign <span className="not-italic text-(--text-muted)">In.</span>
           </h1>
           <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
-            Access your agency command center
+            Sign in to your dashboard
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function SignInPage() {
                   fill="#EA4335"
                 />
               </svg>
-              <span className="text-xs uppercase tracking-widest font-bold">
+              <span className="text-xs uppercase tracking-widest font-bold text-(--text-main)">
                 Continue with Google
               </span>
             </div>
