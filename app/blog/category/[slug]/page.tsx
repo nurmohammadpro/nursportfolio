@@ -10,21 +10,26 @@ interface PageProps {
 }
 
 async function getPostsByCategory(category: string, page: number = 1) {
-  const params = new URLSearchParams();
-  params.append("category", category);
-  params.append("page", page.toString());
-  params.append("limit", "12");
+  try {
+    const params = new URLSearchParams();
+    params.append("category", category);
+    params.append("page", page.toString());
+    params.append("limit", "12");
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/blog?${params.toString()}`, {
-    cache: "no-store",
-  });
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/blog?${params.toString()}`, {
+      cache: "no-store",
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return { data: [], pagination: { total: 0, page: 1, limit: 12, totalPages: 0, hasNext: false, hasPrev: false } };
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Failed to fetch category posts:", error);
     return { data: [], pagination: { total: 0, page: 1, limit: 12, totalPages: 0, hasNext: false, hasPrev: false } };
   }
-
-  return response.json();
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

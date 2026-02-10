@@ -1,75 +1,76 @@
-import { Metadata } from "next";
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import BlogCard from "@/app/components/blog/BlogCard";
 import BlogFilters from "@/app/components/blog/BlogFilters";
-import { BLOG_CATEGORIES } from "@/app/lib/blog-types";
+import { BLOG_CATEGORIES, BlogPost } from "@/app/lib/blog-types";
+import { cn } from "@/app/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Blog | Nur Mohammad - Web Application Developer",
-  description: "Insights on Javascript, React, Next.js, and Web Automation from a professional developer.",
-};
+function BlogPageContent() {
+  const searchParams = useSearchParams();
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [tags, setTags] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-async function getBlogPosts(searchParams: {
-  search?: string;
-  category?: string;
-  tags?: string;
-  page?: string;
-}) {
-  const params = new URLSearchParams();
-  if (searchParams.search) params.append("search", searchParams.search);
-  if (searchParams.category) params.append("category", searchParams.category);
-  if (searchParams.tags) params.append("tags", searchParams.tags);
-  params.append("page", searchParams.page || "1");
-  params.append("limit", "12");
+  const search = searchParams.get("search") || undefined;
+  const category = searchParams.get("category") || undefined;
+  const tagsParam = searchParams.get("tags") || undefined;
+  const pageParam = searchParams.get("page");
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/blog?${params.toString()}`, {
-    cache: "no-store",
-  });
+  useEffect(() => {
+    if (pageParam) {
+      setCurrentPage(parseInt(pageParam));
+    }
+  }, [pageParam]);
 
-  if (!response.ok) {
-    return { data: [], pagination: { total: 0, page: 1, limit: 12, totalPages: 0, hasNext: false, hasPrev: false } };
-  }
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      try {
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (search) params.append("search", search);
+        if (category) params.append("category", category);
+        if (tagsParam) params.append("tags", tagsParam);
+        params.append("page", currentPage.toString());
+        params.append("limit", "12");
 
-  return response.json();
-}
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+        const [postsRes, categoriesRes, tagsRes] = await Promise.all([
+          fetch(`${baseUrl}/api/blog?${params.toString()}`),
+          fetch(`${baseUrl}/api/blog/categories`),
+          fetch(`${baseUrl}/api/blog/tags`),
+        ]);
 
-async function getCategories() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/blog/categories`, {
-    cache: "no-store",
-  });
+        if (postsRes.ok) {
+          const data = await postsRes.json();
+          setPosts(data.data || []);
+          setTotalPages(data.pagination?.totalPages || 1);
+        }
 
-  if (!response.ok) {
-    return { data: BLOG_CATEGORIES.map((c) => ({ ...c, postCount: 0 })) };
-  }
+        if (categoriesRes.ok) {
+          const data = await categoriesRes.json();
+          setCategories(data.data || []);
+        }
 
-  return response.json();
-}
+        if (tagsRes.ok) {
+          const data = await tagsRes.json();
+          setTags(data.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch blog data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-async function getTags() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/blog/tags`, {
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    return { data: [] };
-  }
-
-  return response.json();
-}
-
-export default async function BlogPage({
-  searchParams,
-}: {
-  searchParams: { search?: string; category?: string; tags?: string; page?: string };
-}) {
-  const [postsData, categoriesData, tagsData] = await Promise.all([
-    getBlogPosts(searchParams),
-    getCategories(),
-    getTags(),
-  ]);
+    fetchData();
+  }, [search, category, tagsParam, currentPage]);
 
   return (
     <div className="min-h-screen bg-(--primary) text-(--text-main) p-8 md:p-24 font-sans">
@@ -86,35 +87,42 @@ export default async function BlogPage({
           {/* Sidebar - Filters */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <BlogFilters
-              availableCategories={categoriesData.data}
-              availableTags={tagsData.data}
-              onFilterChange={() => {}}
+              availableCategories={categories}
+              availableTags={tags}
+              onFilterChange={(filters) => {
+                // Update URL with new filters
+                const newParams = new URLSearchParams();
+                if (filters.search) newParams.set("search", filters.search);
+                if (filters.category) newParams.set("category", filters.category);
+                if (filters.tags && filters.tags.length > 0) newParams.set("tags", filters.tags.join(","));
+                window.history.pushState({}, "", `/blog?${newParams.toString()}`);
+              }}
             />
           </aside>
 
           {/* Main Content */}
           <div>
-            {postsData.data.length > 0 ? (
+            {isLoading ? (
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-80 bg-(--secondary) border border-(--border-color) rounded-lg animate-pulse" />
+                ))}
+              </div>
+            ) : posts.length > 0 ? (
               <>
                 {/* Posts Grid */}
                 <div className="grid md:grid-cols-2 gap-6 mb-8">
-                  {postsData.data.map((post: any) => (
+                  {posts.map((post) => (
                     <BlogCard key={post.id} post={post} />
                   ))}
                 </div>
 
                 {/* Pagination */}
-                {postsData.pagination.totalPages > 1 && (
+                {totalPages > 1 && (
                   <div className="flex justify-center items-center gap-2">
-                    {postsData.pagination.hasPrev && (
+                    {currentPage > 1 && (
                       <Link
-                        href={`/blog?page=${parseInt(searchParams.page || "1") - 1}${
-                          searchParams.search ? `&search=${searchParams.search}` : ""
-                        }${
-                          searchParams.category ? `&category=${searchParams.category}` : ""
-                        }${
-                          searchParams.tags ? `&tags=${searchParams.tags}` : ""
-                        }`}
+                        href={`/blog?page=${currentPage - 1}${search ? `&search=${search}` : ""}${category ? `&category=${category}` : ""}${tagsParam ? `&tags=${tagsParam}` : ""}`}
                         className="px-4 py-2 bg-(--secondary) border border-(--border-color) rounded-lg hover:border-(--brand) transition-colors"
                       >
                         Previous
@@ -122,18 +130,12 @@ export default async function BlogPage({
                     )}
 
                     <span className="text-(--text-subtle)">
-                      Page {postsData.pagination.page} of {postsData.pagination.totalPages}
+                      Page {currentPage} of {totalPages}
                     </span>
 
-                    {postsData.pagination.hasNext && (
+                    {currentPage < totalPages && (
                       <Link
-                        href={`/blog?page=${parseInt(searchParams.page || "1") + 1}${
-                          searchParams.search ? `&search=${searchParams.search}` : ""
-                        }${
-                          searchParams.category ? `&category=${searchParams.category}` : ""
-                        }${
-                          searchParams.tags ? `&tags=${searchParams.tags}` : ""
-                        }`}
+                        href={`/blog?page=${currentPage + 1}${search ? `&search=${search}` : ""}${category ? `&category=${category}` : ""}${tagsParam ? `&tags=${tagsParam}` : ""}`}
                         className="px-4 py-2 bg-(--secondary) border border-(--border-color) rounded-lg hover:border-(--brand) transition-colors"
                       >
                         Next
@@ -154,5 +156,21 @@ export default async function BlogPage({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-(--primary) text-(--text-main) p-8 md:p-24 font-sans">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-16">
+            <div className="text-(--text-subtle)">Loading...</div>
+          </div>
+        </div>
+      </div>
+    }>
+      <BlogPageContent />
+    </Suspense>
   );
 }

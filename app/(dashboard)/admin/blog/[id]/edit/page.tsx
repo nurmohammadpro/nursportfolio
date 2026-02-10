@@ -39,6 +39,8 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
   const [isLoading, setIsLoading] = useState(true);
   const [previewMode, setPreviewMode] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [imageInputMethod, setImageInputMethod] = useState<"upload" | "url">("upload");
+  const [imageUrlInput, setImageUrlInput] = useState("");
 
   useEffect(() => {
     params.then((p) => {
@@ -133,11 +135,13 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
         const data = await response.json();
         setFormData({ ...formData, featuredImage: data.url });
       } else {
-        alert("Failed to upload image");
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        alert(`Failed to upload image: ${errorData.error || response.statusText}`);
+        console.error("Upload error:", errorData);
       }
     } catch (error) {
       console.error("Failed to upload image:", error);
-      alert("Failed to upload image");
+      alert(`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsUploading(false);
     }
@@ -153,7 +157,8 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
     });
 
     if (!response.ok) {
-      throw new Error("Failed to upload image");
+      const errorData = await response.json().catch(() => ({ error: response.statusText }));
+      throw new Error(errorData.error || "Failed to upload image");
     }
 
     const data = await response.json();
@@ -335,8 +340,10 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
           {/* Featured Image */}
           <div className="bg-(--secondary) border border-(--border-color) rounded-lg p-4">
             <h3 className="font-semibold text-(--text-main) mb-3">Featured Image</h3>
-            {formData.featuredImage ? (
-              <div className="relative">
+
+            {/* Image preview */}
+            {formData.featuredImage && (
+              <div className="relative mb-3">
                 <img
                   src={formData.featuredImage}
                   alt="Featured"
@@ -345,15 +352,43 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
                 <button
                   onClick={() => setFormData({ ...formData, featuredImage: "" })}
                   className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                  title="Remove image"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
-            ) : (
+            )}
+
+            {/* Tab buttons */}
+            <div className="flex gap-2 mb-3">
+              <button
+                onClick={() => setImageInputMethod("upload")}
+                className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  imageInputMethod === "upload"
+                    ? "bg-(--brand) text-white"
+                    : "bg-(--subtle) text-(--text-subtle) hover:bg-(--border-color)"
+                }`}
+              >
+                Upload
+              </button>
+              <button
+                onClick={() => setImageInputMethod("url")}
+                className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  imageInputMethod === "url"
+                    ? "bg-(--brand) text-white"
+                    : "bg-(--subtle) text-(--text-subtle) hover:bg-(--border-color)"
+                }`}
+              >
+                URL
+              </button>
+            </div>
+
+            {/* Upload method */}
+            {imageInputMethod === "upload" && (
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="w-full p-8 border-2 border-dashed border-(--border-color) rounded-lg hover:border-(--brand) transition-colors"
+                className="w-full p-6 border-2 border-dashed border-(--border-color) rounded-lg hover:border-(--brand) transition-colors"
               >
                 <ImageIcon className="w-8 h-8 mx-auto mb-2 text-(--text-muted)" />
                 <p className="text-sm text-(--text-subtle)">
@@ -361,6 +396,32 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
                 </p>
               </button>
             )}
+
+            {/* URL method */}
+            {imageInputMethod === "url" && (
+              <div className="space-y-2">
+                <input
+                  type="url"
+                  value={imageUrlInput}
+                  onChange={(e) => setImageUrlInput(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full px-3 py-2 bg-(--primary) border border-(--border-color) rounded-lg text-(--text-main) placeholder:text-(--text-muted) focus:outline-none focus:ring-2 focus:ring-(--brand)"
+                />
+                <button
+                  onClick={() => {
+                    if (imageUrlInput.trim()) {
+                      setFormData({ ...formData, featuredImage: imageUrlInput.trim() });
+                      setImageUrlInput("");
+                    }
+                  }}
+                  disabled={!imageUrlInput.trim()}
+                  className="w-full px-3 py-2 bg-(--brand) text-white rounded-lg hover:bg-(--brand-hover) transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Set Image URL
+                </button>
+              </div>
+            )}
+
             <input
               ref={fileInputRef}
               type="file"

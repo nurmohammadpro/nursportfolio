@@ -31,16 +31,21 @@ interface Post {
 }
 
 async function getPost(slug: string): Promise<Post | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/blog/${slug}`, {
-    cache: "no-store",
-  });
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/blog/${slug}`, {
+      cache: "no-store",
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return null;
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Failed to fetch blog post:", error);
     return null;
   }
-
-  return response.json();
 }
 
 export async function generateMetadata({
