@@ -26,7 +26,7 @@ export default async function DashboardLayout({
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="layout-container py-10">{children}</div>
+        <div className="layout-container py-6 md:py-8 lg:py-10 px-4 md:px-6">{children}</div>
       </main>
     </div>
   );

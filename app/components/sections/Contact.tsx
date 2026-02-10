@@ -22,25 +22,25 @@ const Contact = () => {
   return (
     <section
       id="contact"
-      className="w-full bg-(--surface) py-24 md:py-40 border-t border-(--border-color)"
+      className="w-full bg-(--surface) py-16 md:py-24 lg:py-40 border-t border-(--border-color)"
     >
       <div className="layout-container">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-24 items-start">
           {/* Left: Heading (Occupies more space for breathing room) */}
           <div className="lg:col-span-7">
-            <h2 className="text-5xl md:text-7xl lg:text-8xl leading-tight tracking-tight mb-8">
+            <h2 className="text-4xl md:text-5xl lg:text-7xl leading-tight tracking-tight mb-6 md:mb-8">
               Let's Build <br />
               <span className="italic text-(--text-muted)">Something</span>{" "}
               Great
             </h2>
-            <p className="text-xl text-(--text-muted) font-light leading-relaxed max-w-md">
+            <p className="text-base md:text-lg lg:text-xl text-(--text-muted) font-light leading-relaxed max-w-md">
               Got a project in mind? Let's talk about how I can help bring your
               idea to life.
             </p>
           </div>
 
           {/* Right: The Shrunken, Minimalist Form */}
-          <div className="lg:col-span-5 space-y-10 pt-4">
+          <div className="lg:col-span-5 space-y-8 md:space-y-10 pt-0 lg:pt-4">
             <div className="space-y-8">
               <Input
                 label="Full Name"

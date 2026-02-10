@@ -39,13 +39,13 @@ export default function ServicesPage() {
   const router = useRouter();
 
   return (
-    <div className="fade-in space-y-12">
+    <div className="fade-in space-y-8 md:space-y-12">
       {/* Header */}
       <div className="space-y-1">
         <p className="text-xs text-(--text-subtle)">
           Engineering Catalog
         </p>
-        <p className="text-2xl font-semibold">
+        <p className="text-xl md:text-2xl font-semibold">
           Available <span className="font-medium">Services</span>
         </p>
       </div>
@@ -54,7 +54,7 @@ export default function ServicesPage() {
         {services.map((service) => (
           <div
             key={service.id}
-            className="group p-6 bg-(--surface) hover:bg-(--subtle) transition-all duration-300 flex flex-col justify-between h-72"
+            className="group p-4 md:p-6 bg-(--surface) hover:bg-(--subtle) transition-all duration-300 flex flex-col justify-between min-h-[18rem] md:min-h-[18rem]"
           >
             <div className="space-y-3">
               <div className="text-(--text-subtle) group-hover:text-(--text-main) transition-colors">

@@ -40,13 +40,13 @@ const Hero = () => {
         </div>
 
         {/* Hero Heading */}
-        <h1 className="text-6xl md:text-8xl lg:text-9xl leading-none mb-8 max-w-5xl">
+        <h1 className="text-4xl md:text-6xl lg:text-8xl leading-tight mb-6 md:mb-8 max-w-5xl">
           Building <span className="text-(--text-muted) italic">Digital</span>{" "}
           Products That Work
         </h1>
 
         {/* Subheading */}
-        <p className="text-lg md:text-xl text-(--text-muted) max-w-2xl mb-12 font-light leading-relaxed">
+        <p className="text-base md:text-lg text-(--text-muted) max-w-2xl mb-8 md:mb-12 font-light leading-relaxed">
           I'm{" "}
           <span className="text-(--text-main) font-medium underline underline-offset-8 decoration-(--text-subtle)/30">
             Nur Mohammad
@@ -56,22 +56,23 @@ const Hero = () => {
         </p>
 
         {/* Updated Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-20">
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-12 md:mb-20 w-full sm:w-auto">
           <Button
             variant="primary"
             size="md"
             icon={<ArrowRight />}
             iconPosition="right"
+            fullWidth
           >
             Explore Projects
           </Button>
-          <Button variant="outlined" size="md" icon={<Download />}>
+          <Button variant="outlined" size="md" icon={<Download />} fullWidth>
             Download CV
           </Button>
         </div>
 
         {/* Socials */}
-        <div className="flex items-center gap-8 text-(--text-subtle)">
+        <div className="flex items-center gap-6 md:gap-8 text-(--text-subtle)">
           <a
             href="https://github.com/nurmohammadpro"
             className="hover:text-(--text-main) transition-all"
@@ -106,7 +107,7 @@ const Hero = () => {
             {[...clients, ...clients].map((client, i) => (
               <span
                 key={i}
-                className="text-2xl md:text-3xl font-display text-(--text-subtle)/40 hover:text-(--text-main) transition-colors cursor-default select-none grayscale"
+                className="text-xl md:text-2xl lg:text-3xl font-display text-(--text-subtle)/40 hover:text-(--text-main) transition-colors cursor-default select-none grayscale"
               >
                 {client}
               </span>

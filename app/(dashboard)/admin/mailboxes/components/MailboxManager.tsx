@@ -58,18 +58,18 @@ export default function MailboxManager() {
   };
 
   return (
-    <div className="space-y-12 dashboard-engine">
+    <div className="space-y-8 md:space-y-12 dashboard-engine">
       {/* Creation UI */}
-      <div className="p-8 bg-(--surface) border border-(--border-color) rounded-3xl space-y-8">
+      <div className="p-4 md:p-6 lg:p-8 bg-(--surface) border border-(--border-color) rounded-2xl md:rounded-3xl space-y-6 md:space-y-8">
         <div className="space-y-1">
-          <p className="p-engine-xl">
+          <p className="text-xl md:text-2xl font-semibold">
             Create New <span className="font-bold ">Mailboxes</span>
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 p-6 bg-(--subtle)/5 border border-(--border-color) rounded-2xl">
+        <div className="flex flex-col md:flex-row gap-4 p-4 md:p-6 bg-(--subtle)/5 border border-(--border-color) rounded-xl md:rounded-2xl">
           <div className="flex-1 space-y-2">
-            <p className="text-xs font-black uppercase tracking-widest text-(--text-muted)">
+            <p className="text-xs font-medium text-(--text-muted)">
               Email Identity
             </p>
             <div className="flex items-center gap-2">
@@ -77,15 +77,15 @@ export default function MailboxManager() {
                 value={alias}
                 onChange={(e) => setAlias(e.target.value.toLowerCase())}
                 placeholder="e.g. support"
-                className="bg-transparent border-b border-(--border-color) outline-none text-sm font-bold w-full focus:border-(--text-main) transition-colors"
+                className="bg-transparent border-b border-(--border-color) outline-none text-sm font-normal w-full focus:border-(--text-main) transition-colors"
               />
-              <p className="text-sm font-semibold opacity-80">
+              <p className="text-sm font-semibold opacity-80 whitespace-nowrap">
                 @nurmohammad.pro
               </p>
             </div>
           </div>
 
-          <div className="w-56 flex items-end">
+          <div className="w-full sm:w-56 flex items-end">
             <Select
               label="Role"
               options={roleOptions}
@@ -97,7 +97,7 @@ export default function MailboxManager() {
           <button
             onClick={createEmail}
             disabled={isCreating}
-            className="bg-(--text-main) text-(--surface) px-8 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-50 min-h-11 cursor-pointer"
+            className="w-full sm:w-auto bg-(--text-main) text-(--surface) px-6 md:px-8 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-50 min-h-11 cursor-pointer"
           >
             {isCreating ? (
               <Loader2 size={14} className="animate-spin" />

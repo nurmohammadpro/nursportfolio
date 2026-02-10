@@ -517,7 +517,7 @@ export default function EmailPage() {
                 messages.map((m, i) => (
                   <div
                     key={m.createdAt?.toString() || i}
-                    className={`p-4 rounded-xl text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-8" : "bg-(--subtle) text-(--text-main) ml-8"}`}
+                    className={`p-4 rounded-xl text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-8" : "bg-(--primary) text-(--surface) ml-8"}`}
                   >
                     <p className="whitespace-pre-wrap">{m.text}</p>
                   </div>
@@ -731,7 +731,7 @@ export default function EmailPage() {
                   messages.map((m, i) => (
                     <div
                       key={i}
-                      className={`p-4 rounded-lg text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--text-main) ml-12"}`}
+                      className={`p-4 rounded-lg text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--main) ml-12"}`}
                     >
                       <p className="whitespace-pre-wrap">{m.text}</p>
                       {m.attachments?.length > 0 && (

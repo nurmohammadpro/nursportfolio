@@ -61,7 +61,7 @@ export default function ServicesMonitor() {
         {activeServices.map((service) => (
           <div
             key={service.id}
-            className="bg-(--surface) p-6 space-y-4 group hover:bg-(--subtle) transition-colors"
+            className="bg-(--surface) p-4 md:p-6 space-y-3 md:space-y-4 group hover:bg-(--subtle) transition-colors"
           >
             <div className="flex justify-between items-start">
               <div className="space-y-1">

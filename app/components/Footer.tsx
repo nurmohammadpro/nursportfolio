@@ -30,9 +30,9 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-(--surface) border-t border-(--border-color) py-16 md:py-24 dashboard-engine">
+    <footer className="w-full bg-(--surface) border-t border-(--border-color) py-12 md:py-16 lg:py-24 dashboard-engine">
       <div className="layout-container">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
           {/* Brand Identity */}
           <div className="md:col-span-5 space-y-6">
             <h3 className="text-2xl font-medium text-(--text-main)">

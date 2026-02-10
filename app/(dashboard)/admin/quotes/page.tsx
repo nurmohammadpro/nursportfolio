@@ -14,14 +14,14 @@ const quotes = [
 
 export default function QuotesPage() {
   return (
-    <div className="space-y-10 fade-in">
-      <div className="flex justify-between items-end">
+    <div className="space-y-6 md:space-y-10 fade-in">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div className="space-y-1">
-          <p className="text-2xl font-semibold text-(--text-main)">
+          <p className="text-xl md:text-2xl font-semibold text-(--text-main)">
             Project <span className="font-medium">Quotes</span>
           </p>
         </div>
-        <button className="bg-(--brand) text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-(--brand-hover) transition-colors">
+        <button className="bg-(--brand) text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-(--brand-hover) transition-colors whitespace-nowrap">
           <FilePlus2 size={16} />
           <p className="text-sm font-medium">
             New Quote
@@ -29,7 +29,25 @@ export default function QuotesPage() {
         </button>
       </div>
 
-      <div className="border border-(--border-color) rounded-lg overflow-hidden bg-(--surface)">
+      {/* Mobile card view */}
+      <div className="md:hidden space-y-3">
+        {quotes.map((q) => (
+          <div
+            key={q.id}
+            className="border border-(--border-color) rounded-lg p-4 bg-(--surface) space-y-2"
+          >
+            <div className="flex justify-between items-start">
+              <p className="text-xs font-mono font-semibold text-(--text-subtle)">{q.id}</p>
+              <span className="text-xs px-2 py-1 bg-(--subtle) rounded-full">{q.status}</span>
+            </div>
+            <p className="text-base font-semibold">{q.client}</p>
+            <p className="text-sm font-medium text-(--text-muted)">${q.total}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop table view */}
+      <div className="hidden md:block border border-(--border-color) rounded-lg overflow-hidden bg-(--surface)">
         <div className="grid grid-cols-4 p-4 bg-(--subtle)/20 border-b border-(--border-color)">
           <p className="text-xs font-medium text-(--text-subtle)">ID</p>
           <p className="text-xs font-medium text-(--text-subtle)">Client</p>

@@ -25,15 +25,15 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-4xl space-y-12 fade-in pb-20">
+    <div className="max-w-4xl space-y-8 md:space-y-12 fade-in pb-12 md:pb-20">
       {/* 1. Profile Header */}
-      <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between border-b border-(--border-color) pb-8">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 bg-(--subtle) rounded-full flex items-center justify-center border border-(--border-color)">
-            <User size={40} className="text-(--text-subtle)" />
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-6 items-start sm:items-center justify-between border-b border-(--border-color) pb-6 md:pb-8">
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-(--subtle) rounded-full flex items-center justify-center border border-(--border-color) shrink-0">
+            <User size={32} md:size={40} className="text-(--text-subtle)" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-semibold">
+            <h1 className="text-xl md:text-2xl font-semibold">
               {profile.name}
             </h1>
             <p className="text-xs text-(--text-subtle)">
@@ -46,9 +46,9 @@ export default function ProfilePage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         {/* 2. Personal Information */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4 md:space-y-6">
           <div className="space-y-2">
             <h3 className="text-sm font-medium flex items-center gap-2">
               <User size={16} /> Personal Identity

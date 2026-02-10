@@ -41,16 +41,16 @@ const Skills = () => {
   return (
     <section
       id="skills"
-      className="w-full bg-(--surface) py-24 md:py-32 border-t border-(--border-color)"
+      className="w-full bg-(--surface) py-16 md:py-24 lg:py-32 border-t border-(--border-color)"
     >
       <div className="layout-container">
         {/* Section Header */}
-        <div className="max-w-3xl mb-16 md:mb-24">
-          <h2 className="text-5xl md:text-7xl lg:text-8xl mb-8 leading-tight">
+        <div className="max-w-3xl mb-12 md:mb-16 lg:mb-24">
+          <h2 className="text-4xl md:text-5xl lg:text-7xl mb-6 md:mb-8 leading-tight">
             What I Do{" "}
             <span className="italic text-(--text-muted)">Best</span>
           </h2>
-          <p className="text-xl text-(--text-muted) font-light leading-relaxed">
+          <p className="text-base md:text-lg lg:text-xl text-(--text-muted) font-light leading-relaxed">
             I help businesses with{" "}
             <span className="text-(--text-main) font-medium">
               web development
@@ -70,7 +70,7 @@ const Skills = () => {
                 <div className="mb-8 text-(--text-main) opacity-80 group-hover:opacity-100 transition-opacity">
                   {pillar.icon}
                 </div>
-                <h3 className="text-2xl font-display mb-4">{pillar.title}</h3>
+                <h3 className="text-xl md:text-2xl font-display mb-4">{pillar.title}</h3>
                 <p className="text-(--text-muted) mb-8 font-light leading-relaxed">
                   {pillar.description}
                 </p>

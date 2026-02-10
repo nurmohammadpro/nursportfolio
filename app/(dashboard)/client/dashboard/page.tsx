@@ -12,11 +12,11 @@ export default function ClientDashboard() {
   };
 
   return (
-    <div className="space-y-12 fade-in">
+    <div className="space-y-8 md:space-y-12 fade-in">
       {/* 1. Welcome Header */}
       <div className="space-y-1">
         <p className="text-xs text-(--text-subtle)">Client Portal</p>
-        <p className="text-2xl font-semibold">
+        <p className="text-xl md:text-2xl font-semibold">
           Project{" "}
           <span className="font-medium text-(--text-main)">Overview</span>
         </p>
@@ -24,42 +24,42 @@ export default function ClientDashboard() {
 
       {/* 2. Primary Status Card */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-1 bg-(--border-color) border border-(--border-color)">
-        <div className="bg-(--surface) p-6 space-y-3 md:col-span-2">
+        <div className="bg-(--surface) p-4 md:p-6 space-y-2 md:space-y-3 md:col-span-2">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             <p className="text-xs font-medium uppercase tracking-wide">
               {projectSummary.status}
             </p>
           </div>
-          <p className="text-2xl font-semibold leading-tight">
+          <p className="text-xl md:text-2xl font-semibold leading-tight">
             {projectSummary.nextMilestone}
           </p>
-          <p className="text-sm text-(--text-subtle)">
+          <p className="text-xs md:text-sm text-(--text-subtle)">
             Last system update: {projectSummary.updateDate}
           </p>
         </div>
 
         <Link
           href="/dashboard/services/new"
-          className="bg-(--surface) p-6 flex flex-col justify-between group hover:bg-(--subtle) transition-colors"
+          className="bg-(--surface) p-4 md:p-6 flex flex-col justify-between group hover:bg-(--subtle) transition-colors"
         >
           <p className="text-xs font-medium uppercase tracking-wide text-(--text-subtle)">
             Quick Action
           </p>
           <div className="flex items-center justify-between">
-            <p className="text-base font-semibold">
+            <p className="text-sm md:text-base font-semibold">
               Request <br /> New Service
             </p>
             <ArrowUpRight
               className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
-              size={20}
+              size={18} md:size={20}
             />
           </div>
         </Link>
       </div>
 
       {/* 3. Bottom Grid - Recent Inquiries & Logs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div className="space-y-4">
           <div className="flex items-center gap-2 border-b border-(--border-color) pb-3">
             <MessageSquare size={16} />

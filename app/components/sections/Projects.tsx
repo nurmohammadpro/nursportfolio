@@ -59,16 +59,16 @@ const Projects = () => {
   return (
     <section
       id="projects"
-      className="w-full bg-(--surface) py-24 md:py-32 border-t border-(--border-color)"
+      className="w-full bg-(--surface) py-16 md:py-24 lg:py-32 border-t border-(--border-color)"
     >
       <div className="layout-container">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 lg:mb-24 gap-4 md:gap-6">
           <div className="max-w-2xl">
-            <h2 className="text-5xl md:text-7xl lg:text-8xl mb-6">
+            <h2 className="text-4xl md:text-5xl lg:text-7xl mb-4 md:mb-6">
               Recent <span className="italic text-(--text-muted)">Projects</span>
             </h2>
-            <p className="text-xl text-(--text-muted) font-light">
+            <p className="text-base md:text-lg lg:text-xl text-(--text-muted) font-light">
               Real applications built to solve real problems.
             </p>
           </div>
@@ -83,21 +83,21 @@ const Projects = () => {
         </div>
 
         {/* Project List */}
-        <div className="space-y-20 md:space-y-32">
+        <div className="space-y-12 md:space-y-20 lg:space-y-32">
           {projects.map((project) => (
             <div
               key={project.id}
-              className="group grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start border-t border-(--border-color) pt-12"
+              className="group grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12 items-start border-t border-(--border-color) pt-8 md:pt-12"
             >
               {/* Text Info */}
-              <div className="lg:col-span-5 space-y-6">
+              <div className="lg:col-span-5 space-y-4 md:space-y-6">
                 <span className="text-xs uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
                   {project.category}
                 </span>
-                <h3 className="text-4xl md:text-5xl transition-all duration-500">
+                <h3 className="text-2xl md:text-3xl lg:text-4xl transition-all duration-500 leading-tight">
                   {project.title}
                 </h3>
-                <p className="text-(--text-muted) text-lg leading-relaxed font-light">
+                <p className="text-(--text-muted) text-sm md:text-base lg:text-lg leading-relaxed font-light">
                   {project.description.substring(0, 140)}...
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -173,18 +173,18 @@ const Projects = () => {
             onClick={closeDrawer}
           />
 
-          <div className="relative w-full max-w-xl bg-(--surface) h-full shadow-2xl p-8 md:p-12 flex flex-col overflow-y-auto animate-slide-up">
+          <div className="relative w-full max-w-xl bg-(--surface) h-full shadow-2xl p-6 md:p-8 lg:p-12 flex flex-col overflow-y-auto animate-slide-up">
             <button
               onClick={closeDrawer}
-              className="absolute top-8 right-8 text-(--text-subtle) hover:text-(--text-main) transition-colors"
+              className="absolute top-4 right-4 md:top-6 md:right-6 text-(--text-subtle) hover:text-(--text-main) transition-colors"
             >
-              <X size={28} />
+              <X size={24} />
             </button>
 
-            <span className="text-xs uppercase tracking-widest font-bold text-(--text-subtle) mb-4">
+            <span className="text-xs uppercase tracking-widest font-bold text-(--text-subtle) mb-3 md:mb-4">
               How It Was Built
             </span>
-            <h2 className="text-4xl md:text-5xl mb-8 leading-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8 leading-tight">
               {selectedProject.title}
             </h2>
 

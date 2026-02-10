@@ -4,17 +4,17 @@ import { Shield, Lock, Fingerprint, Database, Smartphone } from "lucide-react";
 
 export default function AdminSettings() {
   return (
-    <div className="space-y-12 fade-in">
+    <div className="space-y-8 md:space-y-12 fade-in">
       {/* Header */}
       <div className="space-y-1">
-        <p className="text-2xl font-semibold">
+        <p className="text-xl md:text-2xl font-semibold">
           Admin <span className="font-medium">Settings</span>
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Role-Based Access Control Section */}
-        <div className="p-6 border border-(--border-color) rounded-xl bg-(--surface) space-y-4">
+        <div className="p-4 md:p-6 border border-(--border-color) rounded-xl bg-(--surface) space-y-3 md:space-y-4">
           <div className="flex items-center gap-3 border-b border-(--border-color) pb-3">
             <Shield size={16} className="text-(--text-main)" />
             <p className="text-sm font-medium">
@@ -40,7 +40,7 @@ export default function AdminSettings() {
         </div>
 
         {/* Native App Sync Settings */}
-        <div className="p-6 border border-(--border-color) rounded-xl bg-(--surface) space-y-4">
+        <div className="p-4 md:p-6 border border-(--border-color) rounded-xl bg-(--surface) space-y-3 md:space-y-4">
           <div className="flex items-center gap-3 border-b border-(--border-color) pb-3">
             <Smartphone size={16} className="text-(--text-main)" />
             <p className="text-sm font-medium">

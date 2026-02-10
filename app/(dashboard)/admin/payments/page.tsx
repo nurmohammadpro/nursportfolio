@@ -31,16 +31,16 @@ const payments = [
 
 export default function PaymentsPage() {
   return (
-    <div className="space-y-10 fade-in">
+    <div className="space-y-6 md:space-y-10 fade-in">
       {/* Header */}
       <div className="space-y-1">
-        <p className="text-2xl font-semibold text-(--text-main)">
+        <p className="text-xl md:text-2xl font-semibold text-(--text-main)">
           Transaction <span className="font-medium">History</span>
         </p>
       </div>
 
       {/* Summary Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
         {[
           { label: "Monthly Revenue", val: "$12,400" },
           { label: "Pending", val: "$4,500" },
@@ -49,25 +49,25 @@ export default function PaymentsPage() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="p-4 border border-(--border-color) rounded-lg"
+            className="p-3 md:p-4 border border-(--border-color) rounded-lg"
           >
             <p className="text-xs font-medium tracking-wide text-(--text-subtle) mb-1">
               {stat.label}
             </p>
-            <p className="text-lg font-semibold">{stat.val}</p>
+            <p className="text-base md:text-lg font-semibold">{stat.val}</p>
           </div>
         ))}
       </div>
 
       {/* Transaction Table */}
       <div className="border border-(--border-color) rounded-lg overflow-hidden">
-        <div className="bg-(--subtle)/20 p-4 border-b border-(--border-color) flex justify-between items-center">
+        <div className="bg-(--subtle)/20 p-3 md:p-4 border-b border-(--border-color) flex justify-between items-center">
           <p className="text-sm font-medium">
             Recent Activity
           </p>
           <button className="flex items-center gap-2 text-(--text-subtle) hover:text-(--text-main) transition-colors">
             <Download size={14} />
-            <p className="text-xs font-medium">Export CSV</p>
+            <p className="text-xs font-medium hidden sm:inline">Export CSV</p>
           </button>
         </div>
 
@@ -75,11 +75,11 @@ export default function PaymentsPage() {
           {payments.map((tx) => (
             <div
               key={tx.id}
-              className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-(--subtle)/10 transition-colors"
+              className="p-3 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 hover:bg-(--subtle)/10 transition-colors"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 md:gap-4">
                 <div
-                  className={`p-2 rounded-lg ${tx.status === "completed" ? "bg-green-50 text-green-600" : "bg-amber-50 text-amber-600"}`}
+                  className={`p-2 rounded-lg shrink-0 ${tx.status === "completed" ? "bg-green-50 text-green-600" : "bg-amber-50 text-amber-600"}`}
                 >
                   {tx.status === "completed" ? (
                     <ArrowDownLeft size={16} />
@@ -87,8 +87,8 @@ export default function PaymentsPage() {
                     <Clock size={16} />
                   )}
                 </div>
-                <div>
-                  <p className="text-sm font-medium">{tx.client}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate">{tx.client}</p>
                   <p className="text-xs font-mono text-(--text-subtle)">
                     {tx.id} • {tx.method}
                   </p>
