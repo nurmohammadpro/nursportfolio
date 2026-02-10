@@ -64,6 +64,7 @@ export default function TiptapEditor({
     extensions: [
       StarterKit.configure({
         codeBlock: false, // Use CodeBlockLowlight instead
+        link: false, // Use custom Link extension instead
       }),
       Image.configure({
         inline: true,

@@ -13,18 +13,31 @@ export const POST = withAuth(
     console.log(`Authenticated user: ${context.user.email} is uploading a blog image.`);
 
     try {
+      // Check if Cloudinary is configured
+      if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+        console.error("Cloudinary environment variables are not configured");
+        return NextResponse.json(
+          { error: "Cloudinary is not configured. Please check environment variables." },
+          { status: 500 }
+        );
+      }
+
       const formData = await req.formData();
       const file = formData.get("file") as File;
 
       if (!file) {
+        console.error("No file provided in form data");
         return NextResponse.json(
           { error: "No file provided" },
           { status: 400 }
         );
       }
 
+      console.log(`File received: ${file.name}, type: ${file.type}, size: ${file.size}`);
+
       // Validate file type
       if (!ALLOWED_TYPES.includes(file.type)) {
+        console.error(`Invalid file type: ${file.type}`);
         return NextResponse.json(
           { error: "Invalid file type. Please upload JPEG, PNG, WebP, or GIF images." },
           { status: 400 }
@@ -33,6 +46,7 @@ export const POST = withAuth(
 
       // Validate file size
       if (file.size > MAX_FILE_SIZE) {
+        console.error(`File size exceeds limit: ${file.size} bytes`);
         return NextResponse.json(
           { error: "File size exceeds 5MB limit" },
           { status: 400 }
@@ -43,8 +57,12 @@ export const POST = withAuth(
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
+      console.log("Uploading to Cloudinary...");
+
       // Upload to Cloudinary
       const result = await uploadToCloudinary(buffer, file.name, "blog");
+
+      console.log("Upload successful:", result);
 
       // Return optimized URL and metadata
       return NextResponse.json({

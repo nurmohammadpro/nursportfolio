@@ -16,6 +16,11 @@ export async function uploadToCloudinary(
   filename: string,
   folder: string = "attachments",
 ): Promise<any> {
+  // Check if Cloudinary is configured
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    throw new Error("Cloudinary environment variables are not configured");
+  }
+
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
@@ -28,8 +33,10 @@ export async function uploadToCloudinary(
         },
         (error, result) => {
           if (error) {
+            console.error("Cloudinary upload error:", error);
             reject(error);
           } else {
+            console.log("Cloudinary upload successful:", result?.public_id);
             resolve(result);
           }
         },
