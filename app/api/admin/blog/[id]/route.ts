@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { generateSlug } from "@/app/lib/blog-types";
+import { generateSlug, calculateReadingTime, generateExcerpt } from "@/app/lib/blog-types";
 import { withAuth, AuthenticatedContext } from "@/app/lib/auth-middleware";
 import dbConnect from "@/app/lib/dbConnect";
 import Post from "@/app/models/Post";
@@ -44,9 +44,20 @@ export const PUT = withAuth<RouteParams>(
         }
       }
 
+      // Auto-generate excerpt if content changed and excerpt not provided
+      let updateData = { ...body, slug: newSlug };
+      if (body.content && (!body.excerpt || body.excerpt === currentPost.excerpt)) {
+        updateData.excerpt = generateExcerpt(body.content);
+      }
+
+      // Auto-calculate reading time if content changed
+      if (body.content && (!body.readingTime || body.readingTime === currentPost.readingTime)) {
+        updateData.readingTime = calculateReadingTime(body.content);
+      }
+
       const updatedPost = await Post.findByIdAndUpdate(
         id,
-        { ...body, slug: newSlug },
+        updateData,
         { new: true }
       );
 

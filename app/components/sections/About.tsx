@@ -64,10 +64,10 @@ const About = () => {
 
             <div className="mt-12 lg:mt-0 pt-12 border-t border-(--border-color)">
               <p className="text-xs uppercase tracking-[0.3em] font-bold text-(--text-subtle) mb-4">
-                Technologies I Work With
+                Services I Offer
               </p>
               <p className="text-sm font-medium tracking-tight text-(--text-main)">
-                Next.js 15 • Cloudflare Edge • React • Firebase • MongoDB
+                Web Apps • WordPress Design • WordPress Security • Automation
               </p>
             </div>
           </div>

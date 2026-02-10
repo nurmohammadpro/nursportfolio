@@ -51,8 +51,7 @@ const Hero = () => {
           <span className="text-(--text-main) font-medium underline underline-offset-8 decoration-(--text-subtle)/30">
             Nur Mohammad
           </span>
-          , a Web Application Developer who turns ideas into reliable,
-          secure, and easy-to-use web applications.
+          , specializing in Web Development, WordPress Design & Security, and Automation.
         </p>
 
         {/* Updated Buttons */}

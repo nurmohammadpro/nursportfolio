@@ -1,10 +1,8 @@
 export type ServiceType =
   | "web-development"
-  | "web-automation"
   | "wordpress-design"
   | "wordpress-security"
-  | "seo"
-  | "digital-marketing";
+  | "web-automation";
 
 export interface Service {
   id: ServiceType;

@@ -4,34 +4,34 @@ import { Cpu, ShieldCheck, Layers, Terminal, Globe, Zap } from "lucide-react";
 
 const expertisePillars = [
   {
-    title: "Web Applications",
+    title: "Web Development",
     description:
-      "Building fast, responsive web applications that people enjoy using.",
-    tools: ["Next.js 15", "TypeScript", "React", "Node.js"],
+      "Building custom web applications using Next.js or MERN stack.",
+    tools: ["Next.js 15", "React", "MongoDB", "Node.js", "Express"],
     icon: <Cpu size={28} />,
     gridSpan: "md:col-span-2",
   },
   {
-    title: "Security",
+    title: "WordPress Design",
     description:
-      "Keeping your applications and data safe from threats.",
-    tools: ["Wordpress Security", "Malware Removal", "SSL/Auth"],
-    icon: <ShieldCheck size={28} />,
-    gridSpan: "md:col-span-1",
-  },
-  {
-    title: "Cloud Services",
-    description:
-      "Making sure your app is fast and available wherever your users are.",
-    tools: ["Cloudflare", "Workers", "Firebase", "MongoDB"],
+      "Custom WordPress themes and designs tailored to your brand.",
+    tools: ["Theme Design", "Customization", "Elementor", "WooCommerce"],
     icon: <Globe size={28} />,
     gridSpan: "md:col-span-1",
   },
   {
-    title: "Automation",
+    title: "WordPress Security",
     description:
-      "Saving time by automating repetitive tasks and workflows.",
-    tools: ["Web Automation", "API Integration", "SaaS Logic"],
+      "Security audits, malware removal, and hardening your site.",
+    tools: ["Security Audits", "Malware Removal", "SSL Setup", "Firewall"],
+    icon: <ShieldCheck size={28} />,
+    gridSpan: "md:col-span-1",
+  },
+  {
+    title: "Web Automation",
+    description:
+      "Custom automation scripts and bots for repetitive tasks.",
+    tools: ["Web Scraping", "Custom Bots", "API Integration", "Workflow Automation"],
     icon: <Zap size={28} />,
     gridSpan: "md:col-span-2",
   },

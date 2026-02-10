@@ -85,25 +85,7 @@ export default function RootLayout({
             "@type": "Service",
             name: "Web Application Development",
             description:
-              "Building web applications with React, Next.js, and Firebase.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Custom Web Applications",
-            description:
-              "Creating fast, reliable web applications with React, Next.js, TailwindCSS, and more.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Web Automation & Bots",
-            description:
-              "Automating repetitive tasks like form filling, product listings, and email management.",
+              "Custom web applications using MERN stack (MongoDB, Express, React, Node.js) or Next.js with modern best practices.",
           },
         },
         {
@@ -112,16 +94,25 @@ export default function RootLayout({
             "@type": "Service",
             name: "WordPress Design & Customization",
             description:
-              "Custom WordPress themes and designs to help startups get online.",
+              "Custom WordPress themes, site designs, and customization tailored to your brand and business needs.",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "WordPress Security & Malware Removal",
+            name: "WordPress Security",
             description:
-              "Removing malware and securing WordPress websites from threats.",
+              "Security audits, malware removal, SSL setup, firewall configuration, and hardening WordPress sites from threats.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Web Automation & Bot Development",
+            description:
+              "Custom automation scripts, web scraping, API integrations, and intelligent bots for repetitive tasks and workflows.",
           },
         },
       ],

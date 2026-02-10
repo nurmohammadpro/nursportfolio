@@ -8,8 +8,9 @@ import { Send, ArrowRight } from "lucide-react";
 
 const serviceOptions = [
   { value: "web-development", label: "Web Application Development" },
-  { value: "web-automation", label: "Web Automation" },
-  { value: "wordpress-security", label: "Security & Malware Audit" },
+  { value: "wordpress-design", label: "WordPress Design & Customization" },
+  { value: "wordpress-security", label: "WordPress Security" },
+  { value: "web-automation", label: "Web Automation & Bots" },
 ];
 
 const Contact = () => {

@@ -8,30 +8,30 @@ const services = [
   {
     id: "web-development",
     name: "Web Application Development",
-    description: "High-performance SaaS platforms and custom web ecosystems.",
+    description: "Custom web applications using Next.js or MERN stack with modern best practices.",
     icon: <Code size={24} />,
     startingPrice: 1200,
   },
   {
-    id: "web-automation",
-    name: "Web Automation & Bots",
-    description: "Custom workflow automations and intelligent bots.",
-    icon: <Bot size={24} />,
-    startingPrice: 800,
-  },
-  {
     id: "wordpress-design",
-    name: "Premium WordPress Design",
-    description: "Bespoke, high-converting WordPress sites.",
+    name: "WordPress Design & Customization",
+    description: "Custom WordPress themes and site designs tailored to your needs.",
     icon: <Globe size={24} />,
-    startingPrice: 600,
+    startingPrice: 500,
   },
   {
     id: "wordpress-security",
-    name: "Advanced Security Audit",
-    description: "Vulnerability scanning and hardening.",
+    name: "WordPress Security",
+    description: "Security audits, malware removal, and WordPress hardening.",
     icon: <ShieldCheck size={24} />,
     startingPrice: 400,
+  },
+  {
+    id: "web-automation",
+    name: "Web Automation & Bots",
+    description: "Custom automation scripts and web bots for repetitive tasks.",
+    icon: <Bot size={24} />,
+    startingPrice: 600,
   },
 ];
 
