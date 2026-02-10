@@ -28,11 +28,9 @@ const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           {/* Left: Heading (Occupies more space for breathing room) */}
           <div className="lg:col-span-7">
-            <h2 className="text-6xl md:text-8xl lg:text-9xl leading-[0.9] mb-8 tracking-tighter">
+            <h2 className="text-5xl md:text-7xl lg:text-8xl leading-tight tracking-tight mb-8">
               Let's Build <br />
-              <span className="italic text-(--text-muted)">
-                Something
-              </span>{" "}
+              <span className="italic text-(--text-muted)">Something</span>{" "}
               Great
             </h2>
             <p className="text-xl text-(--text-muted) font-light leading-relaxed max-w-md">

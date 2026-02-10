@@ -126,12 +126,17 @@ export default function EmailPage() {
             filtered = data.filter((t: any) => t.starred);
           }
           if (activeAlias !== "all") {
-            filtered = filtered.filter((t: any) => t.fromEmail === activeAlias || t.clientEmail === activeAlias);
+            filtered = filtered.filter(
+              (t: any) =>
+                t.fromEmail === activeAlias || t.clientEmail === activeAlias,
+            );
           }
           setThreads(filtered);
           // Update selected thread if it was the one modified
           if (selectedThread && selectedThread.id === threadId) {
-            const updated = data.find((t: any) => t._id === threadId || t.id === threadId);
+            const updated = data.find(
+              (t: any) => t._id === threadId || t.id === threadId,
+            );
             if (updated) setSelectedThread(updated);
           }
         }
@@ -355,7 +360,9 @@ export default function EmailPage() {
           <>
             <header className="p-4 space-y-4">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-semibold capitalize">{activeFolder}</h1>
+                <h1 className="text-2xl font-semibold capitalize">
+                  {activeFolder}
+                </h1>
                 <button
                   onClick={() => {
                     const idx = mailboxes.findIndex(
@@ -424,9 +431,7 @@ export default function EmailPage() {
                       })}
                     </span>
                   </div>
-                  <p className="text-sm font-medium truncate">
-                    {t.title}
-                  </p>
+                  <p className="text-sm font-medium truncate">{t.title}</p>
                   <p className="text-xs text-(--text-subtle) line-clamp-1 italic">
                     "{t.lastMessage || t.description}"
                   </p>
@@ -454,7 +459,10 @@ export default function EmailPage() {
                 <Star
                   size={18}
                   onClick={() =>
-                    toggleStar(selectedThread._id || selectedThread.id, selectedThread.starred)
+                    toggleStar(
+                      selectedThread._id || selectedThread.id,
+                      selectedThread.starred,
+                    )
                   }
                   className={
                     selectedThread?.starred
@@ -464,17 +472,32 @@ export default function EmailPage() {
                 />
                 <Mail
                   size={18}
-                  onClick={() => handleAction(selectedThread._id || selectedThread.id, "toggleRead")}
+                  onClick={() =>
+                    handleAction(
+                      selectedThread._id || selectedThread.id,
+                      "toggleRead",
+                    )
+                  }
                 />
                 {activeFolder === "trash" ? (
                   <Inbox
                     size={18}
-                    onClick={() => handleAction(selectedThread._id || selectedThread.id, "restore")}
+                    onClick={() =>
+                      handleAction(
+                        selectedThread._id || selectedThread.id,
+                        "restore",
+                      )
+                    }
                   />
                 ) : (
                   <Trash2
                     size={18}
-                    onClick={() => handleAction(selectedThread._id || selectedThread.id, "trash")}
+                    onClick={() =>
+                      handleAction(
+                        selectedThread._id || selectedThread.id,
+                        "trash",
+                      )
+                    }
                   />
                 )}
                 <ShieldAlert
@@ -494,7 +517,7 @@ export default function EmailPage() {
                 messages.map((m, i) => (
                   <div
                     key={m.createdAt?.toString() || i}
-                    className={`p-4 rounded-xl text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-8" : "bg-(--primary) text-(--surface) ml-8"}`}
+                    className={`p-4 rounded-xl text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-8" : "bg-(--subtle) text-(--text-main) ml-8"}`}
                   >
                     <p className="whitespace-pre-wrap">{m.text}</p>
                   </div>
@@ -602,7 +625,9 @@ export default function EmailPage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setMenuOpen(menuOpen === (t._id || t.id) ? null : (t._id || t.id));
+                      setMenuOpen(
+                        menuOpen === (t._id || t.id) ? null : t._id || t.id,
+                      );
                     }}
                     className="p-1 hover:bg-(--border-color) rounded-md text-(--text-subtle)"
                   >
@@ -615,13 +640,17 @@ export default function EmailPage() {
                           <MenuAction
                             icon={Inbox}
                             label="Restore to Inbox"
-                            onClick={() => handleAction(t._id || t.id, "restore")}
+                            onClick={() =>
+                              handleAction(t._id || t.id, "restore")
+                            }
                           />
                           <div className="h-px bg-(--border-color) my-1" />
                           <MenuAction
                             icon={Trash2}
                             label="Delete Permanently"
-                             onClick={() => handleAction(t._id || t.id, "delete")}
+                            onClick={() =>
+                              handleAction(t._id || t.id, "delete")
+                            }
                             className="text-red-500"
                           />
                         </>
@@ -630,7 +659,9 @@ export default function EmailPage() {
                           <MenuAction
                             icon={ShieldCheck}
                             label="Not Spam"
-                            onClick={() => handleAction(t._id || t.id, "restore")}
+                            onClick={() =>
+                              handleAction(t._id || t.id, "restore")
+                            }
                           />
                           <div className="h-px bg-(--border-color) my-1" />
                           <MenuAction
@@ -655,13 +686,15 @@ export default function EmailPage() {
                           <MenuAction
                             icon={Mail}
                             label={t.unread ? "Mark Read" : "Mark Unread"}
-                             onClick={() => handleAction(t._id || t.id, "toggleRead")}
+                            onClick={() =>
+                              handleAction(t._id || t.id, "toggleRead")
+                            }
                           />
                           <div className="h-px bg-(--border-color) my-1" />
                           <MenuAction
                             icon={ShieldAlert}
                             label="Spam"
-                             onClick={() => handleAction(t._id || t.id, "spam")}
+                            onClick={() => handleAction(t._id || t.id, "spam")}
                           />
                           <MenuAction
                             icon={Trash2}
@@ -698,7 +731,7 @@ export default function EmailPage() {
                   messages.map((m, i) => (
                     <div
                       key={i}
-                      className={`p-4 rounded-lg text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--main) ml-12"}`}
+                      className={`p-4 rounded-lg text-sm ${m.type === "inbound" ? "bg-(--subtle) mr-12" : "bg-(--primary) text-(--text-main) ml-12"}`}
                     >
                       <p className="whitespace-pre-wrap">{m.text}</p>
                       {m.attachments?.length > 0 && (
