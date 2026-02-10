@@ -9,6 +9,8 @@ import RelatedPosts from "@/app/components/blog/RelatedPosts";
 import ShareButtons from "@/app/components/blog/ShareButtons";
 import { formatDate, getCategoryBySlug } from "@/app/lib/blog-types";
 import Button from "@/app/components/Button";
+import dbConnect from "@/app/lib/dbConnect";
+import Post from "@/app/models/Post";
 
 interface Post {
   _id: string;
@@ -32,16 +34,29 @@ interface Post {
 
 async function getPost(slug: string): Promise<Post | null> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/api/blog/${slug}`, {
-      cache: "no-store",
-    });
+    await dbConnect();
 
-    if (!response.ok) {
+    const post = await Post.findOne({ slug, isPublished: true }).lean();
+
+    if (!post) {
       return null;
     }
 
-    return response.json();
+    // Handle lean() result which could be array or single object
+    const postData = Array.isArray(post) ? post[0] : post;
+    const postId = (postData as any)._id;
+
+    // Increment view count
+    await Post.findByIdAndUpdate(postId, {
+      $inc: { viewCount: 1 },
+    });
+
+    // Format response - omit _id from the returned object
+    const { _id, ...postWithoutId } = postData as any;
+    return {
+      ...postWithoutId,
+      id: postId.toString(),
+    };
   } catch (error) {
     console.error("Failed to fetch blog post:", error);
     return null;
@@ -195,7 +210,7 @@ export default async function BlogPostPage({
             </div>
 
             {/* Share Buttons */}
-            <ShareButtons title={post.title} url={`${process.env.NEXT_PUBLIC_BASE_URL}/blog/${post.slug}`} />
+            <ShareButtons title={post.title} url={`${process.env.NEXTAUTH_URL}/blog/${post.slug}`} />
           </div>
         </header>
 

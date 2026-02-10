@@ -14,7 +14,7 @@ async function getPostsByTag(tag: string, page: number = 1) {
     params.append("page", page.toString());
     params.append("limit", "12");
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/blog?${params.toString()}`, {
       cache: "no-store",
     });

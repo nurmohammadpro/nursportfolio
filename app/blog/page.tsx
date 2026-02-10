@@ -40,7 +40,7 @@ function BlogPageContent() {
         params.append("page", currentPage.toString());
         params.append("limit", "12");
 
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+        const baseUrl = process.env.NEXTAUTH_URL || window.location.origin;
         const [postsRes, categoriesRes, tagsRes] = await Promise.all([
           fetch(`${baseUrl}/api/blog?${params.toString()}`),
           fetch(`${baseUrl}/api/blog/categories`),
