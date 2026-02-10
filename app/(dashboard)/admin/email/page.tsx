@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import {
   Plus,
   Mail,
@@ -21,6 +22,13 @@ import {
 } from "lucide-react";
 import Select from "@/app/components/Select";
 import { cloudinary } from "@/app/lib/cloudinary";
+
+const TiptapEditor = dynamic(() => import("@/app/components/blog/TiptapEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-48 bg-(--secondary) border border-(--border-color) rounded-lg animate-pulse" />
+  ),
+});
 
 // --- HELPERS ---
 const MenuAction = ({ icon: Icon, label, onClick, className = "" }: any) => (
@@ -283,13 +291,11 @@ export default function EmailPage() {
                 placeholder="Subject"
                 className="w-full border-b border-(--border-color) py-2 outline-none text-sm font-semibold text-(--text-main) bg-transparent"
               />
-              <textarea
-                value={newEmail.body}
-                onChange={(e) =>
-                  setNewEmail({ ...newEmail, body: e.target.value })
-                }
+              <TiptapEditor
+                content={newEmail.body}
+                onChange={(content) => setNewEmail({ ...newEmail, body: content })}
+                onImageUpload={handleFileUpload}
                 placeholder="Your message..."
-                className="w-full h-48 bg-transparent outline-none text-sm resize-none text-(--text-main)"
               />
             </div>
             <div className="p-4 bg-(--subtle) flex justify-between items-center gap-4">
