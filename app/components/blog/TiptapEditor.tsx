@@ -6,7 +6,7 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { lowlight } from "lowlight";
+import { createLowlight } from "lowlight";
 import {
   Bold,
   Italic,
@@ -28,17 +28,18 @@ import { useState, useCallback } from "react";
 import { cn } from "@/app/lib/utils";
 
 // Import common languages for syntax highlighting
-import javascript from "lowlight/lib/languages/javascript";
-import typescript from "lowlight/lib/languages/typescript";
-import python from "lowlight/lib/languages/python";
-import css from "lowlight/lib/languages/css";
-import html from "lowlight/lib/languages/xml";
+import javascript from "highlight.js/lib/languages/javascript";
+import typescript from "highlight.js/lib/languages/typescript";
+import python from "highlight.js/lib/languages/python";
+import css from "highlight.js/lib/languages/css";
+import xml from "highlight.js/lib/languages/xml";
 
+const lowlight = createLowlight();
 lowlight.register("javascript", javascript);
 lowlight.register("typescript", typescript);
 lowlight.register("python", python);
 lowlight.register("css", css);
-lowlight.register("html", html);
+lowlight.register("html", xml);
 
 interface TiptapEditorProps {
   content: string;
@@ -83,7 +84,8 @@ export default function TiptapEditor({
       CodeBlockLowlight.configure({
         lowlight,
         HTMLAttributes: {
-          class: "bg-(--code-bg) text-(--code-text) rounded-lg p-4 my-4 overflow-x-auto",
+          class:
+            "bg-(--code-bg) text-(--code-text) rounded-lg p-4 my-4 overflow-x-auto",
         },
       }),
     ],
@@ -105,10 +107,11 @@ export default function TiptapEditor({
           "prose-blockquote:border-l-4 prose-blockquote:border-(--brand) prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-(--text-subtle)",
           "prose-ul:list-disc prose-ul:pl-6",
           "prose-ol:list-decimal prose-ol:pl-6",
-          "min-h-[400px] px-4 py-3"
+          "min-h-[400px] px-4 py-3",
         ),
       },
     },
+    immediatelyRender: false,
   });
 
   const handleImageUpload = useCallback(
@@ -127,7 +130,7 @@ export default function TiptapEditor({
         setIsUploading(false);
       }
     },
-    [editor, onImageUpload]
+    [editor, onImageUpload],
   );
 
   const handleSetLink = useCallback(() => {
@@ -162,7 +165,7 @@ export default function TiptapEditor({
       disabled={disabled}
       className={cn(
         "p-2 rounded hover:bg-(--subtle) transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
-        isActive ? "bg-(--brand) text-white" : "text-(--text-main)"
+        isActive ? "bg-(--brand) text-white" : "text-(--text-main)",
       )}
     >
       {children}
@@ -213,21 +216,27 @@ export default function TiptapEditor({
           {/* Headings */}
           <div className="flex items-center gap-1 px-2 border-r border-(--border-color)">
             <ToolbarButton
-              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 1 }).run()
+              }
               isActive={editor.isActive("heading", { level: 1 })}
               title="Heading 1"
             >
               <Heading1 className="w-4 h-4" />
             </ToolbarButton>
             <ToolbarButton
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 2 }).run()
+              }
               isActive={editor.isActive("heading", { level: 2 })}
               title="Heading 2"
             >
               <Heading2 className="w-4 h-4" />
             </ToolbarButton>
             <ToolbarButton
-              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 3 }).run()
+              }
               isActive={editor.isActive("heading", { level: 3 })}
               title="Heading 3"
             >
@@ -314,7 +323,7 @@ export default function TiptapEditor({
               <label
                 className={cn(
                   "p-2 rounded hover:bg-(--subtle) transition-colors cursor-pointer",
-                  isUploading && "opacity-50 cursor-not-allowed"
+                  isUploading && "opacity-50 cursor-not-allowed",
                 )}
                 title="Upload Image"
               >
@@ -351,7 +360,7 @@ export default function TiptapEditor({
       )}
 
       {/* Editor Content */}
-      <EditorContent editor={editor} className="min-h-[400px]" />
+      <EditorContent editor={editor} className="min-h-100" />
     </div>
   );
 }

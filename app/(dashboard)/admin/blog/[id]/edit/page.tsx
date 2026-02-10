@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowLeft, Save, Eye, Upload, X, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Save, Eye, X, Image as ImageIcon } from "lucide-react";
 import { generateSlug, calculateReadingTime, generateExcerpt, BLOG_CATEGORIES } from "@/app/lib/blog-types";
 import Button from "@/app/components/Button";
 
@@ -215,7 +215,11 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
             Back to Editor
           </button>
           <div className="flex gap-2">
-            <Button onClick={() => handleSave(false)} loading={isSaving}>
+            <Button
+              onClick={() => handleSave(false)}
+              loading={isSaving}
+              icon={<Save className="w-4 h-4" />}
+            >
               Save Draft
             </Button>
             <Button onClick={() => handleSave(true)} loading={isSaving}>
@@ -261,13 +265,16 @@ export default function EditBlogPost({ params }: { params: Promise<{ id: string 
             variant="outlined"
             onClick={() => setPreviewMode(true)}
             disabled={!formData.content}
+            icon={<Eye className="w-4 h-4" />}
           >
-            <Eye className="w-4 h-4" />
             Preview
           </Button>
-          <Button onClick={() => handleSave(false)} loading={isSaving}>
-            <Save className="w-4 h-4" />
-            Save
+          <Button
+            onClick={() => handleSave(false)}
+            loading={isSaving}
+            icon={<Save className="w-4 h-4" />}
+          >
+            Save Draft
           </Button>
           <Button onClick={() => handleSave(true)} loading={isSaving}>
             {formData.isPublished ? "Update" : "Publish"}
