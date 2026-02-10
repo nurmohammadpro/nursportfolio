@@ -295,7 +295,7 @@ export default function EmailPage() {
                 <div className="flex flex-wrap gap-2">
                   {newEmail.attachments.map((file, idx) => (
                     <div
-                      key={idx}
+                      key={file.publicId || file.url || idx}
                       className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-xl"
                     >
                       <Paperclip size={10} className="text-(--brand)" />
@@ -395,7 +395,7 @@ export default function EmailPage() {
             <div className="flex-1 overflow-y-auto divide-y divide-(--border-color)">
               {threads.map((t) => (
                 <div
-                  key={t.id}
+                  key={t._id || t.id}
                   onClick={() => {
                     setSelectedThread(t);
                     setMobileScreen("detail");
@@ -497,7 +497,7 @@ export default function EmailPage() {
               {messages.length > 0 ? (
                 messages.map((m, i) => (
                   <div
-                    key={i}
+                    key={m.createdAt?.toString() || i}
                     className={`p-4 rounded-2xl p-body ${m.type === "inbound" ? "bg-(--subtle) mr-8" : "bg-(--primary) text-(--surface) ml-8"}`}
                   >
                     <p className="whitespace-pre-wrap">{m.text}</p>
@@ -579,7 +579,7 @@ export default function EmailPage() {
             <div
               key={t.id}
               onClick={() => setSelectedThread(t)}
-              className={`p-6 cursor-pointer group relative transition-all ${selectedThread?.id === t.id ? "bg-(--subtle) border-l-4 border-(--brand)" : "hover:bg-(--subtle)"}`}
+              className={`p-6 cursor-pointer group relative transition-all ${selectedThread?._id === t._id ? "bg-(--subtle) border-l-4 border-(--brand)" : "hover:bg-(--subtle)"}`}
             >
               <div className="flex justify-between items-start mb-1">
                 <div className="flex items-center gap-2">
@@ -764,7 +764,7 @@ export default function EmailPage() {
                         {selectedThread.attachments.map(
                           (file: any, idx: number) => (
                             <div
-                              key={idx}
+                              key={file.id || file.publicId || file.name || idx}
                               className="flex items-center gap-2 px-3 py-1.5 bg-(--subtle) border border-(--border-color) rounded-xl"
                             >
                               <Paperclip size={12} className="text-(--brand)" />
