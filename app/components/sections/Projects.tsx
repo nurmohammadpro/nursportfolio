@@ -66,7 +66,7 @@ const Projects = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 lg:mb-24 gap-4 md:gap-6">
           <div className="max-w-2xl">
             <h2 className="text-4xl md:text-5xl lg:text-7xl mb-4 md:mb-6">
-              Recent <span className="italic text-(--text-muted)">Projects</span>
+              Recent <span className=" text-(--text-muted)">Projects</span>
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-(--text-muted) font-light">
               Real applications built to solve real problems.

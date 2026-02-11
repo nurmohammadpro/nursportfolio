@@ -13,25 +13,27 @@ const expertisePillars = [
   },
   {
     title: "WordPress Design",
-    description:
-      "Custom WordPress themes and designs tailored to your brand.",
+    description: "Custom WordPress themes and designs tailored to your brand.",
     tools: ["Theme Design", "Customization", "Elementor", "WooCommerce"],
     icon: <Globe size={28} />,
     gridSpan: "md:col-span-1",
   },
   {
     title: "WordPress Security",
-    description:
-      "Security audits, malware removal, and hardening your site.",
+    description: "Security audits, malware removal, and hardening your site.",
     tools: ["Security Audits", "Malware Removal", "SSL Setup", "Firewall"],
     icon: <ShieldCheck size={28} />,
     gridSpan: "md:col-span-1",
   },
   {
     title: "Web Automation",
-    description:
-      "Custom automation scripts and bots for repetitive tasks.",
-    tools: ["Web Scraping", "Custom Bots", "API Integration", "Workflow Automation"],
+    description: "Custom automation scripts and bots for repetitive tasks.",
+    tools: [
+      "Web Scraping",
+      "Custom Bots",
+      "API Integration",
+      "Workflow Automation",
+    ],
     icon: <Zap size={28} />,
     gridSpan: "md:col-span-2",
   },
@@ -47,8 +49,7 @@ const Skills = () => {
         {/* Section Header */}
         <div className="max-w-3xl mb-12 md:mb-16 lg:mb-24">
           <h2 className="text-4xl md:text-5xl lg:text-7xl mb-6 md:mb-8 leading-tight">
-            What I Do{" "}
-            <span className="italic text-(--text-muted)">Best</span>
+            What I Do <span className=" text-(--text-muted)">Best</span>
           </h2>
           <p className="text-base md:text-lg lg:text-xl text-(--text-muted) font-light leading-relaxed">
             I help businesses with{" "}
@@ -70,7 +71,9 @@ const Skills = () => {
                 <div className="mb-8 text-(--text-main) opacity-80 group-hover:opacity-100 transition-opacity">
                   {pillar.icon}
                 </div>
-                <h3 className="text-xl md:text-2xl font-display mb-4">{pillar.title}</h3>
+                <h3 className="text-xl md:text-2xl font-display mb-4">
+                  {pillar.title}
+                </h3>
                 <p className="text-(--text-muted) mb-8 font-light leading-relaxed">
                   {pillar.description}
                 </p>

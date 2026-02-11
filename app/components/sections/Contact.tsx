@@ -31,8 +31,7 @@ const Contact = () => {
           <div className="lg:col-span-7">
             <h2 className="text-4xl md:text-5xl lg:text-7xl leading-tight tracking-tight mb-6 md:mb-8">
               Let's Build <br />
-              <span className="italic text-(--text-muted)">Something</span>{" "}
-              Great
+              <span className=" text-(--text-muted)">Something</span> Great
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-(--text-muted) font-light leading-relaxed max-w-md">
               Got a project in mind? Let's talk about how I can help bring your

@@ -41,7 +41,7 @@ const Hero = () => {
 
         {/* Hero Heading */}
         <h1 className="text-4xl md:text-6xl lg:text-8xl leading-tight mb-6 md:mb-8 max-w-5xl">
-          Building <span className="text-(--text-muted) italic">Digital</span>{" "}
+          Building <span className="text-(--text-muted) ">Digital</span>{" "}
           Products That Work
         </h1>
 
@@ -51,7 +51,8 @@ const Hero = () => {
           <span className="text-(--text-main) font-medium underline underline-offset-8 decoration-(--text-subtle)/30">
             Nur Mohammad
           </span>
-          , specializing in Web Development, WordPress Design & Security, and Automation.
+          , specializing in Web Development, WordPress Design & Security, and
+          Automation.
         </p>
 
         {/* Updated Buttons */}

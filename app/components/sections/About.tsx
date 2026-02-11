@@ -4,15 +4,17 @@ import { ArrowRight, Code2, ShieldCheck, Zap } from "lucide-react";
 
 const About = () => {
   return (
-    <section id="about" className="w-full bg-(--surface) py-16 md:py-24 lg:py-40">
+    <section
+      id="about"
+      className="w-full bg-(--surface) py-16 md:py-24 lg:py-40"
+    >
       <div className="layout-container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-24">
           {/* Left: The Power Statement */}
           <div className="lg:col-span-7">
             <h2 className="text-4xl md:text-5xl lg:text-7xl leading-tight tracking-tight mb-6 md:mb-8">
               Building <br />
-              <span className="italic text-(--text-muted)">Reliable</span> Web{" "}
-              <br />
+              <span className=" text-(--text-muted)">Reliable</span> Web <br />
               Applications.
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-8 md:mt-12 lg:mt-16">
@@ -24,8 +26,8 @@ const About = () => {
                   </span>
                 </div>
                 <p className="text-sm text-(--text-muted) font-light leading-relaxed">
-                  Keeping your applications safe from threats, with secure
-                  data handling and protection.
+                  Keeping your applications safe from threats, with secure data
+                  handling and protection.
                 </p>
               </div>
               <div className="space-y-4">
