@@ -13,6 +13,8 @@ import {
   LogOut,
   LayoutDashboard,
   Mailbox,
+  MessageCircle,
+  BriefcaseBusiness,
 } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import Image from "next/image";
@@ -40,10 +42,12 @@ export default function Sidebar({ role }: SidebarProps) {
   const adminItems = [
     { label: "Email Client", icon: Mail, href: "/admin/email" },
     { label: "Mailboxes", icon: Mailbox, href: "/admin/mailboxes" },
+    { label: "Queries", icon: MessageCircle, href: "/admin/queries" },
     { label: "Services", icon: Briefcase, href: "/admin/services" },
     { label: "Quotes", icon: FileText, href: "/admin/quotes" },
     { label: "Payments", icon: CreditCard, href: "/admin/payments" },
     { label: "Blog", icon: PenTool, href: "/admin/blog" },
+    { label: "Skills", icon: BriefcaseBusiness, href: "/admin/skills" },
     { label: "Settings", icon: Settings, href: "/admin/settings" },
   ];
 
@@ -103,9 +107,7 @@ export default function Sidebar({ role }: SidebarProps) {
             size={20}
             className="group-hover:translate-x-0.5 transition-transform"
           />
-          <p className="hidden md:block text-sm font-medium">
-            Sign Out
-          </p>
+          <p className="hidden md:block text-sm font-medium">Sign Out</p>
         </button>
       </div>
     </aside>
