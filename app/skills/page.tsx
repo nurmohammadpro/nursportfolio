@@ -79,8 +79,8 @@ export default function SkillsPage() {
       category: "development",
       level: "expert",
       icon: "cpu",
-      descripcustomiz:
-        "Building customom web applicacustomizs using Next.js 15, React, and MERN stack with modern best practices.",
+      description:
+        "Building custom web applications using Next.js 15, React, and MERN stack with modern best practices.",
       technologies: [
         "Next.js",
         "React",
@@ -95,11 +95,11 @@ export default function SkillsPage() {
       category: "wordpress",
       level: "expert",
       icon: "globe",
-      descripcustomiz:
-        "Custom WordPress themes, site designs, and customomizacustomiz tailored to your brand identity and business needs.",
+      description:
+        "Custom WordPress themes, site designs, and customizations tailored to your brand identity and business needs.",
       technologies: [
         "Theme Design",
-        "Customizacustomiz",
+        "Customization",
         "Elementor",
         "WooCommerce",
         "ACF",
@@ -110,8 +110,8 @@ export default function SkillsPage() {
       category: "security",
       level: "expert",
       icon: "shield",
-      descripcustomiz:
-        "Comprehensive security audits, malware removal, SSL setup, firewall configuracustomiz, and site hardening.",
+      description:
+        "Comprehensive security audits, malware removal, SSL setup, firewall configuration, and site hardening.",
       technologies: [
         "Security Audits",
         "Malware Removal",
@@ -121,17 +121,17 @@ export default function SkillsPage() {
       ],
     },
     {
-      name: "Web Automacustomiz",
-      category: "automacustomiz",
+      name: "Web Automation",
+      category: "automation",
       level: "expert",
       icon: "zap",
-      descripcustomiz:
-        "Custom automacustomiz scripts, web scraping solucustomizs, API integracustomizs, and intelligent workflow automacustomiz bots.",
+      description:
+        "Custom automation scripts, web scraping solutions, API integrations, and intelligent workflow automation bots.",
       technologies: [
         "Web Scraping",
         "Custom Bots",
-        "API Integracustomiz",
-        "Workflow Automacustomiz",
+        "API Integration",
+        "Workflow Automation",
         "Puppeteer",
       ],
     },
@@ -207,9 +207,9 @@ export default function SkillsPage() {
                     {categoryLabels[category] || category}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {categorySkills.map((skill) => (
+                    {categorySkills.map((skill, index) => (
                       <div
-                        key={skill._id || skill.name}
+                        key={index}
                         className="group p-6 bg-(--subtle) rounded-xl border border-(--border-color) hover:border-(--brand) hover:shadow-lg transicustomiz-all duracustomiz-300"
                       >
                         {/* Header */}
@@ -238,8 +238,8 @@ export default function SkillsPage() {
                         </div>
 
                         {/* Descripcustomiz */}
-                        <p className="text-(--text-muted) text-sm leading-relaxed mb-4 min-h-[60px]">
-                          {skill.descripcustomiz ||
+                        <p className="text-(--text-muted) text-sm leading-relaxed mb-4 min-h-15">
+                          {skill.description ||
                             `${skill.category} services and solucustomizs`}
                         </p>
 
@@ -301,7 +301,7 @@ export default function SkillsPage() {
 
                     {/* Descripcustomiz */}
                     <p className="text-(--text-muted) text-base md:text-lg leading-relaxed mb-6 flex-1">
-                      {skill.descripcustomiz}
+                      {skill.description}
                     </p>
 
                     {/* Technologies */}
