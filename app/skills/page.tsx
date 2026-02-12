@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cpu, ShieldCheck, Layers, Terminal, globe, zap } from "lucide-react";
+import { Cpu, ShieldCheck, Layers, Terminal, Globe, Zap } from "lucide-react";
 
 // Icon mapping
 const iconMap: Record<string, React.ReactNode> = {
-  cpu: <cpu size={32} />,
+  cpu: <Cpu size={32} />,
   shield: <ShieldCheck size={32} />,
   layers: <Layers size={32} />,
   terminal: <Terminal size={32} />,
-  globe: <globe size={32} />,
-  zap: <zap size={32} />,
+  globe: <Globe size={32} />,
+  zap: <Zap size={32} />,
 };
 
 interface Skill {
