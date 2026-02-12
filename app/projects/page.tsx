@@ -96,88 +96,98 @@ export default function ProjectsPage() {
         {/* NDA Notice */}
         <div className="p-6 bg-(--subtle) border border-(--border-color) rounded-xl mb-12">
           <p className="text-sm text-(--text-muted) font-light">
-            <span className="font-semibold text-(--text-main)">NDA Notice:</span>{" "}
-            Due to non-disclosure agreements, project details are presented as anonymous
-            technical case studies focusing on problems solved and solutions delivered. Specific company
-            names and live URLs are not disclosed.
+            <span className="font-semibold text-(--text-main)">
+              NDA Notice:
+            </span>{" "}
+            Due to non-disclosure agreements, project details are presented as
+            anonymous technical case studies focusing on problems solved and
+            solutions delivered. Specific company names and live URLs are not
+            disclosed.
           </p>
         </div>
 
         {/* Project List */}
         <div className="space-y-16 md:space-y-24 lg:space-y-32">
           {projects.map((project) => (
-            <div
-              key={project.id}
-              className="group grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12 items-start border-t border-(--border-color) pt-8 md:pt-12"
-            >
-              {/* Problem & Solution */}
-              <div className="lg:col-span-7 space-y-6">
-                <div>
-                  <span className="text-xs uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
-                    {project.category}
-                  </span>
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl mt-3 mb-4">
-                    {project.title}
-                  </h2>
-                  <p className="text-(--text-muted) text-base md:text-lg leading-relaxed font-light">
-                    {project.problem}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted) mb-3">
-                    The Solution
-                  </h3>
-                  <p className="text-(--text-main) text-base md:text-lg leading-relaxed font-light">
-                    {project.solution}
-                  </p>
-                </div>
-
-                {/* Expand Case Study Button */}
-                <button
-                  onClick={() =>
-                    setExpandedId(expandedId === project.id ? null : project.id)
-                  }
-                  className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-(--brand) hover:underline"
-                >
-                  {expandedId === project.id ? "Hide Case Study" : "View Case Study"}
-                  <ArrowUpRight size={16} />
-                </button>
-              </div>
-            </div>
-
-            {/* Expandable Case Study */}
-            {expandedId === project.id && (
-              <div className="lg:col-span-12 lg:col-span-5 space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted)">
-                    Case Study Details
-                  </h3>
-                  <p className="text-(--text-main) text-base md:text-lg leading-relaxed font-light">
-                    {project.caseStudy}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted)">
-                    Key Challenges
-                  </h3>
-                  <ul className="space-y-4">
-                    {project.challenges.map((challenge) => (
-                      <li key={challenge} className="flex items-start gap-4 text-(--text-main)">
-                        <CheckCircle2 size={20} className="shrink-0 text-(--brand) mt-0.5" />
-                        <span className="font-light text-sm">{challenge}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+            <div key={project.id} className="space-y-6">
+              <div className="group grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12 items-start border-t border-(--border-color) pt-8 md:pt-12">
+                {/* Problem & Solution */}
+                <div className="lg:col-span-7 space-y-6">
                   <div>
-                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted)">
-                        Technologies Used
-                    </h3>
+                    <span className="text-xs uppercase tracking-[0.3em] font-bold text-(--text-subtle)">
+                      {project.category}
+                    </span>
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl mt-3 mb-4">
+                      {project.title}
+                    </h2>
+                    <p className="text-(--text-muted) text-base md:text-lg leading-relaxed font-light">
+                      {project.problem}
+                    </p>
                   </div>
+
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted) mb-3">
+                      The Solution
+                    </h3>
+                    <p className="text-(--text-main) text-base md:text-lg leading-relaxed font-light">
+                      {project.solution}
+                    </p>
+                  </div>
+
+                  {/* Expand Case Study Button */}
+                  <button
+                    onClick={() =>
+                      setExpandedId(
+                        expandedId === project.id ? null : project.id,
+                      )
+                    }
+                    className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-(--brand) hover:underline"
+                  >
+                    {expandedId === project.id
+                      ? "Hide Case Study"
+                      : "View Case Study"}
+                    <ArrowUpRight size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {expandedId === project.id && (
+                <div className="lg:col-span-12 space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted)">
+                      Case Study Details
+                    </h3>
+                    <p className="text-(--text-main) text-base md:text-lg leading-relaxed font-light">
+                      {project.caseStudy}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted) mb-3">
+                      Key Challenges
+                    </h3>
+                    <ul className="space-y-4">
+                      {project.challenges.map((challenge) => (
+                        <li
+                          key={challenge}
+                          className="flex items-start gap-4 text-(--text-main)"
+                        >
+                          <CheckCircle2
+                            size={20}
+                            className="shrink-0 text-(--brand) mt-0.5"
+                          />
+                          <span className="font-light text-sm">
+                            {challenge}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-(--text-muted) mb-3">
+                      Technologies Used
+                    </h3>
                     <div className="flex flex-wrap gap-2">
                       {project.technologies.map((tech) => (
                         <span
@@ -189,12 +199,13 @@ export default function ProjectsPage() {
                       ))}
                     </div>
                   </div>
+
                   <div className="text-xs text-(--text-subtle)">
                     {project.duration && `${project.duration} • `}
                     {project.year && `Completed in ${project.year}`}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>
