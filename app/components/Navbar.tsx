@@ -64,7 +64,7 @@ const Navbar = () => {
               return (
                 <Link
                   key={item}
-                  href={`#${item.toLowerCase()}`}
+                  href={`${item.toLowerCase()}`}
                   className={`px-4 py-2 text-xs uppercase  font-semibold transition-all duration-300 ${
                     isActive
                       ? "text-(--main)"
@@ -124,7 +124,7 @@ const Navbar = () => {
           {navItems.map((item) => (
             <Link
               key={item}
-              href={`#${item.toLowerCase()}`}
+              href={`${item.toLowerCase()}`}
               onClick={closeMenu}
               className={`text-sm uppercase font-bold tracking-widest pb-4 border-b border-(--border-color) ${
                 activeSection === item.toLowerCase()

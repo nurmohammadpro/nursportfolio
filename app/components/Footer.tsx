@@ -9,10 +9,10 @@ const Footer = () => {
 
   // Navigation array with path tracking
   const navLinks = [
-    { name: "About", href: "/#about" },
-    { name: "Projects", href: "/#projects" },
+    { name: "About", href: "/about" },
+    { name: "Projects", href: "/projects" },
     { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/#contact" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const socialLinks = [
@@ -39,7 +39,8 @@ const Footer = () => {
               Nur<span className="text-(--text-subtle)"> Mohammad</span>
             </h3>
             <p className="p-engine-body text-(--text-subtle) max-w-sm leading-relaxed">
-              Web Application Developer specializing in MERN/Next.js, WordPress Design & Security, and Web Automation.
+              Web Application Developer specializing in MERN/Next.js, WordPress
+              Design & Security, and Web Automation.
             </p>
             <div className="flex gap-5">
               {socialLinks.map((social) => (
